@@ -1,6 +1,7 @@
 ﻿@page "/products"
 @using MobileStoreV2.Services.Interfaces
 @using MobileStoreV2.Models
+@inject IJSRuntime _ijs
 @inject IProductService ProductService
 
 <h3>Products</h3>
@@ -38,6 +39,7 @@ else
             }
             </tbody>
         </table>
+       
 }
 
 @code {
