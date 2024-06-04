@@ -30,7 +30,7 @@ namespace MobileStoreV2.Services
         public async Task<Product> GetProductByIdAsync(int id)
         {
             return await _context.Products
-                                 .Include(p => p.Brand!)
+                                 .Include(p => p.Brand)
                                  .Include(p => p.Category)
                                  .FirstOrDefaultAsync(p => p.Id == id);
         }
