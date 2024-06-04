@@ -19,6 +19,16 @@ namespace MobileStoreV2.Services
             _context = context;
         }
 
+        public Task<Product> CreateProductAsync(Product createProduct)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteProductAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<IEnumerable<Product>> GetAllProductsAsync()
         {
             return await _context.Products
@@ -33,6 +43,11 @@ namespace MobileStoreV2.Services
                                  .Include(p => p.Brand)
                                  .Include(p => p.Category)
                                  .FirstOrDefaultAsync(p => p.Id == id);
+        }
+
+        public Task UpdateProductAsync(int id, Product product)
+        {
+            throw new NotImplementedException();
         }
     }
 }
