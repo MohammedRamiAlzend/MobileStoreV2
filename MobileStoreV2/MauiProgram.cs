@@ -21,7 +21,7 @@ namespace MobileStoreV2
                 });
 
 
-            var connectionString = "Server=DESKTOP-F1RTV5Q;Database=MobileStore;Trusted_Connection=True;TrustServerCertificate=True;";
+            var connectionString = "Server=DESKTOP-SVMILGI\\DELL;Database=MobileStore;Trusted_Connection=True;TrustServerCertificate=True;";
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 

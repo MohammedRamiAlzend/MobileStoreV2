@@ -1,0 +1,61 @@
+﻿@page "/Dashboard"
+@using System.Net.Http.Json
+@* @using MudBlazor.Examples.Data.Models *@
+@* @inject HttpClient httpClient *@
+
+@using MobileStoreV2.Services.Interfaces
+@using MobileStoreV2.Models
+@inject IProductService ProductService
+
+
+<h3>Dashboard</h3
+<MudTable Items="@products.Take(4)" 
+    Hover="true" 
+    Breakpoint="Breakpoint.Sm" 
+    Loading="@_loading" 
+    LoadingProgressColor="Color.Info"
+    EditTrigger="@TableEditTrigger.EditButton"
+    >
+    <HeaderContent>
+        <MudTh>Name</MudTh>
+        <MudTh>Discount</MudTh>
+        <MudTh>Description</MudTh>
+        <MudTh>Quantity</MudTh>
+        <MudTh>Price </MudTh>
+        <MudTh>Brand</MudTh>
+        <MudTh>Category</MudTh>
+     
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Nr">@context.Name</MudTd>
+        <MudTd DataLabel="Sign">@context.Discount</MudTd>
+        <MudTd DataLabel="Name">@context.Description</MudTd>
+        <MudTd DataLabel="Position" HideSmall="_hidePosition">@context.Quantity</MudTd>
+        <MudTd DataLabel="Molar mass">@context.Price</MudTd>
+        <MudTd DataLabel="Molar mass">@context.Brand?.Name</MudTd>
+        <MudTd DataLabel="Molar mass">@context.Category?.Name</MudTd>
+        
+        <MudTd><MudIconButton OnClick="@(()=> deleteData(context.Id.ToString()))" Icon="@Icons.Material.Outlined.Edit" aria-label="delete"></MudIconButton></MudTd>
+        <MudTd><MudIconButton OnClick="@(()=> deleteData(context.Id.ToString()))" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton></MudTd>
+        
+    </RowTemplate>
+    </MudTable>
+
+
+@code {
+    private bool _hidePosition;
+    private bool _loading;
+
+    private IEnumerable<Product> products = new List<Product>();
+    protected override async Task OnInitializedAsync()
+    {
+        products = await ProductService.GetAllProductsAsync();
+    }
+      private async Task deleteData(string id)
+    {
+        // var response2 = await _httpClient.DeleteAsync("api/tanks/" + id.ToString());
+        // if (IsConnected) await SendMessage();
+
+
+    }
+}
