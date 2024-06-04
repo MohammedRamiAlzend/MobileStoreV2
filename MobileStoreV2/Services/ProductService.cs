@@ -19,14 +19,60 @@ namespace MobileStoreV2.Services
             _context = context;
         }
 
-        public Task<Product> CreateProductAsync(Product createProduct)
+        public async Task<Product> CreateProductAsync(Product createProduct)
         {
-            throw new NotImplementedException();
+            Product product = new Product
+            {
+                BarCode = createProduct.BarCode,
+                Name = createProduct.Name,
+                Brand = createProduct.Brand,
+                BrandId = createProduct.BrandId,
+                Category = createProduct.Category,
+                CategoryId = createProduct.CategoryId,
+                Description = createProduct.Description,
+                Discount = createProduct.Discount,
+                ImagePath = createProduct.ImagePath,
+                InsertDate = createProduct.InsertDate,
+                Price = createProduct.Price,
+                Quantity = createProduct.Quantity
+            };
+            _context.Products.Add(product);
+            await _context.SaveChangesAsync();
+
+            return product;
         }
 
-        public Task DeleteProductAsync(int id)
+        public async Task DeleteProductAsync(int id)
         {
-            throw new NotImplementedException();
+            var product = await _context.Products.FindAsync(id);
+
+            if (product == null)
+                throw new KeyNotFoundException("Product not found");
+
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
+        }
+        public async Task UpdateProductAsync(int id, Product product)
+        {
+            var request = await _context.Products.FindAsync(id);
+
+            if (request == null)
+                throw new KeyNotFoundException("Product not found");
+
+            request.Name = product.Name;
+            request.Description = product.Description;
+            request.Price = product.Price;
+            request.Discount = product.Discount;
+            request.ImagePath = product.ImagePath;
+            request.Quantity = product.Quantity;
+            request.BarCode = product.BarCode;
+            request.InsertDate = product.InsertDate;
+            request.Brand = product.Brand;
+            request.Category = product.Category;
+
+            _context.Products.Update(request);
+
+            await _context.SaveChangesAsync();
         }
 
         public async Task<IEnumerable<Product>> GetAllProductsAsync()
@@ -39,15 +85,13 @@ namespace MobileStoreV2.Services
 
         public async Task<Product> GetProductByIdAsync(int id)
         {
-            return await _context.Products
+            var request = await _context.Products
                                  .Include(p => p.Brand)
                                  .Include(p => p.Category)
                                  .FirstOrDefaultAsync(p => p.Id == id);
+            return request!;
         }
 
-        public Task UpdateProductAsync(int id, Product product)
-        {
-            throw new NotImplementedException();
-        }
+
     }
 }
