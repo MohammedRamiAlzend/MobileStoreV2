@@ -29,7 +29,9 @@ namespace MobileStoreV2
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
-            builder.Services.AddTransient<IProductService, ProductService>();
+            builder.Services.AddTransient<IProductInterface, ProductService>();
+
+            builder.Services.AddTransient<ICategoryService, CategoryService>();
 
 
             builder.Services.AddMauiBlazorWebView();

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MobileStoreV2.Services
 {
-    public class ProductService : IProductService
+    public class ProductService : IProductInterface
     {
         private readonly ApplicationDbContext _context;
 
@@ -52,6 +52,7 @@ namespace MobileStoreV2.Services
             _context.Products.Remove(product);
             await _context.SaveChangesAsync();
         }
+
         public async Task UpdateProductAsync(int id, Product product)
         {
             var request = await _context.Products.FindAsync(id);
@@ -70,8 +71,8 @@ namespace MobileStoreV2.Services
             request.Brand = product.Brand;
             request.Category = product.Category;
 
-            _context.Products.Update(request);
 
+            _context.Products.Update(request);
             await _context.SaveChangesAsync();
         }
 

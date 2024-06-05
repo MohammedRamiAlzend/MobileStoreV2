@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MobileStoreV2.Services.Interfaces
 {
-    public interface IProductService
+    public interface IProductInterface
     {
         Task<IEnumerable<Product>> GetAllProductsAsync();
         Task<Product> GetProductByIdAsync(int id);
