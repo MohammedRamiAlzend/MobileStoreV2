@@ -12,9 +12,6 @@ namespace MobileStoreV2.Data
         public DataBaseRequestException() { }
         public DataBaseRequestException(string message) : base(message) { }
         public DataBaseRequestException(string message, Exception inner) : base(message, inner) { }
-        protected DataBaseRequestException(
-          System.Runtime.Serialization.SerializationInfo info,
-          System.Runtime.Serialization.StreamingContext context) : base(info,
-              context) { }
+
     }
 }
