@@ -1,14 +1,92 @@
 ﻿@page "/Dashboard"
 @using System.Net.Http.Json
+@using System.ComponentModel.DataAnnotations
+@inject IDialogService DialogService
 @* @using MudBlazor.Examples.Data.Models *@
 @* @inject HttpClient httpClient *@
-
 @using MobileStoreV2.Services.Interfaces
 @using MobileStoreV2.Models
 @inject IProductService ProductService
+@using Services.Interfaces
 
 
 <h3>Dashboard</h3
+<MudButton @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
+    Open Simple Dialog
+</MudButton>
+
+
+<MudDialog>
+    <DialogContent>
+        Dialog Content
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@* start add product form *@
+<EditForm Model="@Product" OnValidSubmit="OnValidSubmit">
+<DataAnnotationsValidator/>
+<MudGrid>
+    <MudItem xs="12" sm="7">
+        <MudCard>
+           
+            <MudCardContent>
+                <MudTextField Label="Name" HelperText="Max. 8 characters"
+                              @bind-Value="Product.Name" For="@(() => Product.Name)" InputType="InputType.Text"/>
+                <MudTextField Label="BarCode" Class="mt-3"
+                              @bind-Value="Product.BarCode" For="@(() => Product.BarCode)" InputType="InputType.Number"/>
+                @* <MudTextField Label="Brand" HelperText="Choose a strong Brand" Class="mt-3"
+                              @bind-Value="Product.Brand" For="@(() => Product.Brand)" InputType="InputType.Text"/> *@
+                <MudTextField Label="BrandId" HelperText="Repeat the Brand" Class="mt-3"
+                              @bind-Value="Product.BrandId" For="@(() => Product.BrandId)" InputType="InputType.Number"/>
+            @*     <MudTextField Label="Category" HelperText="Repeat the Brand" Class="mt-3"
+                              @bind-Value="Product.Category" For="@(() => Product.Category)" InputType="InputType.Text"/> *@
+                <MudTextField Label="CategoryId" HelperText="Repeat the Brand" Class="mt-3"
+                              @bind-Value="Product.CategoryId" For="@(() => Product.CategoryId)" InputType="InputType.Number"/>
+               <MudTextField Label="Description" HelperText="Repeat the Brand" Class="mt-3"
+                              @bind-Value="Product.Description" For="@(() => Product.Description)" InputType="InputType.Text"/>
+               <MudTextField Label="Discount" HelperText="Repeat the Brand" Class="mt-3"
+                             @bind-Value="Product.Discount" For="@(() => Product.Discount)" InputType="InputType.Number"/>
+               <MudTextField Label="ImagePath" HelperText="Repeat the Brand" Class="mt-3"
+                             @bind-Value="Product.ImagePath" For="@(() => Product.ImagePath)" InputType="InputType.Text"/>
+      @*          <MudTextField Label="InsertDate" HelperText="Repeat the Brand" Class="mt-3"
+                             @bind-Value="Product.InsertDate" For="@(() => Product.InsertDate)" InputType="InputType.Text"/> *@
+               <MudTextField Label="Price" HelperText="Repeat the Brand" Class="mt-3"
+                             @bind-Value="Product.Price" For="@(() => Product.Price)" InputType="InputType.Number"/>
+               <MudTextField Label="Quantity" HelperText="Repeat the Brand" Class="mt-3"
+                             @bind-Value="Product.Quantity" For="@(() => Product.Quantity)" InputType="InputType.Number"/>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Register</MudButton>
+            </MudCardActions>
+        </MudCard>
+    </MudItem>
+    <MudItem xs="12" sm="5">
+        <MudPaper Class="pa-4 mud-height-full">
+            <MudText Typo="Typo.subtitle2">Validation Summary</MudText>
+            @if (success)
+            {
+                <MudText Color="Color.Success">Success</MudText>
+            }
+            else
+            {
+                <MudText Color="@Color.Error">
+                    <ValidationSummary />
+                </MudText>
+            }
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12">
+        <MudText Typo="Typo.body2" Align="Align.Center">
+            Fill out the form correctly to see the success message.
+        </MudText>
+    </MudItem>
+</MudGrid>
+</EditForm>
+@* End add product form *@
 <MudTable Items="@products.Take(4)" 
     Hover="true" 
     Breakpoint="Breakpoint.Sm" 
@@ -16,7 +94,9 @@
     LoadingProgressColor="Color.Info"
     EditTrigger="@TableEditTrigger.EditButton"
     >
+         
     <HeaderContent>
+        <MudTh>ID</MudTh>
         <MudTh>Name</MudTh>
         <MudTh>Discount</MudTh>
         <MudTh>Description</MudTh>
@@ -24,9 +104,15 @@
         <MudTh>Price </MudTh>
         <MudTh>Brand</MudTh>
         <MudTh>Category</MudTh>
+        <MudTh>BarCode</MudTh>
+        <MudTh>BrandId</MudTh>
+        <MudTh>CategoryId</MudTh>
+        <MudTh>ImagePath</MudTh>
+        <MudTh>InsertDate</MudTh>
      
     </HeaderContent>
     <RowTemplate>
+        <MudTd DataLabel="Nr">@context.Id</MudTd>
         <MudTd DataLabel="Nr">@context.Name</MudTd>
         <MudTd DataLabel="Sign">@context.Discount</MudTd>
         <MudTd DataLabel="Name">@context.Description</MudTd>
@@ -34,6 +120,11 @@
         <MudTd DataLabel="Molar mass">@context.Price</MudTd>
         <MudTd DataLabel="Molar mass">@context.Brand?.Name</MudTd>
         <MudTd DataLabel="Molar mass">@context.Category?.Name</MudTd>
+        <MudTd DataLabel="Molar mass">@context.BarCode</MudTd>
+        <MudTd DataLabel="Molar mass">@context.BrandId</MudTd>
+        <MudTd DataLabel="Molar mass">@context.CategoryId</MudTd>
+        <MudTd DataLabel="Molar mass">@context.ImagePath</MudTd>
+        <MudTd DataLabel="Molar mass">@context.InsertDate</MudTd>
         
         <MudTd><MudIconButton OnClick="@(()=> deleteData(context.Id.ToString()))" Icon="@Icons.Material.Outlined.Edit" aria-label="delete"></MudIconButton></MudTd>
         <MudTd><MudIconButton OnClick="@(()=> deleteData(context.Id.ToString()))" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton></MudTd>
@@ -51,11 +142,92 @@
     {
         products = await ProductService.GetAllProductsAsync();
     }
-      private async Task deleteData(string id)
+    private async Task deleteData(string id)
     {
         // var response2 = await _httpClient.DeleteAsync("api/tanks/" + id.ToString());
         // if (IsConnected) await SendMessage();
 
 
     }
+    // start code form
+    RegisterAccountForm model = new RegisterAccountForm();
+    Product Product = new Product();
+    bool success;
+
+    public class RegisterAccountForm
+    {
+        [Required]
+        [StringLength(30)]
+        public string Name { get; set; }
+
+        [Required]
+        [StringLength(30)]
+        public string BarCode { get; set; }
+
+        [Required]
+        [StringLength(30)]
+        public string Brand { get; set; }
+
+        [Required]
+        [StringLength(30)]
+        public string BrandId { get; set; }
+
+        [Required]
+        [StringLength(30)]
+        public string Category{ get; set; }
+
+        [Required]
+        [StringLength(30)]
+        public string CategoryId { get; set; }
+
+        [Required]
+        [StringLength(30)]
+        public string Description { get; set; }
+
+        [Required]
+        [StringLength(30)]
+        public string Discount { get; set; }
+
+        [Required]
+        [StringLength(30)]
+        public string ImagePath { get; set; }
+
+        [Required]
+        [StringLength(30)]
+        public string InsertDate { get; set; }
+
+        [Required]
+        [StringLength(30)]
+        public string Price { get; set; }
+
+        [Required]
+        [StringLength(30)]
+        public string Quantity { get; set; }
+
+    }
+
+    private void OnValidSubmit(EditContext context)
+    {
+        success = true;
+        
+        StateHasChanged();
+    }
+       // end code form
+
+        //start modal
+
+    private void OpenDialog()
+    {
+        //  var options = new DialogOptions { CloseOnEscapeKey = true };
+        // DialogService.Show<DialogUsageExample_Dialog>("Simple Dialog", options);
+        
+
+    }
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(true));
+    void Cancel() => MudDialog.Cancel();
+
+        //end modal
+
 }
