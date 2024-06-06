@@ -5,7 +5,7 @@
 
 @using MobileStoreV2.Services.Interfaces
 @using MobileStoreV2.Models
-@inject IProductInterface ProductService
+@inject IProductService ProductService
 
 
 <h3>Dashboard</h3
@@ -52,7 +52,7 @@
         var request = await ProductService.GetAllProductsAsync();
         if(request.Success)
         {
-            products = request.Data;
+            products = request.Data!;
         }
     }
       private async Task deleteData(string id)

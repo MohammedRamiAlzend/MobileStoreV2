@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 
 namespace MobileStoreV2.Data
 {
-
-
     [Serializable]
     public class DataBaseRequestException : Exception
     {
@@ -16,6 +14,7 @@ namespace MobileStoreV2.Data
         public DataBaseRequestException(string message, Exception inner) : base(message, inner) { }
         protected DataBaseRequestException(
           System.Runtime.Serialization.SerializationInfo info,
-          System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
+          System.Runtime.Serialization.StreamingContext context) : base(info,
+              context) { }
     }
 }

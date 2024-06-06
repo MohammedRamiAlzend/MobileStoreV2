@@ -1,4 +1,5 @@
-﻿using MobileStoreV2.Models;
+﻿using MobileStoreV2.Data;
+using MobileStoreV2.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,10 @@ namespace MobileStoreV2.Services.Interfaces
 {
     public interface ICategoryService
     {
-        Task<IEnumerable<Category>> GetAllCategoryAsync();
-        Task<Category> GetCategoryByIdAsync(int id);
-        Task<Category> CreateCategoryAsync(Category createCategory);
-        Task UpdateCategoryAsync(int id, Category Category);
-        Task DeleteCategoryAsync(int id);
+        Task<DataBaseRequest<IEnumerable<Category>>> GetAllCategoryAsync();
+        Task<DataBaseRequest<Category>> GetCategoryByIdAsync(int id);
+        Task<DataBaseRequest> CreateCategoryAsync(Category createCategory);
+        Task<DataBaseRequest> UpdateCategoryAsync(int id, Category Category);
+        Task<DataBaseRequest> DeleteCategoryAsync(int id);
     }
 }

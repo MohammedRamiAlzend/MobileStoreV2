@@ -13,10 +13,10 @@ namespace MobileStoreV2.Models
         public int Id { get; set; }
 
         // Name of the product
-        public string Name { get; set; }
+        public string? Name { get; set; }
 
         // Description of the product
-        public string Description { get; set; }
+        public string? Description { get; set; }
 
         // Price of the product
         public double Price { get; set; }
@@ -30,7 +30,7 @@ namespace MobileStoreV2.Models
         // Quantity of the product in stock
         public int Quantity { get; set; }
 
-        // Barcode of the product
+        // Bar code of the product
         public int BarCode { get; set; }
 
         // Date when the product was inserted

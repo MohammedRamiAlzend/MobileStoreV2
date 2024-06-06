@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MobileStoreV2.Services
 {
-    public class ProductService : IProductInterface
+    public class ProductService : IProductService
     {
         private readonly ApplicationDbContext _context;
 
@@ -129,7 +129,7 @@ namespace MobileStoreV2.Services
                                  .Include(p => p.Brand)
                                  .Include(p => p.Category)
                                  .ToListAsync();
-            if (request != null)
+            if (request != null )
             {
                 return new DataBaseRequest<IEnumerable<Product>>
                 {
@@ -171,7 +171,7 @@ namespace MobileStoreV2.Services
                 return new DataBaseRequest<Product>
                 {
                     Data = new Product(),
-                    Message= $"The Product with {id} not Found"
+                    Message = $"The Product with {id} not Found"
                 };
 
             }

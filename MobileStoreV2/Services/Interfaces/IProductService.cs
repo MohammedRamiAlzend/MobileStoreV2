@@ -8,7 +8,7 @@ using MobileStoreV2.Data;
 
 namespace MobileStoreV2.Services.Interfaces
 {
-    public interface IProductInterface
+    public interface IProductService
     {
         Task<DataBaseRequest<IEnumerable<Product>>> GetAllProductsAsync();
         Task<DataBaseRequest<Product>> GetProductByIdAsync(int id);

@@ -13,7 +13,7 @@ namespace MobileStoreV2.Data
     }
     public class DataBaseRequest<T> : DataBaseRequest
     {
-        public T Data { get; set; }
+        public T? Data { get; set; }
     }
 
 }
