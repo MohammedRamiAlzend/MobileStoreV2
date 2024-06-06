@@ -31,6 +31,8 @@ namespace MobileStoreV2
 
             builder.Services.AddTransient<IProductService, ProductService>();
 
+            builder.Services.AddTransient<ICategoryService, CategoryService>();
+
 
             builder.Services.AddMauiBlazorWebView();
             builder.Services.AddMudServices();

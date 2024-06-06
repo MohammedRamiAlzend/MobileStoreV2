@@ -8,45 +8,49 @@
 
 @if (products == null)
 {
-        <p><em>Loading...</em></p>
+    <p><em>Loading...</em></p>
 }
 else
 {
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Price</th>
-                    <th>Discount</th>
-                    <th>Quantity</th>
-                    <th>Brand</th>
-                    <th>Category</th>
-                </tr>
-            </thead>
-            <tbody>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Discount</th>
+                <th>Quantity</th>
+                <th>Brand</th>
+                <th>Category</th>
+            </tr>
+        </thead>
+        <tbody>
             @foreach (var product in products)
             {
-                        <tr>
-                            <td>@product.Name</td>
-                            <td>@product.Description</td>
-                            <td>@product.Price</td>
-                            <td>@product.Discount</td>
-                            <td>@product.Quantity</td>
-                            <td>@product.Brand?.Name</td>
-                            <td>@product.Category?.Name</td>
-                        </tr>
+                <tr>
+                    <td>@product.Name</td>
+                    <td>@product.Description</td>
+                    <td>@product.Price</td>
+                    <td>@product.Discount</td>
+                    <td>@product.Quantity</td>
+                    <td>@product.Brand?.Name</td>
+                    <td>@product.Category?.Name</td>
+                </tr>
             }
-            </tbody>
-        </table>
-       
+        </tbody>
+    </table>
+
 }
 
 @code {
-    private IEnumerable<Product> products;
+    private IEnumerable<Product>? products;
 
     protected override async Task OnInitializedAsync()
     {
-        products = await ProductService.GetAllProductsAsync();
+        var request = await ProductService.GetAllProductsAsync();
+        if (request.Success)
+        {
+            products = request.Data;
+        }
     }
 }

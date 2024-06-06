@@ -4,15 +4,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MobileStoreV2.Data;
 
 namespace MobileStoreV2.Services.Interfaces
 {
     public interface IProductService
     {
-        Task<IEnumerable<Product>> GetAllProductsAsync();
-        Task<Product> GetProductByIdAsync(int id);
-        Task<Product> CreateProductAsync(Product createProduct);
-        Task UpdateProductAsync(int id, Product product);
-        Task DeleteProductAsync(int id);
+        Task<DataBaseRequest<IEnumerable<Product>>> GetAllProductsAsync();
+        Task<DataBaseRequest<Product>> GetProductByIdAsync(int id);
+
+        Task<DataBaseRequest> CreateProductAsync(Product createProduct);
+        Task<DataBaseRequest> UpdateProductAsync(int id, Product product);
+        Task<DataBaseRequest> DeleteProductAsync(int id);
     }
 }
