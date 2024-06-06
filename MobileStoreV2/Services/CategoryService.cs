@@ -27,9 +27,7 @@ namespace MobileStoreV2.Services
             };
 
             _context.Categories.Add(category);
-
             await _context.SaveChangesAsync();
-
             return category;
 
         }
@@ -37,13 +35,9 @@ namespace MobileStoreV2.Services
         public async Task DeleteCategoryAsync(int id)
         {
             var category = await _context.Categories.FindAsync(id);
-
             if (category == null)
                 throw new KeyNotFoundException("category not found");
-
-
             _context.Categories.Remove(category);
-
             await _context.SaveChangesAsync();
         }
 

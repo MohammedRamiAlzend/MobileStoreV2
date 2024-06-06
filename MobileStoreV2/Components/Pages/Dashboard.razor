@@ -5,7 +5,7 @@
 
 @using MobileStoreV2.Services.Interfaces
 @using MobileStoreV2.Models
-@inject ICategoryService ProductService
+@inject IProductInterface ProductService
 
 
 <h3>Dashboard</h3
@@ -49,7 +49,11 @@
     private IEnumerable<Product> products = new List<Product>();
     protected override async Task OnInitializedAsync()
     {
-        products = await ProductService.GetAllProductsAsync();
+        var request = await ProductService.GetAllProductsAsync();
+        if(request.Success)
+        {
+            products = request.Data;
+        }
     }
       private async Task deleteData(string id)
     {
