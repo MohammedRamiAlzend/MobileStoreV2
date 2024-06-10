@@ -86,7 +86,7 @@
 </MudGrid>
 </EditForm>
 @* End add product form *@
-<MudTable Items="@products.Take(4)" 
+<MudTable Items="@products" 
     Hover="true" 
     Breakpoint="Breakpoint.Sm" 
     Loading="@_loading" 
@@ -125,8 +125,8 @@
         <MudTd DataLabel="Molar mass">@context.ImagePath</MudTd>
         <MudTd DataLabel="Molar mass">@context.InsertDate</MudTd>
         
-        <MudTd><MudIconButton OnClick="@(()=> deleteData(context.Id.ToString()))" Icon="@Icons.Material.Outlined.Edit" aria-label="delete"></MudIconButton></MudTd>
-        <MudTd><MudIconButton OnClick="@(()=> deleteData(context.Id.ToString()))" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton></MudTd>
+        @* <MudTd><MudIconButton OnClick="@(()=> deleteData(context.Id.ToString()))" Icon="@Icons.Material.Outlined.Edit" aria-label="Edit"></MudIconButton></MudTd> *@
+        <MudTd><MudIconButton OnClick="@(()=> deleteData())" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton></MudTd>
         
     </RowTemplate>
     </MudTable>
@@ -136,7 +136,7 @@
     private bool _hidePosition;
     private bool _loading;
 
-    private IEnumerable<Product> products = new List<Product>();
+    public IEnumerable<Product> products = new List<Product>();
     protected override async Task OnInitializedAsync()
     {
         var request = await ProductService.GetAllProductsAsync();
@@ -145,12 +145,22 @@
             products = request.Data!;
         }
     }
-    private async Task deleteData(string id)
+    private async Task deleteData()
     {
-        // var response2 = await _httpClient.DeleteAsync("api/tanks/" + id.ToString());
-        // if (IsConnected) await SendMessage();
+        // success = true;
+        // var product = createProduct;
+        //  var request =  await ProductService.DeleteProductAsync(2);
+        // if (request.Success)
+        // {
+        //     products.Append(product);
+        //     StateHasChanged();
+        // }
+        // else
+        // {
+        //     Console.WriteLine(request.Message);
+        // }
 
-
+         await ProductService.DeleteProductAsync(2);
     }
     // start code form
     Product createProduct = new Product();
@@ -164,7 +174,7 @@
         var request =  await ProductService.CreateProductAsync( product);
         if (request.Success)
         {
-
+            products.Append(product);
             StateHasChanged();
         }
         else
