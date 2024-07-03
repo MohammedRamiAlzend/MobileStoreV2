@@ -147,20 +147,21 @@
     }
     private async Task deleteData()
     {
-        // success = true;
-        // var product = createProduct;
-        //  var request =  await ProductService.DeleteProductAsync(2);
-        // if (request.Success)
-        // {
-        //     products.Append(product);
-        //     StateHasChanged();
-        // }
-        // else
-        // {
-        //     Console.WriteLine(request.Message);
-        // }
+    
 
-         await ProductService.DeleteProductAsync(2);
+        success = true;
+        var product = createProduct;
+        var request =  await ProductService.DeleteProductAsync(2);
+        if (request.Success)
+        {
+            products.Append(product);
+            StateHasChanged();
+        }
+        else
+        {
+            Console.WriteLine(request.Message);
+        }
+       
     }
     // start code form
     Product createProduct = new Product();
