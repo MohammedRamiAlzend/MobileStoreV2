@@ -7,6 +7,7 @@
 @using MobileStoreV2.Models
 @inject IProductService ProductService
 @using Services.Interfaces
+@inject IJSRuntime _ijs
 
 
 <h3>Dashboard</h3
@@ -126,7 +127,7 @@
         <MudTd DataLabel="Molar mass">@context.InsertDate</MudTd>
         
         @* <MudTd><MudIconButton OnClick="@(()=> deleteData(context.Id.ToString()))" Icon="@Icons.Material.Outlined.Edit" aria-label="Edit"></MudIconButton></MudTd> *@
-        <MudTd><MudIconButton OnClick="@(()=> deleteData())" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton></MudTd>
+        <MudTd><MudIconButton OnClick="@(()=> deleteData(context.Id))" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton></MudTd>
         
     </RowTemplate>
     </MudTable>
@@ -145,7 +146,7 @@
             products = request.Data!;
         }
     }
-    private async Task deleteData()
+    private async Task deleteData(int id)
     {
     
 

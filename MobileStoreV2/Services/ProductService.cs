@@ -63,23 +63,34 @@ namespace MobileStoreV2.Services
 
             if (product == null)
                 throw new DataBaseRequestException($"Product with {id} not found!");
-
-            _context.Products.Remove(product);
-            var result = await _context.SaveChangesAsync();
-            if (result > 0)
+            try
             {
-                return new DataBaseRequest
+                _context.Products.Remove(product);
+                var result = await _context.SaveChangesAsync();
+                if (result > 0)
                 {
-                    Message = $"Product {product.Name} Deleted Successfully",
-                    Success = true
-                };
+                    return new DataBaseRequest
+                    {
+                        Message = $"Product {product.Name} Deleted Successfully",
+                        Success = true
+                    };
+                }
+                else
+                {
+                    return new DataBaseRequest
+                    {
+                        Message = $"an error occurred while Deleting {product.Name} ",
+                        Success = false
+                    };
+                }
             }
-            else
+            catch (Exception)
             {
+                //TODO
                 return new DataBaseRequest
                 {
-                    Message = $"an error occurred while Deleting {product.Name} ",
-                    Success = false
+                    Message = "يوجد سلة لهذا المنتج"
+                    , Success = false
                 };
             }
         }
