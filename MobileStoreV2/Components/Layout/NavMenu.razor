@@ -1,4 +1,10 @@
 ﻿@using MobileStoreV2.Components.Pages
+
+
+
+
+
+
 @* <MudNavMenu>
     <MudNavLink Href="/" Match="NavLinkMatch.All">Home</MudNavLink>
    <MudNavGroup Title="Settings" Expanded="true">
@@ -14,21 +20,27 @@
  *@
 <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
 
-    <MudTabPanel Text="Tab One">
-        <MudText> <Counter /> </MudText>
+    <MudTabPanel Text="Show Products">
+        <MudText> <Products /> </MudText>
         
     </MudTabPanel>
-    <MudTabPanel Text="Tab Two">
-        <MudText><Casual/></MudText>
-    </MudTabPanel>
-    <MudTabPanel Text="Tab Three">
+ 
+    <MudTabPanel Text="Dashboard">
         <MudText><Dashboard/></MudText>
     </MudTabPanel>
-    <MudTabPanel Text="Tab Disabled" Disabled="true">
+
+
+ @*    <MudTabPanel Text="Products">
+        <MudText><Products/></MudText>
+    </MudTabPanel> *@
+@*     <MudTabPanel Text="Tab Disabled" Disabled="true">
         <MudText>sss</MudText>
-    </MudTabPanel>
-    <MudTabPanel Text="Bill" >
+    </MudTabPanel> *@
+@*     <MudTabPanel Text="Bill" >
         <MudText><Bill/></MudText>
-    </MudTabPanel>
+    </MudTabPanel> *@
+
+  
+    
 </MudTabs>
 

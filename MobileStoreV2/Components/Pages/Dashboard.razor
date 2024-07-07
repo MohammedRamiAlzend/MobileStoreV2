@@ -1,4 +1,5 @@
 ﻿@page "/Dashboard"
+
 @using System.Net.Http.Json
 @using System.ComponentModel.DataAnnotations
 @inject IDialogService DialogService
@@ -7,26 +8,26 @@
 @using MobileStoreV2.Models
 @inject IProductService ProductService
 @using Services.Interfaces
-@inject IJSRuntime _ijs
+
+@* @inject IJSRuntime _ijs *@
+
+
 
 
 <h3>Dashboard</h3
-<MudButton @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary">
-    Open Simple Dialog
+<MudButton @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary" Style="margin:20px 20px 20px 50px ">
+    Add Proudct
 </MudButton>
 
 
-<MudDialog>
-    <DialogContent>
-        Dialog Content
-    </DialogContent>
-    <DialogActions>
-        <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
-    </DialogActions>
-</MudDialog>
 
 @* start add product form *@
+
+<MudDialog @bind-IsVisible="showInnerComponent">
+    <TitleContent>
+        Dialog Title
+    </TitleContent>
+    <DialogContent>
 <EditForm Model="@createProduct" OnValidSubmit="OnValidSubmit">
 <DataAnnotationsValidator/>
 <MudGrid>
@@ -59,8 +60,9 @@
                <MudTextField Label="Quantity" HelperText="Repeat the Brand" Class="mt-3"
                              @bind-Value="createProduct.Quantity" For="@(() => createProduct.Quantity)" InputType="InputType.Number"/>
             </MudCardContent>
-            <MudCardActions>
-                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Register</MudButton>
+            <MudCardActions Class="d-xl-inline-flex" Style="display:flex;justify-content:end">
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled"  Style="margin-right:15px" >Cancel</MudButton>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" >Add</MudButton>
             </MudCardActions>
         </MudCard>
     </MudItem>
@@ -81,11 +83,16 @@
     </MudItem>
     <MudItem xs="12">
         <MudText Typo="Typo.body2" Align="Align.Center">
-            Fill out the form correctly to see the success message.
+            add product for your collcation 
         </MudText>
     </MudItem>
 </MudGrid>
 </EditForm>
+    </DialogContent>
+    <DialogActions>
+        @* <MudButton OnClick="Cancel">Cancel</MudButton> *@
+    </DialogActions>
+</MudDialog>
 @* End add product form *@
 <MudTable Items="@products" 
     Hover="true" 
@@ -188,17 +195,16 @@
 
         //start modal
 
-    private void OpenDialog()
-    {
-        //  var options = new DialogOptions { CloseOnEscapeKey = true };
-        // DialogService.Show<DialogUsageExample_Dialog>("Simple Dialog", options);
-        
+    private bool showInnerComponent = false;
+    private readonly DialogOptions _dialogOptions = new() { FullWidth = true };
+    private void OpenDialog() => showInnerComponent = true;
+    private void Cancel() => showInnerComponent = false;
+    private void submit() => MudDialog.Cancel();
 
-    }
-    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+    
 
-    void Submit() => MudDialog.Close(DialogResult.Ok(true));
-    void Cancel() => MudDialog.Cancel();
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; }
 
         //end modal
 

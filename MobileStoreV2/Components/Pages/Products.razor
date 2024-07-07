@@ -1,0 +1,28 @@
+﻿@page "/ProductsList"
+@using MobileStoreV2.Components.Pages
+
+
+
+
+<MudPaper Height="100%" Width="100%" Style="margin-bottom:30px;">
+
+    <Casual />
+
+</MudPaper>
+@* start card continer  *@
+<MudSlider @bind-Value="Spacing" Min="2" Max="10" Color="Color.Info" Class="mb-6">Spacing: @Spacing.ToString()</MudSlider>
+
+<MudGrid Spacing="@Spacing" Justify="Justify.Center">
+    @for (int i = 1;i <= 12;i++)
+    {
+      <Card/>
+    }
+</MudGrid>
+@* end card continer  *@
+<Dialog/>
+
+
+@code {
+    public int Spacing { get; set; } = 6;
+
+}
