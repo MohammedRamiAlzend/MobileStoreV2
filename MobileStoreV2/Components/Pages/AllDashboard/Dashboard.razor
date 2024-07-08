@@ -15,23 +15,25 @@
 
 
 <h3>Dashboard</h3
+
 <MudButton @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary" Style="margin:20px 20px 20px 50px ">
     Add Proudct
 </MudButton>
 
+    
 
 
 @* start add product form *@
 
 <MudDialog @bind-IsVisible="showInnerComponent">
     <TitleContent>
-        Dialog Title
+        Add Product
     </TitleContent>
     <DialogContent>
 <EditForm Model="@createProduct" OnValidSubmit="OnValidSubmit">
 <DataAnnotationsValidator/>
 <MudGrid>
-    <MudItem xs="12" sm="7">
+    <MudItem xs="12" sm="12">
         <MudCard>
            
             <MudCardContent>
@@ -61,26 +63,52 @@
                              @bind-Value="createProduct.Quantity" For="@(() => createProduct.Quantity)" InputType="InputType.Number"/>
             </MudCardContent>
             <MudCardActions Class="d-xl-inline-flex" Style="display:flex;justify-content:end">
-                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled"  Style="margin-right:15px" >Cancel</MudButton>
+                <MudButton OnClick="Cancel" Variant="Variant.Filled"  Style="margin-right:15px" >Cancel</MudButton>
                 <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" >Add</MudButton>
             </MudCardActions>
         </MudCard>
     </MudItem>
-    <MudItem xs="12" sm="5">
-        <MudPaper Class="pa-4 mud-height-full">
-            <MudText Typo="Typo.subtitle2">Validation Summary</MudText>
-            @if (success)
-            {
-                <MudText Color="Color.Success">Success</MudText>
-            }
-            else
-            {
-                <MudText Color="@Color.Error">
-                    <ValidationSummary />
-                </MudText>
-            }
-        </MudPaper>
-    </MudItem>
+    @* start Validation Summary *@
+    <MudDialog @bind-IsVisible="showInnerComponentDone">
+             <TitleContent>
+                        <MudText Typo="Typo.h6">
+                              <MudIcon Typo="Typo.subtitle2"   Class="mr-3" /> Validation Summary
+                        </MudText>
+                    </TitleContent>
+        <DialogContent>
+            <MudItem>
+                <MudPaper Class="pa-4 ">
+              
+                        @if (success)
+                        {
+                            @* <MudText Color="Color.Success"  >Add Success done</MudText> *@
+                                    <MudAlert Severity="Severity.Success">Add Done Successfully </MudAlert>
+                                    createProduct.Name = "";
+                                    createProduct.BarCode = 0 ;
+                                    createProduct.BrandId =0;
+                                    createProduct.CategoryId = 0;
+                                    createProduct.Description = "";
+                                    createProduct.Discount = 0;
+                                    createProduct.ImagePath = "";
+                                    createProduct.Price = 0;
+                                    createProduct.Quantity = 0;
+                                
+                                }
+                        else
+                        {
+                            <MudText  Color="@Color.Error">
+                                <ValidationSummary />
+                            </MudText>
+                        }
+                   
+                </MudPaper>
+            </MudItem>
+        </DialogContent>
+         <DialogActions>
+              <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="CancelDone" Class="px-10">Close</MudButton>
+         </DialogActions>
+     </MudDialog>
+    @* End Validation Summary *@
     <MudItem xs="12">
         <MudText Typo="Typo.body2" Align="Align.Center">
             add product for your collcation 
@@ -89,9 +117,7 @@
 </MudGrid>
 </EditForm>
     </DialogContent>
-    <DialogActions>
-        @* <MudButton OnClick="Cancel">Cancel</MudButton> *@
-    </DialogActions>
+
 </MudDialog>
 @* End add product form *@
 <MudTable Items="@products" 
@@ -155,7 +181,7 @@
     }
     private async Task deleteData(int id)
     {
-    
+
 
         success = true;
         var product = createProduct;
@@ -169,7 +195,7 @@
         {
             Console.WriteLine(request.Message);
         }
-       
+
     }
     // start code form
     Product createProduct = new Product();
@@ -190,16 +216,21 @@
         {
             Console.WriteLine(request.Message);
         }
+        OpenDialogDone();
     }
        // end code form
 
         //start modal
 
     private bool showInnerComponent = false;
+    private bool showInnerComponentDone = false;
     private readonly DialogOptions _dialogOptions = new() { FullWidth = true };
     private void OpenDialog() => showInnerComponent = true;
+    private void OpenDialogDone() => showInnerComponentDone = true;
     private void Cancel() => showInnerComponent = false;
-    private void submit() => MudDialog.Cancel();
+    private void CancelDone() => showInnerComponentDone = false;
+
+    
 
     
 
