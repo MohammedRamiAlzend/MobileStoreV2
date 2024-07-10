@@ -49,21 +49,34 @@
         animation-fill-mode: forwards;
     }
 
+    .d-flex{
+        height: 100%;
+        /* background-image: url(/mobile3.webp); */
+        background-size: cover
+    }
+    .d-flex:nth-child(2){
+            /* background-image: url(mobile6.jpg); */
+    }
+
+        .d-flex:last-child() {
+            /* background-image: url(/mobile5.webp); */
+        }
+
 </style>
 
 <MudCarousel Class="mud-width-full" Style="height:200px;" TData="object" AutoCycle="false">
     <MudCarouselItem Color="@Color.Primary" Transition="Transition.Custom" CustomTransitionEnter="@AnimationEntrance" CustomTransitionExit="@AnimationExit">
-        <div class="d-flex" style="height:100%;background-image:url(/mobile.jpg); background-size:cover">
+        <div class="d-flex">
             <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Size="@Size.Large" />
         </div>
     </MudCarouselItem>
     <MudCarouselItem Color="@Color.Secondary" Transition="Transition.Custom" CustomTransitionEnter="@AnimationEntrance" CustomTransitionExit="@AnimationExit">
-        <div class="d-flex" style="height:100% ; background-image:url(/mobile3.webp); background-size:cover;">
+        <div class="d-flex" >
             <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Size="@Size.Large" />
         </div>
     </MudCarouselItem>
     <MudCarouselItem Transition="Transition.Custom" CustomTransitionEnter="@AnimationEntrance" CustomTransitionExit="@AnimationExit">
-        <div class="d-flex" style="height:100%;background-image:url(/mobile5.webp); background-size:cover">
+        <div class="d-flex">
             <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Color="@Color.Primary" Size="@Size.Large" />
         </div>
     </MudCarouselItem>

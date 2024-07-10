@@ -1,54 +1,90 @@
 ﻿@page "/Accounting"
 @inherits LayoutComponentBase
-
+@using MobileStoreV2.Components.Pages.ProductsCmpnt
+@using MobileStoreV2.Components.Pages
+@inject IDialogService DialogService
 
 @* start navbar for calc *@
-<MudPaper Width="250px" Class="d-inline-flex py-3" Elevation="0">
+@* <MudPaper Width="250px" Class="d-inline-flex py-3" Elevation="0">
     <MudNavMenu Class="mud-width-full">
         <MudText Typo="Typo.h6" Class="px-4">My Application</MudText>
         <MudText Typo="Typo.body2" Class="px-4 mud-text-secondary">Secondary Text</MudText>
         <MudDivider Class="my-2" />
         <MudNavLink Href="/dashboard" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
-        <MudNavGroup Title="Level 0" Icon="@Icons.Material.Filled.Settings" Expanded="true">
+        <MudNavGroup Title="Level 0"  Icon="@Icons.Material.Filled.Settings" Expanded="true">
             <MudNavGroup Title="Level 1" Icon="@Icons.Material.Filled.AdminPanelSettings" Expanded="true">
                 <MudNavGroup Title="Level 2" Icon="@Icons.Material.Filled.People" Expanded="true">
                     <MudNavGroup Title="Level 3" Icon="@Icons.Material.Filled.Lock" Expanded="true">
-                        <MudNavLink Href="/delete" Icon="@Icons.Material.Filled.DeleteForever">Delete Password</MudNavLink>
+                        <MudNavLink Href="/Products" Icon="@Icons.Material.Filled.DeleteForever">Delete Password</MudNavLink>
                     </MudNavGroup>
                 </MudNavGroup>
             </MudNavGroup>
         </MudNavGroup>
         <MudNavLink Href="/billing" Icon="@Icons.Material.Filled.Receipt">Billing</MudNavLink>
     </MudNavMenu>
-</MudPaper>
+</MudPaper> *@
 @* end navbar for calc *@
 
 @* Start squr componet  *@
-<MudGrid>
+<MudGrid >
     <MudItem xs="4">
-        <MudButton Variant="Variant.Filled" Class="d-flex align-center justify-center mud-width-full py-8 px-10">xs=3</MudButton>
+        <MudButton Variant="Variant.Filled" @onclick="OpenDialog" Class="d-flex align-center justify-center mud-width-full py-8 px-10">بيع منتج</MudButton>
     </MudItem>
     <MudItem xs="4">
-        <MudButton Variant="Variant.Filled" Class="d-flex align-center justify-center mud-width-full py-8 px-10">xs=3</MudButton>
+        <MudButton Variant="Variant.Filled" Class="d-flex align-center justify-center mud-width-full py-8 px-10">عر منتجات</MudButton>
     </MudItem>
     <MudItem xs="4">
-        <MudButton Variant="Variant.Filled" Class="d-flex align-center justify-center mud-width-full py-8 px-10">xs=3</MudButton>
+        <MudButton Variant="Variant.Filled" Class="d-flex align-center justify-center mud-width-full py-8 px-10">عرض حسابات المنتجات</MudButton>
     </MudItem>
     <MudItem xs="4">
-        <MudButton Variant="Variant.Filled" Class="d-flex align-center justify-center mud-width-full py-8 px-10">xs=3</MudButton>
+        <MudButton Variant="Variant.Filled" Class="d-flex align-center justify-center mud-width-full py-8 px-10">الكميات</MudButton>
     </MudItem>
     <MudItem xs="4">
-        <MudButton Variant="Variant.Filled" Class="d-flex align-center justify-center mud-width-full py-8 px-10">xs=3</MudButton>
+        <MudButton Variant="Variant.Filled" Class="d-flex align-center justify-center mud-width-full py-8 px-10">انواع المواد</MudButton>
     </MudItem>
     <MudItem xs="4">
-        <MudButton Variant="Variant.Filled" Class="d-flex align-center justify-center mud-width-full py-8 px-10">xs=3</MudButton>
+        <MudButton Variant="Variant.Filled" Class="d-flex align-center justify-center mud-width-full py-8 px-10">الأصناف</MudButton>
+    </MudItem>
+     <MudItem xs="4">
+        <MudButton Variant="Variant.Filled" Class="d-flex align-center justify-center mud-width-full py-8 px-10">تسجيل حسابات </MudButton>
+    </MudItem>
+     <MudItem xs="4">
+        <MudButton Variant="Variant.Filled" Class="d-flex align-center justify-center mud-width-full py-8 px-10">المخزن</MudButton>
+    </MudItem>
+    <MudItem xs="4">
+        <MudButton Variant="Variant.Filled" Class="d-flex align-center justify-center mud-width-full py-8 px-10">اسعار المنتجات</MudButton>
     </MudItem>
 </MudGrid>
 @* End squr componet  *@
 
+<MudDialog @bind-IsVisible="showInnerComponent" OnBackdropClick="@HandleBackdropClick">
+    <TitleContent>
+        <h1>إضافة منتج مدري عرض</h1>
+    </TitleContent>
+    <DialogContent>
+        <h1>منتجااااااااااااات</h1>
+        <p>Times backdrop clicked: @timesBackDropClicked</p>
 
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Cancel" Class="px-10">Close</MudButton>
+
+    </DialogActions>
+</MudDialog>
 
 @code {
+    [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
 
+    int timesBackDropClicked;
+    void HandleBackdropClick(MouseEventArgs eArgs)
+    {
+        timesBackDropClicked++;
+
+    }
+
+    private bool showInnerComponent = false;
+    private readonly DialogOptions _dialogOptions = new() { FullWidth = true };
+    private void OpenDialog() => showInnerComponent = true;
+    private void Cancel() => showInnerComponent = false;
 
 }
