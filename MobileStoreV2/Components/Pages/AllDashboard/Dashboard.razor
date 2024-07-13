@@ -12,13 +12,25 @@
 @* @inject IJSRuntime _ijs *@
 
 
+<style>
+    .continer{
+        width:100%;
+        padding: 18px 0;
+        position: relative; 
+        display:flex;       
+        justify-content:end;
+        align-items:center;
+    }
+
+}
+</style>
 
 
 <h3>Dashboard</h3
+<div class="continer">
 
-<MudButton @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary" Style="margin:20px 20px 20px 50px ">
-    Add Proudct
-</MudButton>
+<MudButton @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary" Style="">Add Proudct</MudButton>
+</div>
 
     
 
@@ -33,8 +45,8 @@
 <EditForm Model="@createProduct" OnValidSubmit="OnValidSubmit">
 <DataAnnotationsValidator/>
 <MudGrid>
-    <MudItem xs="12" sm="12">
-        <MudCard>
+    <MudItem xs="12" sm="12"  >
+        <MudCard >
            
             <MudCardContent>
                 <MudTextField Label="Name" HelperText="Max. 8 characters"
@@ -116,19 +128,24 @@
     </DialogContent>
 
 </MudDialog>
+
 @* End add product form *@
-    @if (products == null)
+    @if (filteredProducts == null)
 {
     <p><em>Loading...</em></p>
 }else{
-<MudTable Items="@products" 
+<MudTable Items="@filteredProducts" 
     Hover="true" 
     Breakpoint="Breakpoint.Sm" 
     Loading="@_loading" 
     LoadingProgressColor="Color.Info"
     EditTrigger="@TableEditTrigger.EditButton"
+     Striped="true" 
     >
-         
+    <ToolBarContent>
+        <MudTextField T="string" Label="Search"  @bind-Value="searchString"  TextChanged="FilterProducts"  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+        
     <HeaderContent>
         <MudTh>ID</MudTh>
         <MudTh>Name</MudTh>
@@ -171,8 +188,11 @@
 @code {
     private bool _hidePosition;
     private bool _loading;
-
+    private string searchString = "";
     public IEnumerable<Product> products = new List<Product>();
+    public IEnumerable<Product> filteredProducts = new List<Product>();
+
+
     protected override async Task OnInitializedAsync()
     {
         var request = await ProductService.GetAllProductsAsync();
@@ -180,7 +200,12 @@
         {
             products = request.Data!;
         }
+
+        filteredProducts = products;
     }
+
+
+
     private async Task deleteData(int id)
     {
 
@@ -220,9 +245,9 @@
         }
         OpenDialogDone();
     }
-       // end code form
+    // end code form
 
-        //start modal
+    //start modal
 
     private bool showInnerComponent = false;
     private bool showInnerComponentDone = false;
@@ -235,6 +260,27 @@
     [CascadingParameter]
     private MudDialogInstance MudDialog { get; set; }
 
-        //end modal
+    //end modal
+
+
+    //Start Filtring 
+
+
+    private void FilterProducts()
+    {  
+        if (string.IsNullOrWhiteSpace(searchString))
+        {
+           filteredProducts = products;
+
+       
+        }
+        else
+        {
+            filteredProducts = products.Where(p => p.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase) || p.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+            
+        }
+    }
+
+        //End Filtring 
 
 }

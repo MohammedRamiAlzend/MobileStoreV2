@@ -1,0 +1,74 @@
+﻿@page "/ProductsForInfo"
+@using MobileStoreV2.Models
+@* @inject HttpClient Http *@
+@using MudBlazor
+
+<MudContainer>
+    <MudTable Items="products" Striped="true" Hover="true">
+        <ToolBarContent>
+            <MudTextField T="string" Label="Search" @bind-Value="searchString" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Product Name</MudTh>
+            <MudTh>Price</MudTh>
+            <MudTh>Category</MudTh>
+            <MudTh>Actions</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Product Name">context.Name</MudTd>
+            <MudTd DataLabel="Price">context.Price</MudTd>
+            <MudTd DataLabel="Category">context.Category</MudTd>
+            <MudTd DataLabel="Actions">
+      @*           <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => EditProduct(context.Id))">Edit</MudButton>
+                <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="@(() => DeleteProduct(context.Id))">Delete</MudButton> *@
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+</MudContainer>
+
+@code {
+    // private List  products;
+    private List<string> products;
+
+      protected override void OnInitialized()
+    {
+        products = new List<string>
+        {
+            "Product 1",
+            "Product 2",
+            "Product 3",
+            "Product 4",
+            "Product 5"
+        };
+    }
+
+   
+    private string searchString = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        // products = await Http.GetFromJsonAsync<List<Product>>("api/products");
+        // filteredProducts = products;
+    }
+
+    private void EditProduct(int id)
+    {
+        // Navigate to edit product page
+        // NavigationManager.NavigateTo($"/Component1/edit/{id}");
+    }
+
+    private async Task DeleteProduct(int id)
+    {
+        // var response = await Http.DeleteAsync($"api/Component1/{id}");
+        // if (response.IsSuccessStatusCode)
+        // {
+        //     products = await Http.GetFromJsonAsync<List<Product>>("api/Component1");
+        // }
+        // else
+        // {
+        //     // Handle error
+        // }
+    }
+
+
+}
