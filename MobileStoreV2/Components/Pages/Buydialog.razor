@@ -1,0 +1,86 @@
+﻿@using System.Text.RegularExpressions
+@using System.ComponentModel.DataAnnotations
+
+
+
+
+
+
+
+
+<MudDialog>
+    <TitleContent>
+        <h1>شراء منتج</h1>
+    </TitleContent>
+    <DialogContent> 
+        <MudStack Row>
+            <MudCard>
+                <MudCardContent>
+                    <MudText Align="Align.Center" Class="mb-n4">ReadOnly Form</MudText>
+                    <MudForm ReadOnly="ReadOnly">
+                        <MudTextField T="string" Label="Text" />
+                        <MudNumericField T="int" Label="Number" />
+                        <MudDatePicker Label="Date" />
+                        <MudSwitch T="bool" Label="Switch" />
+                        <MudCheckBox T="bool" Label="CheckBox" Checked="@check"onclick="@changecheck" UnCheckedColor="Color.Primary" />
+                        <MudRadioGroup T="string">
+                            <MudRadio Value="@("1")">1</MudRadio>
+                            <MudRadio Value="@("2")">2</MudRadio>
+                        </MudRadioGroup>
+                        <MudForm ReadOnly="NestedReadOnly">
+                            <MudText Align="Align.Center" Class="mb-n4 mt-2">Nested Form</MudText>
+                            <MudTextField T="string" Label="Nested Text" />
+                            <MudNumericField T="int" Label="Nested Number" />
+                        </MudForm>
+                    </MudForm>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudCheckBox @bind-Value="ReadOnly">ReadOnly</MudCheckBox>
+                    <MudCheckBox @bind-Value="NestedReadOnly">Nested ReadOnly</MudCheckBox>
+                </MudCardActions>
+            </MudCard>
+        </MudStack>
+    </DialogContent>
+
+   
+     
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Buy</MudButton>
+     
+
+      
+    </DialogActions>
+</MudDialog>
+
+
+
+
+@code {
+
+    //start Dialog Show
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; }
+
+
+    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
+
+    private void Cancel() => MudDialog.Cancel();
+    //End Dialog Show
+
+    //Start Add Buy Form
+    bool ReadOnly = true;
+    bool NestedReadOnly;
+    bool Disabled = true;
+    bool NestedDisabled;
+    bool check = true;
+    public  void changecheck()
+    {
+        if (check == true)
+            check = false;
+        else
+            check = true;
+    }
+    //End Add Buy Form
+
+}

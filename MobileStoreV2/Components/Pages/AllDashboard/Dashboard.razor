@@ -142,6 +142,7 @@
 {
     <p><em>Loading...</em></p>
 }else{
+
 <MudTable Items="@filteredProducts" 
     Hover="true" 
     Breakpoint="Breakpoint.Sm" 
@@ -149,13 +150,10 @@
     LoadingProgressColor="Color.Info"
     EditTrigger="@TableEditTrigger.EditButton"
     Striped="true"
-    
     >
     <ToolBarContent>
         <MudTextField T="string" Label="Search"  @bind-Value="searchString"  TextChanged="FilterProducts"  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-
     </ToolBarContent>
-        
     <HeaderContent>
         <MudTh>ID</MudTh>
         <MudTh>Name</MudTh>
@@ -188,8 +186,6 @@
         <MudTd><MudIconButton OnClick="@(()=> deleteData(context.Id))" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton></MudTd>
     </RowTemplate>
 </MudTable>
-
-
 }
 
 @code {
@@ -254,7 +250,9 @@
             }
             OpenDialogDone();
         }
+
     }
+
     // end code form
 
     //start modal
@@ -274,15 +272,11 @@
 
 
     //Start Filtring 
-
-
     private void FilterProducts()
     {  
         if (string.IsNullOrWhiteSpace(searchString))
         {
            filteredProducts = products;
-
-       
         }
         else
         {
@@ -290,12 +284,6 @@
             
         }
     }
-
         //End Filtring 
-        // start show products 
-  
-
-     
-        // End show products 
 
 }

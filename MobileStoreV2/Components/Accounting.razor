@@ -3,6 +3,7 @@
 @using MobileStoreV2.Components.Pages.ProductsCmpnt
 @using MobileStoreV2.Components.Pages
 @inject IDialogService DialogService
+@using MobileStoreV2.Components.Pages
 
 @* start navbar for calc *@
 @* <MudPaper Width="250px" Class="d-inline-flex py-3" Elevation="0">
@@ -28,7 +29,8 @@
 @* Start squr componet  *@
 <MudGrid >
     <MudItem xs="4">
-        <MudButton Variant="Variant.Filled" @onclick="OpenDialog" Class="d-flex align-center justify-center mud-width-full py-8 px-10"><h4>بيع منتج</h4></MudButton>
+        @* <MudButton Variant="Variant.Filled" @onclick="OpenDialog" Class="d-flex align-center justify-center mud-width-full py-8 px-10"><h4>بيع منتج</h4></MudButton> *@
+        <MudButton Variant="Variant.Filled" @onclick="OpenDialogAsync" Class="d-flex align-center justify-center mud-width-full py-8 px-10"><h4>بيع منتج</h4></MudButton>
     </MudItem>
     <MudItem xs="4">
         <MudButton Variant="Variant.Filled" Class="d-flex align-center justify-center mud-width-full py-8 px-10 "><h4>عرض منتجات</h4></MudButton>
@@ -56,9 +58,9 @@
     </MudItem>
 </MudGrid>
 @* End squr componet  *@
-
+@*
 <MudDialog @bind-IsVisible="showInnerComponent" OnBackdropClick="@HandleBackdropClick">
-    <TitleContent>
+ <TitleContent>
         <h1>إضافة منتج مدري عرض</h1>
     </TitleContent>
     <DialogContent>
@@ -70,7 +72,7 @@
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Cancel" Class="px-10">Close</MudButton>
 
     </DialogActions>
-</MudDialog>
+    </MudDialog>*@
 
 @code {
     [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
@@ -87,4 +89,11 @@
     private void OpenDialog() => showInnerComponent = true;
     private void Cancel() => showInnerComponent = false;
 
+
+    private Task OpenDialogAsync()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        return DialogService.ShowAsync<Buydialog>("Buy Dialog", options);
+    }
 }

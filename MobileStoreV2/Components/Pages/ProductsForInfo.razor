@@ -19,8 +19,10 @@
             <MudTd DataLabel="Price">context.Price</MudTd>
             <MudTd DataLabel="Category">context.Category</MudTd>
             <MudTd DataLabel="Actions">
-      @*           <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => EditProduct(context.Id))">Edit</MudButton>
-                <MudButton Variant="Variant.Outlined" Color="Color.Error" OnClick="@(() => DeleteProduct(context.Id))">Delete</MudButton> *@
+                @* <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => EditProduct(context.Id))">Edit</MudButton> *@
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" >Edit</MudButton>
+                <MudButton Variant="Variant.Outlined" Color="Color.Error"
+                >Delete</MudButton>
             </MudTd>
         </RowTemplate>
     </MudTable>
