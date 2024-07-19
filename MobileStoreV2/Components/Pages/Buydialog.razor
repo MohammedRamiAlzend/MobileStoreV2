@@ -1,5 +1,6 @@
 ﻿@using System.Text.RegularExpressions
 @using System.ComponentModel.DataAnnotations
+@using System.Threading
 
 
 
@@ -7,22 +8,33 @@
 
 
 
-
-<MudDialog>
+<MudDialog  Class="p-5">
     <TitleContent>
         <h1>شراء منتج</h1>
     </TitleContent>
     <DialogContent> 
         <MudStack Row>
             <MudCard>
-                <MudCardContent>
-                    <MudText Align="Align.Center" Class="mb-n4">ReadOnly Form</MudText>
-                    <MudForm ReadOnly="ReadOnly">
+                <MudCardContent >
+                
+                    <MudForm>
+                        <MudGrid>
+                            <MudItem xs="12" sm="21" md="12">
+                                <MudAutocomplete T="string" Label="US States" @bind-Value="value1" SearchFunc="@Search1"
+                                                 ResetValueOnEmptyText="@resetValueOnEmptyText"
+                                                 CoerceText="@coerceText" CoerceValue="@coerceValue" />
+                            </MudItem>
+                            <MudItem xs="12" md="12">
+                                <MudText Class="mb-n3" Typo="Typo.body2">
+                                    <MudChip T="string">@(value1 ?? "Not selected")</MudChip>
+                                </MudText>
+                            </MudItem>
+                        </MudGrid>
                         <MudTextField T="string" Label="Text" />
                         <MudNumericField T="int" Label="Number" />
-                        <MudDatePicker Label="Date" />
+                        <MudDatePicker Label="Editable with Placeholder" Editable="true" @bind-Date="_date" Placeholder="Select Date" />
                         <MudSwitch T="bool" Label="Switch" />
-                        <MudCheckBox T="bool" Label="CheckBox" Checked="@check"onclick="@changecheck" UnCheckedColor="Color.Primary" />
+                        <MudCheckBox T="bool" Label="CheckBox" UnCheckedColor="Color.Primary" />
                         <MudRadioGroup T="string">
                             <MudRadio Value="@("1")">1</MudRadio>
                             <MudRadio Value="@("2")">2</MudRadio>
@@ -61,10 +73,8 @@
     //start Dialog Show
     [CascadingParameter]
     private MudDialogInstance MudDialog { get; set; }
-
-
+    private DateTime? _date = DateTime.Today;
     private void Submit() => MudDialog.Close(DialogResult.Ok(true));
-
     private void Cancel() => MudDialog.Cancel();
     //End Dialog Show
 
@@ -73,14 +83,60 @@
     bool NestedReadOnly;
     bool Disabled = true;
     bool NestedDisabled;
-    bool check = true;
-    public  void changecheck()
-    {
-        if (check == true)
-            check = false;
-        else
-            check = true;
-    }
-    //End Add Buy Form
 
+    //End Add Buy Form
+    //start select list 
+    private bool resetValueOnEmptyText;
+    private bool coerceText;
+    private bool coerceValue;
+    private string value1, value2;
+    private string[] states =
+    {
+        "Alabama", "Alaska", "American Samoa", "Arizona",
+        "Arkansas", "California", "Colorado", "Connecticut",
+        "Delaware", "District of Columbia", "Federated States of Micronesia",
+        "Florida", "Georgia", "Guam", "Hawaii", "Idaho",
+        "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky",
+        "Louisiana", "Maine", "Marshall Islands", "Maryland",
+        "Massachusetts", "Michigan", "Minnesota", "Mississippi",
+        "Missouri", "Montana", "Nebraska", "Nevada",
+        "New Hampshire", "New Jersey", "New Mexico", "New York",
+        "North Carolina", "North Dakota", "Northern Mariana Islands", "Ohio",
+        "Oklahoma", "Oregon", "Palau", "Pennsylvania", "Puerto Rico",
+        "Rhode Island", "South Carolina", "South Dakota", "Tennessee",
+        "Texas", "Utah", "Vermont", "Virgin Island", "Virginia",
+        "Washington", "West Virginia", "Wisconsin", "Wyoming",
+    };
+    public async Task<IEnumerable<string>> search(string value, CancellationToken token)
+    {
+        // In real life use an asynchronous function for fetching data from an api.
+        await Task.Delay(5, token);
+
+        // if text is null or empty, show complete list
+        if (string.IsNullOrEmpty(value))
+            return states;
+        return states.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+    }
+    private async Task<IEnumerable<string>> Search1(string value)
+    {
+        // In real life use an asynchronous function for fetching data from an api.
+        await Task.Delay(5);
+
+        // if text is null or empty, show complete list
+        if (string.IsNullOrEmpty(value))
+            return states;
+        return states.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+    }
+
+    private async Task<IEnumerable<string>> Search2(string value)
+    {
+        // In real life use an asynchronous function for fetching data from an api.
+        await Task.Delay(5);
+
+        // if text is null or empty, don't return values (drop-down will not open)
+        if (string.IsNullOrEmpty(value))
+            return new string[0];
+        return states.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+    }
+    //End select list 
 }
