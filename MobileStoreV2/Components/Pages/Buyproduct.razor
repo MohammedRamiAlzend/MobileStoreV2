@@ -1,7 +1,28 @@
-﻿@page "/ProductsForInfo"
+﻿@page "/Buyproduct"
 @using MobileStoreV2.Models
-@* @inject HttpClient Http *@
 @using MudBlazor
+@using MobileStoreV2.Services.Interfaces
+@inject IProductService ProductService
+
+
+@inherits LayoutComponentBase
+@using MobileStoreV2.Components.Pages.ProductsCmpnt
+@using MobileStoreV2.Components.Pages
+@inject IDialogService DialogService
+
+<style>
+    .continer {
+        width: 100%;
+        position: relative;
+        display: flex;
+        justify-content: end;
+        align-items: center;
+    }
+</style>
+
+    <MudContainer Class="my-4 continer">
+        <MudButton Variant="Variant.Filled" @onclick="OpenDialogAsync" Color="Color.Info" StartIcon="@Icons.Material.Filled.Add">إضافة منتج للبيع</MudButton>
+    </MudContainer>
 
 <MudContainer>
     <MudTable Items="products" Striped="true" Hover="true">
@@ -26,9 +47,17 @@
             </MudTd>
         </RowTemplate>
     </MudTable>
+    <MudContainer Class="my-4 continer">
+        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Save" Color="Color.Primary"  Size="Size.Small">حفظ الفاتورة</MudButton>
+    </MudContainer>
 </MudContainer>
 
 @code {
+
+    //start product list 
+    public IEnumerable<Product> ProductsList = new List<Product>();
+    
+    //End product list 
     // private List  products;
     private List<string> products;
 
@@ -47,12 +76,15 @@
    
     private string searchString = "";
 
+
     protected override async Task OnInitializedAsync()
     {
-        // products = await Http.GetFromJsonAsync<List<Product>>("api/products");
-        // filteredProducts = products;
+        // var request = await ProductService.GetAllProductsAsync();
+        // if (request.Success)
+        // {
+        //     ProductsList = request.Data!;
+        // } 
     }
-
     private void EditProduct(int id)
     {
         // Navigate to edit product page
@@ -70,6 +102,13 @@
         // {
         //     // Handle error
         // }
+    }
+
+    private Task OpenDialogAsync()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        return DialogService.ShowAsync<Buydialog>("Buy Dialog", options);
     }
 
 
