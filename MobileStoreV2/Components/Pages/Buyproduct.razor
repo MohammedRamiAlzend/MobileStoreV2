@@ -10,6 +10,13 @@
 @using MobileStoreV2.Components.Pages
 @inject IDialogService DialogService
 
+@using System.Text.RegularExpressions
+@using System.ComponentModel.DataAnnotations
+@using System.Threading
+
+
+
+
 <style>
     .continer {
         width: 100%;
@@ -21,7 +28,7 @@
 </style>
 
     <MudContainer Class="my-4 continer">
-        <MudButton Variant="Variant.Filled" @onclick="OpenDialogAsync" Color="Color.Info" StartIcon="@Icons.Material.Filled.Add">إضافة منتج للبيع</MudButton>
+        <MudButton Variant="Variant.Filled" @onclick="OpenDialogAsync" Color="Color.Info" StartIcon="@Icons.Material.Filled.Add">إضافة منتج للشراء</MudButton>
     </MudContainer>
 
 <MudContainer>
@@ -42,7 +49,7 @@
             <MudTd DataLabel="Actions">
                 @* <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => EditProduct(context.Id))">Edit</MudButton> *@
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" >Edit</MudButton>
-                <MudButton Variant="Variant.Outlined" Color="Color.Error"
+                <MudButton Variant="Variant.Outlined" OnClick="Delete" Color="Color.Error"
                 >Delete</MudButton>
             </MudTd>
         </RowTemplate>
@@ -52,38 +59,83 @@
     </MudContainer>
 </MudContainer>
 
+@* start show dialog  *@
+
+
+<MudDialog Class="p-5" @bind-IsVisible="showInnerComponent">
+    <TitleContent>
+        <h1>شراء منتج</h1>
+    </TitleContent>
+    <DialogContent>
+        <MudStack Row>
+            <MudCard>
+                <MudCardContent>
+
+                    <MudForm>
+                        <MudGrid>
+                            <MudItem xs="12" sm="21" md="12">
+                                <MudAutocomplete T="string" Label="US States" @bind-Value="value1" SearchFunc="@Search1"
+                                                 ResetValueOnEmptyText="@resetValueOnEmptyText"
+                                                 CoerceText="@coerceText" CoerceValue="@coerceValue" />
+                            </MudItem>
+                            <MudItem xs="12" md="12">
+                                <MudText Class="mb-n3" Typo="Typo.body2">
+                                    <MudChip T="string">@(value1 ?? "Not selected")</MudChip>
+                                </MudText>
+                            </MudItem>
+                        </MudGrid>
+                        <MudTextField T="string" Label="نوع المنتج" />
+                        <MudNumericField T="int" Label="عدد المنتجات" />
+
+                        <MudNumericField T="int" Label="الباركود " />
+                        <MudDatePicker Label="Editable with Placeholder" Editable="true" @bind-Date="_date" Placeholder="Select Date" />
+                        <MudSwitch T="bool" Label="Switch" />
+                        <MudCheckBox T="bool" Label="CheckBox" UnCheckedColor="Color.Primary" />
+                        <MudRadioGroup T="string">
+                            <MudRadio Value="@("1")">مستعمل</MudRadio>
+                            <MudRadio Value="@("2")">جديد</MudRadio>
+                        </MudRadioGroup>
+                        <MudForm ReadOnly="NestedReadOnly">
+                            <MudText Align="Align.Center" Class="mb-n4 mt-2">Nested Form</MudText>
+                            <MudTextField T="string" Label="Nested Text" />
+                            <MudNumericField T="int" Label="Nested Number" />
+                        </MudForm>
+                    </MudForm>
+                </MudCardContent>
+        
+            </MudCard>
+        </MudStack>
+    </DialogContent>
+
+
+
+    <DialogActions>
+        <MudButton OnClick="Cancel">إغلاق</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit" StartIcon="@Icons.Material.Filled.Add">إضافة</MudButton>
+
+
+
+    </DialogActions>
+</MudDialog>
+@* End show dialog  *@
 @code {
 
     //start product list 
     public IEnumerable<Product> ProductsList = new List<Product>();
-    
+
     //End product list 
     // private List  products;
     private List<string> products;
 
-      protected override void OnInitialized()
-    {
-        products = new List<string>
-        {
-            "Product 1",
-            "Product 2",
-            "Product 3",
-            "Product 4",
-            "Product 5"
-        };
-    }
+    protected override void OnInitialized() => products = new List<string> { };
 
-   
+
     private string searchString = "";
 
 
     protected override async Task OnInitializedAsync()
     {
-        // var request = await ProductService.GetAllProductsAsync();
-        // if (request.Success)
-        // {
-        //     ProductsList = request.Data!;
-        // } 
+   
     }
     private void EditProduct(int id)
     {
@@ -104,12 +156,70 @@
         // }
     }
 
-    private Task OpenDialogAsync()
-    {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
 
-        return DialogService.ShowAsync<Buydialog>("Buy Dialog", options);
+    private bool showInnerComponent = false;
+
+    private void OpenDialogAsync() => showInnerComponent = true;
+    private void Cancel() => showInnerComponent = false;
+
+
+    //start Dialog Show
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; }
+    private DateTime? _date = DateTime.Today;
+    private void Submit() => products.Add("product 1");
+    private void Delete() => products.Remove("product 1");
+    // private void Cancel() => MudDialog.Cancel();
+    //End Dialog Show
+
+    //Start Add Buy Form
+    bool ReadOnly = true;
+    bool NestedReadOnly;
+    bool Disabled = true;
+    bool NestedDisabled;
+
+    //End Add Buy Form
+    //start select list 
+    private bool resetValueOnEmptyText;
+    private bool coerceText;
+    private bool coerceValue;
+    private string value1, value2;
+    public IEnumerable<Product> ProductsList2;
+
+    private string[] states = 
+    {
+        "Alabama", "Alaska", "American Samoa", "Arizona",
+        "Arkansas", "California", "Colorado", "Connecticut",
+        "Delaware", "District of Columbia", "Federated States of Micronesia",
+        "Florida", "Georgia", "Guam", "Hawaii", "Idaho",
+        "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky",
+        "Louisiana", "Maine", "Marshall Islands", "Maryland",
+        "Massachusetts", "Michigan", "Minnesota", "Mississippi",
+        "Missouri", "Montana", "Nebraska", "Nevada",
+        "New Hampshire", "New Jersey", "New Mexico", "New York",
+        "North Carolina", "North Dakota", "Northern Mariana Islands", "Ohio",
+        "Oklahoma", "Oregon", "Palau", "Pennsylvania", "Puerto Rico",
+        "Rhode Island", "South Carolina", "South Dakota", "Tennessee",
+        "Texas", "Utah", "Vermont", "Virgin Island", "Virginia",
+        "Washington", "West Virginia", "Wisconsin", "Wyoming",
+    };
+
+
+
+    private async Task<IEnumerable<string>> Search1(string value)
+    {
+        // In real life use an asynchronous function for fetching data from an api.
+        await Task.Delay(5);
+
+        // if text is null or empty, show complete list
+        if (string.IsNullOrEmpty(value))
+            return states;
+        return states.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+        
     }
+
+  
+    //End select list 
 
 
 }

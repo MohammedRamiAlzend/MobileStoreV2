@@ -75,6 +75,7 @@
                              @bind-Value="createProduct.Price" For="@(() => createProduct.Price)" InputType="InputType.Number"/>
                <MudTextField Label="Quantity" HelperText="Repeat the Brand" Class="mt-3"
                              @bind-Value="createProduct.Quantity" For="@(() => createProduct.Quantity)" InputType="InputType.Number"/>
+                            
             </MudCardContent>
             <MudCardActions Class="d-xl-inline-flex" Style="display:flex;justify-content:end">
                 <MudButton OnClick="Cancel" Variant="Variant.Filled"  Style="margin-right:15px" >Cancel</MudButton>
@@ -210,6 +211,7 @@
     {
         success = true;
         var product = createProduct;
+
         var request =  await ProductService.DeleteProductAsync(2);
         if (request.Success)
         {
@@ -236,11 +238,15 @@
         else
         {
             success = true;
+
+            createProduct.InsertDate = DateTime.Now;
             var product = createProduct;
             var request =  await ProductService.CreateProductAsync( product);
             if (request.Success)
             {
+        
                 products.Append(product);
+                
                 StateHasChanged();
             }
             else

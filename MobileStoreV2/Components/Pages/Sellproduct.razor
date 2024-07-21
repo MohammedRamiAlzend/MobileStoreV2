@@ -1,29 +1,75 @@
-﻿@using System.Text.RegularExpressions
-@using System.ComponentModel.DataAnnotations
-@using System.Threading
+﻿@page "/Sellproduct"
+@using MobileStoreV2.Models
+@using MudBlazor
 @using MobileStoreV2.Services.Interfaces
 @inject IProductService ProductService
 
-@using MobileStoreV2.Models
-@using MudBlazor
+
 @inherits LayoutComponentBase
 @using MobileStoreV2.Components.Pages.ProductsCmpnt
 @using MobileStoreV2.Components.Pages
 @inject IDialogService DialogService
 
+@using System.Text.RegularExpressions
+@using System.ComponentModel.DataAnnotations
+@using System.Threading
 
 
 
 
-<MudDialog  Class="p-5 ">
-    <TitleContent >
+<style>
+    .continer {
+        width: 100%;
+        position: relative;
+        display: flex;
+        justify-content: end;
+        align-items: center;
+    }
+</style>
+
+<MudContainer Class="my-4 continer">
+    <MudButton Variant="Variant.Filled" @onclick="OpenDialogAsync" Color="Color.Info" StartIcon="@Icons.Material.Filled.Add">إضافة منتج للبيع</MudButton>
+</MudContainer>
+
+<MudContainer>
+    <MudTable Items="products" Striped="true" Hover="true">
+        <ToolBarContent>
+            <MudTextField T="string" Label="Search" @bind-Value="searchString" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Product Name</MudTh>
+            <MudTh>Price</MudTh>
+            <MudTh>Category</MudTh>
+            <MudTh>Actions</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Product Name">context.Name</MudTd>
+            <MudTd DataLabel="Price">context.Price</MudTd>
+            <MudTd DataLabel="Category">context.Category</MudTd>
+            <MudTd DataLabel="Actions">
+                @* <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => EditProduct(context.Id))">Edit</MudButton> *@
+                <MudButton Variant="Variant.Filled" Color="Color.Primary">Edit</MudButton>
+                <MudButton Variant="Variant.Outlined" OnClick="Delete" Color="Color.Error">Delete</MudButton>
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+    <MudContainer Class="my-4 continer">
+        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Save" Color="Color.Primary" Size="Size.Small">حفظ الفاتورة</MudButton>
+    </MudContainer>
+</MudContainer>
+
+@* start show dialog  *@
+
+
+<MudDialog Class="p-5" @bind-IsVisible="showInnerComponent">
+    <TitleContent>
         <h1>شراء منتج</h1>
     </TitleContent>
-    <DialogContent> 
+    <DialogContent>
         <MudStack Row>
             <MudCard>
-                <MudCardContent >
-                
+                <MudCardContent>
+
                     <MudForm>
                         <MudGrid>
                             <MudItem xs="12" sm="21" md="12">
@@ -39,13 +85,13 @@
                         </MudGrid>
                         <MudTextField T="string" Label="نوع المنتج" />
                         <MudNumericField T="int" Label="عدد المنتجات" />
-          
+
                         <MudNumericField T="int" Label="الباركود " />
-                        <MudDatePicker Label="Editable with Placeholder"  Editable="true" @bind-Date="_date" Placeholder="Select Date" />
+                        <MudDatePicker Label="Editable with Placeholder" Editable="true" @bind-Date="_date" Placeholder="Select Date" />
                         <MudSwitch T="bool" Label="Switch" />
                         <MudCheckBox T="bool" Label="CheckBox" UnCheckedColor="Color.Primary" />
-                        <MudRadioGroup T="string" >
-                            <MudRadio Value="@("1")" >مستعمل</MudRadio>
+                        <MudRadioGroup T="string">
+                            <MudRadio Value="@("1")">مستعمل</MudRadio>
                             <MudRadio Value="@("2")">جديد</MudRadio>
                         </MudRadioGroup>
                         <MudForm ReadOnly="NestedReadOnly">
@@ -55,36 +101,74 @@
                         </MudForm>
                     </MudForm>
                 </MudCardContent>
-             @*    <MudCardActions>
-                    <MudCheckBox @bind-Value="ReadOnly">ReadOnly</MudCheckBox>
-                    <MudCheckBox @bind-Value="NestedReadOnly">Nested ReadOnly</MudCheckBox>
-                </MudCardActions> *@
+
             </MudCard>
         </MudStack>
     </DialogContent>
 
-   
-     
+
+
     <DialogActions>
         <MudButton OnClick="Cancel">إغلاق</MudButton>
         <MudButton Color="Color.Primary" OnClick="Submit" StartIcon="@Icons.Material.Filled.Add">إضافة</MudButton>
-     
 
-      
+
+
     </DialogActions>
 </MudDialog>
-
-
-
+@* End show dialog  *@
 @code {
+
+    //start product list
+    public IEnumerable<Product> ProductsList = new List<Product>();
+
+    //End product list
+    // private List  products;
+    private List<string> products;
+
+    protected override void OnInitialized() => products = new List<string> { };
+
+
+    private string searchString = "";
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+    private void EditProduct(int id)
+    {
+        // Navigate to edit product page
+        // NavigationManager.NavigateTo($"/Component1/edit/{id}");
+    }
+
+    private async Task DeleteProduct(int id)
+    {
+        // var response = await Http.DeleteAsync($"api/Component1/{id}");
+        // if (response.IsSuccessStatusCode)
+        // {
+        //     products = await Http.GetFromJsonAsync<List<Product>>("api/Component1");
+        // }
+        // else
+        // {
+        //     // Handle error
+        // }
+    }
+
+
+    private bool showInnerComponent = false;
+
+    private void OpenDialogAsync() => showInnerComponent = true;
+    private void Cancel() => showInnerComponent = false;
 
 
     //start Dialog Show
     [CascadingParameter]
     private MudDialogInstance MudDialog { get; set; }
     private DateTime? _date = DateTime.Today;
-    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
-    private void Cancel() => MudDialog.Cancel();
+    private void Submit() => products.Add("product 1");
+    private void Delete() => products.Remove("product 1");
+    // private void Cancel() => MudDialog.Cancel();
     //End Dialog Show
 
     //Start Add Buy Form
@@ -94,15 +178,14 @@
     bool NestedDisabled;
 
     //End Add Buy Form
-    //start select list 
+    //start select list
     private bool resetValueOnEmptyText;
     private bool coerceText;
     private bool coerceValue;
     private string value1, value2;
-    public IEnumerable<Product> ProductsList = new List<Product>();
     public IEnumerable<Product> ProductsList2;
 
-    private string[] states = 
+    private string[] states =
     {
         "Alabama", "Alaska", "American Samoa", "Arizona",
         "Arkansas", "California", "Colorado", "Connecticut",
@@ -120,15 +203,7 @@
         "Washington", "West Virginia", "Wisconsin", "Wyoming",
     };
 
-    protected override async Task OnInitializedAsync()
-    {
-        var request = await ProductService.GetAllProductsAsync();
-        if (request.Success)
-        {
-            ProductsList = request.Data!;
-            
-        }
-    }
+
 
     private async Task<IEnumerable<string>> Search1(string value)
     {
@@ -139,9 +214,11 @@
         if (string.IsNullOrEmpty(value))
             return states;
         return states.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
-        
+
     }
 
-  
-    //End select list 
+
+    //End select list
+
+
 }
