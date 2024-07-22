@@ -167,6 +167,7 @@
         <MudTh>BarCode</MudTh>
         <MudTh>BrandId</MudTh>
         <MudTh>CategoryId</MudTh>
+        <MudTh>Delete</MudTh>
         <MudTh>ImagePath</MudTh>
         <MudTh>InsertDate</MudTh>
     </HeaderContent>
@@ -182,9 +183,10 @@
         <MudTd DataLabel="Molar mass">@context.BarCode</MudTd>
         <MudTd DataLabel="Molar mass">@context.BrandId</MudTd>
         <MudTd DataLabel="Molar mass">@context.CategoryId</MudTd>
+        <MudTd><MudIconButton OnClick="@(()=> deleteData(context.Id))" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton></MudTd>
+
         <MudTd DataLabel="Molar mass">@context.ImagePath</MudTd>
         <MudTd DataLabel="Molar mass">@context.InsertDate</MudTd>
-        <MudTd><MudIconButton OnClick="@(()=> deleteData(context.Id))" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton></MudTd>
     </RowTemplate>
 </MudTable>
 }
@@ -211,16 +213,21 @@
     {
         success = true;
         var product = createProduct;
-
-        var request =  await ProductService.DeleteProductAsync(2);
+        var requestRefresh = await ProductService.GetAllProductsAsync();
+        var request = await ProductService.DeleteProductAsync(id);
         if (request.Success)
         {
             products.Append(product);
+            products = requestRefresh.Data!;
+            filteredProducts = products;
             StateHasChanged();
+            Snackbar.Add("Remove Done", Severity.Success);
+
         }
         else
         {
-            Console.WriteLine(request.Message);
+            Snackbar.Add(request.Message, Severity.Error);
+            
         }
     }
     // start code form
@@ -238,26 +245,29 @@
         else
         {
             success = true;
-
             createProduct.InsertDate = DateTime.Now;
             var product = createProduct;
             var request =  await ProductService.CreateProductAsync( product);
+            var requestRefresh = await ProductService.GetAllProductsAsync();
+
             if (request.Success)
             {
-        
+
                 products.Append(product);
-                
+                products = requestRefresh.Data!;
+                filteredProducts = products;
                 StateHasChanged();
             }
             else
             {
-                Console.WriteLine(request.Message);
+                Snackbar.Add(request.Message, Severity.Error);
 
             }
             OpenDialogDone();
         }
 
     }
+  
 
     // end code form
 
