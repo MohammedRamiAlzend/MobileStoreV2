@@ -147,71 +147,51 @@
 else
 {
 
-    <MudTable Items="@filteredProducts"
-              Hover="true"
-              Breakpoint="Breakpoint.Sm"
-              Loading="@_loading"
-              LoadingProgressColor="Color.Info"
-              EditTrigger="@TableEditTrigger.EditButton"
-              Striped="true">
-        <ToolBarContent>
-            <MudTextField T="string" Label="Search" @bind-Value="searchString" TextChanged="FilterProducts" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-        </ToolBarContent>
-        <HeaderContent>
-            <MudTh>ID</MudTh>
-            <MudTh>Name</MudTh>
-            <MudTh>Discount</MudTh>
-            <MudTh>Description</MudTh>
-            <MudTh>Quantity</MudTh>
-            <MudTh>Price </MudTh>
-            <MudTh>Brand</MudTh>
-            <MudTh>Category</MudTh>
-            <MudTh>BarCode</MudTh>
-            <MudTh>BrandId</MudTh>
-            <MudTh>CategoryId</MudTh>
-            <MudTh>ImagePath</MudTh>
-            <MudTh>InsertDate</MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            @if (context.IsDeleted)
-            {
-                <MudTd Style="background:red;color:white;" DataLabel="Nr">@context.Id</MudTd>
-                <MudTd Style="background:red;color:white;" DataLabel="Nr">@context.Name</MudTd>
-                <MudTd Style="background:red;color:white;" DataLabel="Sign">@context.Discount</MudTd>
-                <MudTd Style="background:red;color:white;" DataLabel="Name">@context.Description</MudTd>
-                <MudTd Style="background:red;color:white;" DataLabel="Position" HideSmall="_hidePosition">@context.Quantity</MudTd>
-                <MudTd Style="background:red;color:white;" DataLabel="Molar mass">@context.Price</MudTd>
-                <MudTd Style="background:red;color:white;" DataLabel="Molar mass">@context.Brand?.Name</MudTd>
-                <MudTd Style="background:red;color:white;" DataLabel="Molar mass">@context.Category?.Name</MudTd>
-                <MudTd Style="background:red;color:white;" DataLabel="Molar mass">@context.BarCode</MudTd>
-                <MudTd Style="background:red;color:white;" DataLabel="Molar mass">@context.BrandId</MudTd>
-                <MudTd Style="background:red;color:white;" DataLabel="Molar mass">@context.CategoryId</MudTd>
-                <MudTd Style="background:red;color:white;" DataLabel="Molar mass">@context.ImagePath</MudTd>
-                <MudTd Style="background:red;color:white;" DataLabel="Molar mass">@context.InsertDate</MudTd>
-                <MudTd Style="background:red;color:white;"><MudIconButton OnClick="@(()=> deleteData(context.Id))" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton></MudTd>
+<MudTable Items="@filteredProducts" 
+    Hover="true" 
+    Breakpoint="Breakpoint.Sm" 
+    Loading="@_loading" 
+    LoadingProgressColor="Color.Info"
+    EditTrigger="@TableEditTrigger.EditButton"
+    Striped="true"
+    >
+    <ToolBarContent>
+        <MudTextField T="string" Label="Search"  @bind-Value="searchString"  TextChanged="FilterProducts"  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>ID</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>Discount</MudTh>
+        <MudTh>Description</MudTh>
+        <MudTh>Quantity</MudTh>
+        <MudTh>Price </MudTh>
+        <MudTh>Brand</MudTh>
+        <MudTh>Category</MudTh>
+        <MudTh>BarCode</MudTh>
+        <MudTh>BrandId</MudTh>
+        <MudTh>CategoryId</MudTh>
+        <MudTh>Delete</MudTh>
+        <MudTh>ImagePath</MudTh>
+        <MudTh>InsertDate</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Nr">@context.Id</MudTd>
+        <MudTd DataLabel="Nr">@context.Name</MudTd>
+        <MudTd DataLabel="Sign">@context.Discount</MudTd>
+        <MudTd DataLabel="Name">@context.Description</MudTd>
+        <MudTd DataLabel="Position" HideSmall="_hidePosition">@context.Quantity</MudTd>
+        <MudTd DataLabel="Molar mass">@context.Price</MudTd>
+        <MudTd DataLabel="Molar mass">@context.Brand?.Name</MudTd>
+        <MudTd DataLabel="Molar mass">@context.Category?.Name</MudTd>
+        <MudTd DataLabel="Molar mass">@context.BarCode</MudTd>
+        <MudTd DataLabel="Molar mass">@context.BrandId</MudTd>
+        <MudTd DataLabel="Molar mass">@context.CategoryId</MudTd>
+        <MudTd><MudIconButton OnClick="@(()=> deleteData(context.Id))" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton></MudTd>
 
-            }
-            else
-            {
-
-                <MudTd DataLabel="Nr">@context.Id</MudTd>
-                <MudTd DataLabel="Nr">@context.Name</MudTd>
-                <MudTd DataLabel="Sign">@context.Discount</MudTd>
-                <MudTd DataLabel="Name">@context.Description</MudTd>
-                <MudTd DataLabel="Position" HideSmall="_hidePosition">@context.Quantity</MudTd>
-                <MudTd DataLabel="Molar mass">@context.Price</MudTd>
-                <MudTd DataLabel="Molar mass">@context.Brand?.Name</MudTd>
-                <MudTd DataLabel="Molar mass">@context.Category?.Name</MudTd>
-                <MudTd DataLabel="Molar mass">@context.BarCode</MudTd>
-                <MudTd DataLabel="Molar mass">@context.BrandId</MudTd>
-                <MudTd DataLabel="Molar mass">@context.CategoryId</MudTd>
-                <MudTd DataLabel="Molar mass">@context.ImagePath</MudTd>
-                <MudTd DataLabel="Molar mass">@context.InsertDate</MudTd>
-                <MudTd><MudIconButton OnClick="@(()=> deleteData(context.Id))" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton></MudTd>
-            }
-
-        </RowTemplate>
-    </MudTable>
+        <MudTd DataLabel="Molar mass">@context.ImagePath</MudTd>
+        <MudTd DataLabel="Molar mass">@context.InsertDate</MudTd>
+    </RowTemplate>
+</MudTable>
 }
 
 @code {
@@ -235,17 +215,22 @@ else
     private async Task deleteData(int id)
     {
         success = true;
-        // var product = createProduct;
-
+        var product = createProduct;
+        var requestRefresh = await ProductService.GetAllProductsAsync();
         var request = await ProductService.DeleteProductAsync(id);
         if (request.Success)
         {
-            // products.Append(product);
+            products.Append(product);
+            products = requestRefresh.Data!;
+            filteredProducts = products;
             StateHasChanged();
+            Snackbar.Add("Remove Done", Severity.Success);
+
         }
         else
         {
-            Console.WriteLine(request.Message);
+            Snackbar.Add(request.Message, Severity.Error);
+            
         }
     }
     // start code form
@@ -263,26 +248,29 @@ else
         else
         {
             success = true;
-
             createProduct.InsertDate = DateTime.Now;
             var product = createProduct;
-            var request = await ProductService.CreateProductAsync(product);
+            var request =  await ProductService.CreateProductAsync( product);
+            var requestRefresh = await ProductService.GetAllProductsAsync();
+
             if (request.Success)
             {
 
                 products.Append(product);
-
+                products = requestRefresh.Data!;
+                filteredProducts = products;
                 StateHasChanged();
             }
             else
             {
-                Console.WriteLine(request.Message);
+                Snackbar.Add(request.Message, Severity.Error);
 
             }
             OpenDialogDone();
         }
 
     }
+  
 
     // end code form
 
