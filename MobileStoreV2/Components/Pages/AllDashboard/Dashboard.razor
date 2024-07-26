@@ -13,31 +13,32 @@
 
 
 <style>
-    .continer{
-        width:100%;
+    .continer {
+        width: 100%;
         padding: 18px 0;
-        position: relative; 
-        display:flex;       
-        justify-content:end;
-        align-items:center;
+        position: relative;
+        display: flex;
+        justify-content: end;
+        align-items: center;
     }
 
-}
+    }
 </style>
 
 
 <h3>Dashboard</h3>
 
-@if(checkempty == true){
+@if (checkempty == true)
+{
     Snackbar.Add("You Should for fill input ", Severity.Warning);
     checkempty = false;
 }
 <div class="continer">
 
-<MudButton @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary" Style="">إضافة منتجات  </MudButton>
+    <MudButton @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary" Style="">إضافة منتجات  </MudButton>
 </div>
 
-    
+
 
 
 @* start add product form *@
@@ -47,146 +48,170 @@
         Add Product
     </TitleContent>
     <DialogContent>
-<EditForm Model="@createProduct" OnValidSubmit="OnValidSubmit">
-<DataAnnotationsValidator/>
-<MudGrid>
-    <MudItem xs="12" sm="12"  >
-        <MudCard >
-           
-            <MudCardContent>
-                <MudTextField Label="Name" HelperText="Max. 8 characters"
-                              @bind-Value="createProduct.Name" For="@(() => createProduct.Name)"  InputType="InputType.Text"/>
-                <MudTextField Label="BarCode" Class="mt-3"
-                              @bind-Value="createProduct.BarCode" For="@(() => createProduct.BarCode)" InputType="InputType.Number"/>
+        <EditForm Model="@createProduct" OnValidSubmit="OnValidSubmit">
+            <DataAnnotationsValidator />
+            <MudGrid>
+                <MudItem xs="12" sm="12">
+                    <MudCard>
 
-                <MudTextField Label="BrandId" HelperText="Repeat the Brand" Class="mt-3"
-                              @bind-Value="createProduct.BrandId" For="@(() => createProduct.BrandId)" InputType="InputType.Number"/>
+                        <MudCardContent>
+                            <MudTextField Label="Name" HelperText="Max. 8 characters"
+                                          @bind-Value="createProduct.Name" For="@(() => createProduct.Name)" InputType="InputType.Text" />
+                            <MudTextField Label="BarCode" Class="mt-3"
+                                          @bind-Value="createProduct.BarCode" For="@(() => createProduct.BarCode)" InputType="InputType.Number" />
 
-                <MudTextField Label="CategoryId" HelperText="Repeat the Brand" Class="mt-3"
-                              @bind-Value="createProduct.CategoryId" For="@(() => createProduct.CategoryId)" InputType="InputType.Number"/>
-               <MudTextField Label="Description" HelperText="Repeat the Brand" Class="mt-3"
-                              @bind-Value="createProduct.Description" For="@(() => createProduct.Description)" InputType="InputType.Text"/>
-               <MudTextField Label="Discount" HelperText="Repeat the Brand" Class="mt-3"
-                             @bind-Value="createProduct.Discount" For="@(() => createProduct.Discount)" InputType="InputType.Number"/>
-               <MudTextField Label="ImagePath" HelperText="Repeat the Brand" Class="mt-3"
-                             @bind-Value="createProduct.ImagePath" For="@(() => createProduct.ImagePath)" InputType="InputType.Text"/>
+                            <MudTextField Label="BrandId" HelperText="Repeat the Brand" Class="mt-3"
+                                          @bind-Value="createProduct.BrandId" For="@(() => createProduct.BrandId)" InputType="InputType.Number" />
 
-               <MudTextField Label="Price" HelperText="Repeat the Brand" Class="mt-3"
-                             @bind-Value="createProduct.Price" For="@(() => createProduct.Price)" InputType="InputType.Number"/>
-               <MudTextField Label="Quantity" HelperText="Repeat the Brand" Class="mt-3"
-                             @bind-Value="createProduct.Quantity" For="@(() => createProduct.Quantity)" InputType="InputType.Number"/>
-                            
-            </MudCardContent>
-            <MudCardActions Class="d-xl-inline-flex" Style="display:flex;justify-content:end">
-                <MudButton OnClick="Cancel" Variant="Variant.Filled"  Style="margin-right:15px" >Cancel</MudButton>
-                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" >Add</MudButton>
-            </MudCardActions>
-        </MudCard>
-    </MudItem>
-    @* start Validation Summary *@
+                            <MudTextField Label="CategoryId" HelperText="Repeat the Brand" Class="mt-3"
+                                          @bind-Value="createProduct.CategoryId" For="@(() => createProduct.CategoryId)" InputType="InputType.Number" />
+                            <MudTextField Label="Description" HelperText="Repeat the Brand" Class="mt-3"
+                                          @bind-Value="createProduct.Description" For="@(() => createProduct.Description)" InputType="InputType.Text" />
+                            <MudTextField Label="Discount" HelperText="Repeat the Brand" Class="mt-3"
+                                          @bind-Value="createProduct.Discount" For="@(() => createProduct.Discount)" InputType="InputType.Number" />
+                            <MudTextField Label="ImagePath" HelperText="Repeat the Brand" Class="mt-3"
+                                          @bind-Value="createProduct.ImagePath" For="@(() => createProduct.ImagePath)" InputType="InputType.Text" />
 
-    <MudDialog @bind-IsVisible="showInnerComponentDone">
-            
-             <TitleContent>
+                            <MudTextField Label="Price" HelperText="Repeat the Brand" Class="mt-3"
+                                          @bind-Value="createProduct.Price" For="@(() => createProduct.Price)" InputType="InputType.Number" />
+                            <MudTextField Label="Quantity" HelperText="Repeat the Brand" Class="mt-3"
+                                          @bind-Value="createProduct.Quantity" For="@(() => createProduct.Quantity)" InputType="InputType.Number" />
+
+                        </MudCardContent>
+                        <MudCardActions Class="d-xl-inline-flex" Style="display:flex;justify-content:end">
+                            <MudButton OnClick="Cancel" Variant="Variant.Filled" Style="margin-right:15px">Cancel</MudButton>
+                            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Add</MudButton>
+                        </MudCardActions>
+                    </MudCard>
+                </MudItem>
+                @* start Validation Summary *@
+
+                <MudDialog @bind-IsVisible="showInnerComponentDone">
+
+                    <TitleContent>
                         <MudText Typo="Typo.h6">
-                              <MudIcon Typo="Typo.subtitle2"   Class="mr-3" /> Validation Summary;
+                            <MudIcon Typo="Typo.subtitle2" Class="mr-3" /> Validation Summary;
                         </MudText>
 
                     </TitleContent>
-        <DialogContent>
-            <MudItem>
-                <MudPaper Class="pa-4 ">
-              
-                        @if (success)
-                        {
-                            createProduct.Name = "";
-                            createProduct.BarCode = 0 ;
-                            createProduct.BrandId =0;
-                            createProduct.CategoryId = 0;
-                            createProduct.Description = "";
-                            createProduct.Discount = 0;
-                            createProduct.ImagePath = "";
-                            createProduct.Price = 0;
-                            createProduct.Quantity = 0;
-                            <MudAlert Severity="Severity.Success">Add Done Successfully </MudAlert> 
-                        }
-                        else
-                        {
-                            <MudText  Color="@Color.Error">
+                    <DialogContent>
+                        <MudItem>
+                            <MudPaper Class="pa-4 ">
 
-                                <ValidationSummary />
-                            </MudText>
-                        }
-                   
-                </MudPaper>
-            </MudItem>
-        </DialogContent>
-         <DialogActions>
-              <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="CancelDone" Class="px-10">Close</MudButton>
-         </DialogActions>
-         
-     </MudDialog>
-    @* End Validation Summary *@
-    <MudItem xs="12">
-        <MudText Typo="Typo.body2" Align="Align.Center">
-            add product for your collcation 
-        </MudText>
-    </MudItem>
-</MudGrid>
-</EditForm>
+                                @if (success)
+                                {
+                                    createProduct.Name = "";
+                                    createProduct.BarCode = 0;
+                                    createProduct.BrandId = 0;
+                                    createProduct.CategoryId = 0;
+                                    createProduct.Description = "";
+                                    createProduct.Discount = 0;
+                                    createProduct.ImagePath = "";
+                                    createProduct.Price = 0;
+                                    createProduct.Quantity = 0;
+                                    <MudAlert Severity="Severity.Success">Add Done Successfully </MudAlert>
+                                }
+                                else
+                                {
+                                    <MudText Color="@Color.Error">
+
+                                        <ValidationSummary />
+                                    </MudText>
+                                }
+
+                            </MudPaper>
+                        </MudItem>
+                    </DialogContent>
+                    <DialogActions>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="CancelDone" Class="px-10">Close</MudButton>
+                    </DialogActions>
+
+                </MudDialog>
+                @* End Validation Summary *@
+                <MudItem xs="12">
+                    <MudText Typo="Typo.body2" Align="Align.Center">
+                        add product for your collcation
+                    </MudText>
+                </MudItem>
+            </MudGrid>
+        </EditForm>
     </DialogContent>
 
 </MudDialog>
 
 @* End add product form *@
-    @if (filteredProducts == null)
+@if (filteredProducts == null)
 {
     <p><em>Loading...</em></p>
-}else{
+}
+else
+{
 
-<MudTable Items="@filteredProducts" 
-    Hover="true" 
-    Breakpoint="Breakpoint.Sm" 
-    Loading="@_loading" 
-    LoadingProgressColor="Color.Info"
-    EditTrigger="@TableEditTrigger.EditButton"
-    Striped="true"
-    >
-    <ToolBarContent>
-        <MudTextField T="string" Label="Search"  @bind-Value="searchString"  TextChanged="FilterProducts"  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-    </ToolBarContent>
-    <HeaderContent>
-        <MudTh>ID</MudTh>
-        <MudTh>Name</MudTh>
-        <MudTh>Discount</MudTh>
-        <MudTh>Description</MudTh>
-        <MudTh>Quantity</MudTh>
-        <MudTh>Price </MudTh>
-        <MudTh>Brand</MudTh>
-        <MudTh>Category</MudTh>
-        <MudTh>BarCode</MudTh>
-        <MudTh>BrandId</MudTh>
-        <MudTh>CategoryId</MudTh>
-        <MudTh>ImagePath</MudTh>
-        <MudTh>InsertDate</MudTh>
-    </HeaderContent>
-    <RowTemplate>
-        <MudTd DataLabel="Nr">@context.Id</MudTd>
-        <MudTd DataLabel="Nr">@context.Name</MudTd>
-        <MudTd DataLabel="Sign">@context.Discount</MudTd>
-        <MudTd DataLabel="Name">@context.Description</MudTd>
-        <MudTd DataLabel="Position" HideSmall="_hidePosition">@context.Quantity</MudTd>
-        <MudTd DataLabel="Molar mass">@context.Price</MudTd>
-        <MudTd DataLabel="Molar mass">@context.Brand?.Name</MudTd>
-        <MudTd DataLabel="Molar mass">@context.Category?.Name</MudTd>
-        <MudTd DataLabel="Molar mass">@context.BarCode</MudTd>
-        <MudTd DataLabel="Molar mass">@context.BrandId</MudTd>
-        <MudTd DataLabel="Molar mass">@context.CategoryId</MudTd>
-        <MudTd DataLabel="Molar mass">@context.ImagePath</MudTd>
-        <MudTd DataLabel="Molar mass">@context.InsertDate</MudTd>
-        <MudTd><MudIconButton OnClick="@(()=> deleteData(context.Id))" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton></MudTd>
-    </RowTemplate>
-</MudTable>
+    <MudTable Items="@filteredProducts"
+              Hover="true"
+              Breakpoint="Breakpoint.Sm"
+              Loading="@_loading"
+              LoadingProgressColor="Color.Info"
+              EditTrigger="@TableEditTrigger.EditButton"
+              Striped="true">
+        <ToolBarContent>
+            <MudTextField T="string" Label="Search" @bind-Value="searchString" TextChanged="FilterProducts" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>ID</MudTh>
+            <MudTh>Name</MudTh>
+            <MudTh>Discount</MudTh>
+            <MudTh>Description</MudTh>
+            <MudTh>Quantity</MudTh>
+            <MudTh>Price </MudTh>
+            <MudTh>Brand</MudTh>
+            <MudTh>Category</MudTh>
+            <MudTh>BarCode</MudTh>
+            <MudTh>BrandId</MudTh>
+            <MudTh>CategoryId</MudTh>
+            <MudTh>ImagePath</MudTh>
+            <MudTh>InsertDate</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            @if (context.IsDeleted)
+            {
+                <MudTd Style="background:red;color:white;" DataLabel="Nr">@context.Id</MudTd>
+                <MudTd Style="background:red;color:white;" DataLabel="Nr">@context.Name</MudTd>
+                <MudTd Style="background:red;color:white;" DataLabel="Sign">@context.Discount</MudTd>
+                <MudTd Style="background:red;color:white;" DataLabel="Name">@context.Description</MudTd>
+                <MudTd Style="background:red;color:white;" DataLabel="Position" HideSmall="_hidePosition">@context.Quantity</MudTd>
+                <MudTd Style="background:red;color:white;" DataLabel="Molar mass">@context.Price</MudTd>
+                <MudTd Style="background:red;color:white;" DataLabel="Molar mass">@context.Brand?.Name</MudTd>
+                <MudTd Style="background:red;color:white;" DataLabel="Molar mass">@context.Category?.Name</MudTd>
+                <MudTd Style="background:red;color:white;" DataLabel="Molar mass">@context.BarCode</MudTd>
+                <MudTd Style="background:red;color:white;" DataLabel="Molar mass">@context.BrandId</MudTd>
+                <MudTd Style="background:red;color:white;" DataLabel="Molar mass">@context.CategoryId</MudTd>
+                <MudTd Style="background:red;color:white;" DataLabel="Molar mass">@context.ImagePath</MudTd>
+                <MudTd Style="background:red;color:white;" DataLabel="Molar mass">@context.InsertDate</MudTd>
+                <MudTd Style="background:red;color:white;"><MudIconButton OnClick="@(()=> deleteData(context.Id))" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton></MudTd>
+
+            }
+            else
+            {
+
+                <MudTd DataLabel="Nr">@context.Id</MudTd>
+                <MudTd DataLabel="Nr">@context.Name</MudTd>
+                <MudTd DataLabel="Sign">@context.Discount</MudTd>
+                <MudTd DataLabel="Name">@context.Description</MudTd>
+                <MudTd DataLabel="Position" HideSmall="_hidePosition">@context.Quantity</MudTd>
+                <MudTd DataLabel="Molar mass">@context.Price</MudTd>
+                <MudTd DataLabel="Molar mass">@context.Brand?.Name</MudTd>
+                <MudTd DataLabel="Molar mass">@context.Category?.Name</MudTd>
+                <MudTd DataLabel="Molar mass">@context.BarCode</MudTd>
+                <MudTd DataLabel="Molar mass">@context.BrandId</MudTd>
+                <MudTd DataLabel="Molar mass">@context.CategoryId</MudTd>
+                <MudTd DataLabel="Molar mass">@context.ImagePath</MudTd>
+                <MudTd DataLabel="Molar mass">@context.InsertDate</MudTd>
+                <MudTd><MudIconButton OnClick="@(()=> deleteData(context.Id))" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton></MudTd>
+            }
+
+        </RowTemplate>
+    </MudTable>
 }
 
 @code {
@@ -200,7 +225,7 @@
     protected override async Task OnInitializedAsync()
     {
         var request = await ProductService.GetAllProductsAsync();
-        if(request.Success)
+        if (request.Success)
         {
             products = request.Data!;
         }
@@ -210,12 +235,12 @@
     private async Task deleteData(int id)
     {
         success = true;
-        var product = createProduct;
+        // var product = createProduct;
 
-        var request =  await ProductService.DeleteProductAsync(2);
+        var request = await ProductService.DeleteProductAsync(id);
         if (request.Success)
         {
-            products.Append(product);
+            // products.Append(product);
             StateHasChanged();
         }
         else
@@ -231,7 +256,7 @@
 
     private async void OnValidSubmit(EditContext context)
     {
-        if (createProduct.Name == null || createProduct.BarCode == 0 || createProduct.BrandId == 0 || createProduct.CategoryId == 0 || createProduct.Price== 0 || createProduct.Quantity == 0)
+        if (createProduct.Name == null || createProduct.BarCode == 0 || createProduct.BrandId == 0 || createProduct.CategoryId == 0 || createProduct.Price == 0 || createProduct.Quantity == 0)
         {
             checkempty = true;
         }
@@ -241,12 +266,12 @@
 
             createProduct.InsertDate = DateTime.Now;
             var product = createProduct;
-            var request =  await ProductService.CreateProductAsync( product);
+            var request = await ProductService.CreateProductAsync(product);
             if (request.Success)
             {
-        
+
                 products.Append(product);
-                
+
                 StateHasChanged();
             }
             else
@@ -277,19 +302,19 @@
     //end modal
 
 
-    //Start Filtring 
+    //Start Filtring
     private void FilterProducts()
-    {  
+    {
         if (string.IsNullOrWhiteSpace(searchString))
         {
-           filteredProducts = products;
+            filteredProducts = products;
         }
         else
         {
             filteredProducts = products.Where(p => p.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase) || p.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
-            
+
         }
     }
-        //End Filtring 
+        //End Filtring
 
 }

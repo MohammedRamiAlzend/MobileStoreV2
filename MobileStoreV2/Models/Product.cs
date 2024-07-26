@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MobileStoreV2.Models.SoftDelete;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MobileStoreV2.Models
 {
-    public class Product
+    public class Product : ISoftDelete
     {
         // Primary key
         public int Id { get; set; }
@@ -47,6 +48,10 @@ namespace MobileStoreV2.Models
 
         // Navigation property to the Category entity
         public Category? Category { get; set; }
+
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedAt { get; set; } = DateTime.UtcNow;
+
     }
 
 }
