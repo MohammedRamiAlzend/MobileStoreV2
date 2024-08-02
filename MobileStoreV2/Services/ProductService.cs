@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MobileStoreV2.Services 
+namespace MobileStoreV2.Services
 {
     public class ProductService : IProductService
     {
@@ -59,12 +59,16 @@ namespace MobileStoreV2.Services
 
         public async Task<DataBaseRequest> DeleteProductAsync(int id)
         {
-            var product = await _context.Products.FindAsync(id);
-
-            if (product == null)
-                throw new DataBaseRequestException($"Product with {id} not found!");
+            var request = await GetProductByIdAsync(id);
+            var product = request.Success ? request.Data : null;
+            if (product == null || product.IsDeleted)
+            {
+                return new DataBaseRequest { Message = ($"Product with ID {id} not found or already deleted.") ,Success =false};
+            }
             try
             {
+                product.IsDeleted = true;
+                product.DeletedAt = DateTime.UtcNow;
                 _context.Products.Remove(product);
                 var result = await _context.SaveChangesAsync();
                 if (result > 0)
@@ -90,7 +94,8 @@ namespace MobileStoreV2.Services
                 return new DataBaseRequest
                 {
                     Message = "يوجد سلة لهذا المنتج"
-                    , Success = false
+                    ,
+                    Success = false
                 };
             }
         }
@@ -137,17 +142,18 @@ namespace MobileStoreV2.Services
         public async Task<DataBaseRequest<IEnumerable<Product>>> GetAllProductsAsync()
         {
             var request = await _context.Products
-                                 .Include(p => p.Brand)
-                                 .Include(p => p.Category)
-                                 .ToListAsync();
-            if (request != null )
+                                            .Include(x => x.Category)
+                                            .Include(x => x.Brand)
+                                            .AsNoTracking()
+                                            .IgnoreQueryFilters()
+                                            .ToListAsync();
+            if (request != null)
             {
                 return new DataBaseRequest<IEnumerable<Product>>
                 {
                     Data = request,
                     Message = "Product retrieved successfully",
                     Success = true
-
                 };
             }
             else

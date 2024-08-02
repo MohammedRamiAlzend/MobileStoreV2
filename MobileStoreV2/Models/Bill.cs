@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MobileStoreV2.Models.SoftDelete;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MobileStoreV2.Models
 {
-    public class Bill
+    public class Bill:ISoftDelete
     {
         // Primary key
         public int Id { get; set; }
@@ -25,6 +26,10 @@ namespace MobileStoreV2.Models
 
         // Navigation property to the collection of Sell entities
         public ICollection<Sell>? Sells { get; set; }
+
+        public bool IsDeleted { get; set; }
+        public DateTime? DeletedAt { get; set; } = DateTime.UtcNow;
+
     }
 
 }
