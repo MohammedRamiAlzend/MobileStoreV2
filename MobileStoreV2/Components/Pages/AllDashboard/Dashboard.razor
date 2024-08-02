@@ -189,9 +189,13 @@
         <MudTd DataLabel="Molar mass">@context.InsertDate</MudTd>
     </RowTemplate>
 </MudTable>
+
+
 }
 
 @code {
+
+   
     private bool _hidePosition;
     private bool _loading;
     private string searchString = "";
@@ -221,6 +225,8 @@
             products = requestRefresh.Data!;
             filteredProducts = products;
             StateHasChanged();
+  
+
             Snackbar.Add("Remove Done", Severity.Success);
 
         }
