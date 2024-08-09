@@ -1,37 +1,38 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MobileStoreV2.Data;
-using MobileStoreV2.Models;
-using MobileStoreV2.Services.Interfaces;
+using DataCore.Data;
+using DataCore.Models;
+using DataCore.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MobileStoreV2.Services
+namespace DataCore.Services
 {
-    internal class CategoryService : ICategoryService
+    public class BrandService : IBrandService
     {
-        private readonly ApplicationDbContext _context;
-        public CategoryService(ApplicationDbContext context)
+        public readonly ApplicationDbContext _context;
+        public BrandService(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public async Task<DataBaseRequest> CreateCategoryAsync(Category createCategory)
+        public async Task<DataBaseRequest> CreateBrandAsync(Brand createBrand)
         {
-            Category category = new Category
+            Brand brand = new Brand
             {
-                Name = createCategory.Name,
-                Products = createCategory.Products,
+                Id = createBrand.Id,
+                Name = createBrand.Name,
+                Products = createBrand.Products
             };
-            _context.Categories.Add(category);
+            await _context.Brands.AddAsync(brand);
             var resutl = await _context.SaveChangesAsync();
             if (resutl > 0)
             {
                 return new DataBaseRequest
                 {
-                    Message = "Category created successfully",
+                    Message = $"Brand {brand.Name} created successfully",
                     Success = true,
                 };
             }
@@ -39,33 +40,33 @@ namespace MobileStoreV2.Services
             {
                 return new DataBaseRequest
                 {
-                    Message = "An error occurred while creating Category",
-                    Success = false,
+                    Message = $"An error occurred while creating Brand ",
+                    Success = true,
                 };
             }
         }
 
-        public async Task<DataBaseRequest> DeleteCategoryAsync(int id)
+        public async Task<DataBaseRequest> DeleteBrandAsync(int id)
         {
-            var category = await _context.Categories.FindAsync(id);
+            var brand = await _context.Brands.FindAsync(id);
 
-            if (category == null)
+            if (brand == null)
             {
                 return new DataBaseRequest
                 {
-                    Message = $"The category with {id} not found",
+                    Message = $"The brand with {id} not found",
                     Success = false,
                 };
             }
             else
             {
-                _context.Categories.Remove(category);
+                _context.Brands.Remove(brand);
                 var result = await _context.SaveChangesAsync();
                 if (result > 0)
                 {
                     return new DataBaseRequest
                     {
-                        Message = $"The Category {category.Name} has been deleted successfully",
+                        Message = $"The brand {brand.Name} has been deleted successfully",
                         Success = true,
                     };
                 }
@@ -73,84 +74,83 @@ namespace MobileStoreV2.Services
                 {
                     return new DataBaseRequest
                     {
-                        Message = "an error occurred while Deleting Category"
+                        Message = "an error occurred while Deleting brand"
                     };
                 }
             }
-
         }
 
-        public async Task<DataBaseRequest<IEnumerable<Category>>> GetAllCategoryAsync()
+        public async Task<DataBaseRequest<IEnumerable<Brand>>> GetAllBrandsAsync()
         {
-            var request = await _context.Categories
+            var request = await _context.Brands
                 .Include(x => x.Products)
                 .ToListAsync();
 
             if (request == null)
             {
-                return new DataBaseRequest<IEnumerable<Category>>
+                return new DataBaseRequest<IEnumerable<Brand>>
                 {
-                    Message = "There is no Category!",
+                    Message = "There is no Brand!",
                     Success = false,
                     Data = []
                 };
             }
             else
             {
-                return new DataBaseRequest<IEnumerable<Category>>
+                return new DataBaseRequest<IEnumerable<Brand>>
                 {
-                    Message = " The Categories Retrieved successfully",
+                    Message = " The Brands Retrieved successfully",
                     Success = true,
                     Data = request,
                 };
             }
         }
 
-        public async Task<DataBaseRequest<Category>> GetCategoryByIdAsync(int id)
+        public async Task<DataBaseRequest<Brand>> GetBrandByIdAsync(int id)
         {
-            var request = await _context.Categories.FindAsync(id);
+            var request = await _context.Brands.FindAsync(id);
             if (request == null)
             {
-                return new DataBaseRequest<Category>
+                return new DataBaseRequest<Brand>
                 {
-                    Message = "Category not found",
+                    Message = "Brand not found",
                     Success = false,
-                    Data = new Category { Name = "" },
+                    Data = new Brand { Name = "" },
                 };
             }
             else
             {
-                return new DataBaseRequest<Category>
+                return new DataBaseRequest<Brand>
                 {
-                    Message = $"The category {request.Name} successfully retrieved",
+                    Message = $"The Brand {request.Name} successfully retrieved",
                     Success = true,
                     Data = request,
                 };
             }
         }
 
-        public async Task<DataBaseRequest> UpdateCategoryAsync(int id, Category category)
+        public async Task<DataBaseRequest> UpdateBrandAsync(int id, Brand brand)
         {
-            var request = await _context.Categories.FindAsync(id);
+            var request = await _context.Brands.FindAsync(id);
             if (request == null)
             {
                 return new DataBaseRequest
                 {
-                    Message = $"The Category with id {id} didn't found",
+                    Message = $"The Brand with id {id} didn't found",
                     Success = false,
                 };
             }
             else
             {
-                request.Name = category.Name;
-                request.Products = category.Products;
-                _context.Categories.Update(request);
+                request.Name = brand.Name;
+                request.Products = brand.Products;
+                _context.Brands.Update(request);
                 var result = await _context.SaveChangesAsync();
                 if (result > 0)
                 {
                     return new DataBaseRequest
                     {
-                        Message = $"The Category {id} has been updated successfully",
+                        Message = $"The Brand {id} has been updated successfully",
                         Success = true,
                     };
                 }
@@ -158,13 +158,11 @@ namespace MobileStoreV2.Services
                 {
                     return new DataBaseRequest
                     {
-                        Message = $"An error occurred while update the category {id}",
+                        Message = $"An error occurred while update the brand {id}",
                         Success = false,
                     };
                 }
             }
-
-
         }
     }
 }

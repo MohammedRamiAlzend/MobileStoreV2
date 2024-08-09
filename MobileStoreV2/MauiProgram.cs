@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Logging;
-using MobileStoreV2.Data;
+using DataCore.Data;
 using MudBlazor.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using MobileStoreV2.Services.Interfaces;
-using MobileStoreV2.Services;
+using DataCore.Services.Interfaces;
+using DataCore.Services;
 
 namespace MobileStoreV2
 {
@@ -25,7 +25,7 @@ namespace MobileStoreV2
             //Console.WriteLine(Environment.MachineName);
 
             var connectionString = $"Server={Environment.MachineName}\\{Environment.UserName};Database=MobileStore;Trusted_Connection=True;TrustServerCertificate=True;";
-            
+
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
 

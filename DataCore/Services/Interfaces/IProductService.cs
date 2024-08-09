@@ -1,12 +1,12 @@
-﻿using MobileStoreV2.Models;
+﻿using DataCore.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MobileStoreV2.Data;
+using DataCore.Data;
 
-namespace MobileStoreV2.Services.Interfaces
+namespace DataCore.Services.Interfaces
 {
     public interface IProductService
     {

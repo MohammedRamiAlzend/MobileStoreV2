@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MobileStoreV2.Data
+namespace DataCore.Data
 {
     public class DataBaseRequest
     {

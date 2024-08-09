@@ -74,4 +74,8 @@
         <PackageReference Include="MudBlazor" Version="6.19.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\DataCore\DataCore.csproj" />
+    </ItemGroup>
+
 </Project>

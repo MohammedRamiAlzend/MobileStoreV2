@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MobileStoreV2.Models;
-namespace MobileStoreV2.Data
+using DataCore.Models;
+namespace DataCore.Data
 {
     public class ApplicationDbContext : DbContext
     {
@@ -25,6 +25,7 @@ namespace MobileStoreV2.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            //optionsBuilder.UseSqlServer($"Server={Environment.MachineName}\\{Environment.UserName};Database=MobileStore;Trusted_Connection=True;TrustServerCertificate=True;");
             optionsBuilder
                    .AddInterceptors(new SoftDeleteInterceptor());
             base.OnConfiguring(optionsBuilder);

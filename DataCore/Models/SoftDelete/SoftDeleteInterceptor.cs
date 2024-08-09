@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using MobileStoreV2.Models.SoftDelete;
+using DataCore.Models.SoftDelete;
 using System.Threading;
 
 public class SoftDeleteInterceptor : SaveChangesInterceptor

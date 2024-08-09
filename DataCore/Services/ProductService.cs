@@ -1,14 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MobileStoreV2.Data;
-using MobileStoreV2.Models;
-using MobileStoreV2.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DataCore.Data;
+using DataCore.Models;
+using DataCore.Services.Interfaces;
 
-namespace MobileStoreV2.Services
+namespace DataCore.Services
 {
     public class ProductService : IProductService
     {

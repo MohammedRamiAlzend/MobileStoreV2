@@ -1,12 +1,12 @@
 ﻿
-using MobileStoreV2.Models.SoftDelete;
+using DataCore.Models.SoftDelete;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MobileStoreV2.Models
+namespace DataCore.Models
 {
     public class Category:ISoftDelete
     {
