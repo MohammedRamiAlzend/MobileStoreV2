@@ -31,8 +31,8 @@ namespace DataCore.Models
         // Navigation property to the Product entity
         public Product? Product { get; set; }
 
-        public bool IsDeleted { get; set; }
-        public DateTime? DeletedAt { get; set; } = DateTime.UtcNow;
+        public bool IsDeleted { get; set; } = false;
+        public DateTime? DeletedAt { get; set; } = null;
     }
 
 
