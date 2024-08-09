@@ -140,6 +140,33 @@ namespace DataCore.Services
                                             .Include(x => x.Category)
                                             .Include(x => x.Brand)
                                             .AsNoTracking()
+                                            .ToListAsync();
+            if (request != null)
+            {
+                return new DataBaseRequest<IEnumerable<Product>>
+                {
+                    Data = request,
+                    Message = "Product retrieved successfully",
+                    Success = true
+                };
+            }
+            else
+            {
+                return new DataBaseRequest<IEnumerable<Product>>
+                {
+                    Data = [],
+                    Message = "there is no Product or products",
+                    Success = false
+
+                };
+            }
+        }
+        public async Task<DataBaseRequest<IEnumerable<Product>>> GetAllProductsWithDeletedProductsAsync()
+        {
+            var request = await _context.Products
+                                            .Include(x => x.Category)
+                                            .Include(x => x.Brand)
+                                            .AsNoTracking()
                                             .IgnoreQueryFilters()
                                             .ToListAsync();
             if (request != null)
@@ -162,7 +189,6 @@ namespace DataCore.Services
                 };
             }
         }
-
         public async Task<DataBaseRequest<Product>> GetProductByIdAsync(int id)
         {
             var request = await _context.Products

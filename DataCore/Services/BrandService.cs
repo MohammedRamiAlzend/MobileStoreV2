@@ -105,6 +105,32 @@ namespace DataCore.Services
                 };
             }
         }
+        public async Task<DataBaseRequest<IEnumerable<Brand>>> GetAllBrandsWithDeletedAsync()
+        {
+            var request = await _context.Brands
+                .Include(x => x.Products)
+                .IgnoreQueryFilters()
+                .ToListAsync();
+
+            if (request == null)
+            {
+                return new DataBaseRequest<IEnumerable<Brand>>
+                {
+                    Message = "There is no Brand!",
+                    Success = false,
+                    Data = []
+                };
+            }
+            else
+            {
+                return new DataBaseRequest<IEnumerable<Brand>>
+                {
+                    Message = " The Brands Retrieved successfully",
+                    Success = true,
+                    Data = request,
+                };
+            }
+        }
 
         public async Task<DataBaseRequest<Brand>> GetBrandByIdAsync(int id)
         {
