@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using DataCore.Models.SoftDelete;
 using System.Threading;
+using System.Diagnostics;
 
 public class SoftDeleteInterceptor : SaveChangesInterceptor
 {
@@ -26,11 +27,12 @@ public class SoftDeleteInterceptor : SaveChangesInterceptor
 
         foreach (EntityEntry<ISoftDelete> softDeletable in entries)
         {
-            softDeletable.State = EntityState.Modified;
-            softDeletable.Entity.IsDeleted = true;
-            softDeletable.Entity.DeletedAt = DateTime.Now;
+            if (softDeletable.State == EntityState.Deleted)
+            {
+                softDeletable.Entity.IsDeleted = true;
+                softDeletable.Entity.DeletedAt = DateTime.Now;
+            }
         }
-
         return base.SavingChangesAsync(eventData, result, cancellationToken);
     }
 }

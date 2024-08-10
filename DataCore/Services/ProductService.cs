@@ -2,6 +2,7 @@
 using DataCore.Data;
 using DataCore.Models;
 using DataCore.Services.Interfaces;
+using System.Diagnostics;
 
 namespace DataCore.Services
 {
@@ -60,7 +61,7 @@ namespace DataCore.Services
             var product = request.Success ? request.Data : null;
             if (product == null || product.IsDeleted)
             {
-                return new DataBaseRequest { Message = ($"Product with ID {id} not found or already deleted.") ,Success =false};
+                return new DataBaseRequest { Message = ($"Product with ID {id} not found or already deleted."), Success = false };
             }
             try
             {
@@ -99,41 +100,52 @@ namespace DataCore.Services
 
         public async Task<DataBaseRequest> UpdateProductAsync(int id, Product product)
         {
-            var request = await _context.Products.FindAsync(id);
-
-            if (request == null)
-                throw new DataBaseRequestException($"Product with {id} not found!");
-
-            request.Name = product.Name;
-            request.Description = product.Description;
-            request.Price = product.Price;
-            request.Discount = product.Discount;
-            request.ImagePath = product.ImagePath;
-            request.Quantity = product.Quantity;
-            request.BarCode = product.BarCode;
-            request.InsertDate = product.InsertDate;
-            request.Brand = product.Brand;
-            request.Category = product.Category;
-
-
-            _context.Products.Update(request);
-            var result = await _context.SaveChangesAsync();
-            if (result > 0)
+            var checkRequest = await GetProductByIdAsync(id);
+            if (checkRequest.Success)
             {
-                return new DataBaseRequest
+                var request = checkRequest.Data;
+
+                request.Name = product.Name;
+                request.Description = product.Description;
+                request.Price = product.Price;
+                request.Discount = product.Discount;
+                request.ImagePath = product.ImagePath;
+                request.Quantity = product.Quantity;
+                request.BarCode = product.BarCode;
+                request.InsertDate = product.InsertDate;
+                request.Brand = product.Brand;
+                request.Category = product.Category;
+
+                _context.Entry(request).State = EntityState.Modified;
+                _context.Products.Update(request);
+
+                var result = await _context.SaveChangesAsync();
+                if (result > 0)
                 {
-                    Message = $"Product {product.Name} Updated Successfully",
-                    Success = true
-                };
+                    return new DataBaseRequest
+                    {
+                        Message = $"Product {product.Name} Updated Successfully",
+                        Success = true
+                    };
+                }
+                else
+                {
+                    return new DataBaseRequest
+                    {
+                        Message = $"an error occurred while Updating {product.Name} ",
+                        Success = false
+                    };
+                }
             }
             else
             {
                 return new DataBaseRequest
                 {
-                    Message = $"an error occurred while Updating {product.Name} ",
-                    Success = false
+                    Success = false,
+                    Message = checkRequest.Message,
                 };
             }
+
         }
 
         public async Task<DataBaseRequest<IEnumerable<Product>>> GetAllProductsAsync()
