@@ -139,7 +139,6 @@ namespace DataCore.Services
             var request = await _context.Products
                                             .Include(x => x.Category)
                                             .Include(x => x.Brand)
-                                            .AsNoTracking()
                                             .ToListAsync();
             if (request != null)
             {

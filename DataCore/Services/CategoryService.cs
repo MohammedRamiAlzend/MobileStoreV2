@@ -2,11 +2,7 @@
 using DataCore.Data;
 using DataCore.Models;
 using DataCore.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace DataCore.Services
 {
@@ -106,6 +102,31 @@ namespace DataCore.Services
             }
         }
 
+        public async Task<DataBaseRequest<IEnumerable<Category>>> GetAllCategoryWithDeletedAsync()
+        {
+            var request = await _context.Categories
+                .Include(x => x.Products)
+                .ToListAsync();
+
+            if (request == null)
+            {
+                return new DataBaseRequest<IEnumerable<Category>>
+                {
+                    Message = "There is no Category!",
+                    Success = false,
+                    Data = []
+                };
+            }
+            else
+            {
+                return new DataBaseRequest<IEnumerable<Category>>
+                {
+                    Message = " The Categories Retrieved successfully",
+                    Success = true,
+                    Data = request,
+                };
+            }
+        }
         public async Task<DataBaseRequest<Category>> GetCategoryByIdAsync(int id)
         {
             var request = await _context.Categories.FindAsync(id);

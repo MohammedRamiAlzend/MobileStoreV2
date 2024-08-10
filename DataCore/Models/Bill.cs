@@ -27,8 +27,8 @@ namespace DataCore.Models
         // Navigation property to the collection of Sell entities
         public ICollection<Sell>? Sells { get; set; }
 
-        public bool IsDeleted { get; set; }
-        public DateTime? DeletedAt { get; set; } = DateTime.UtcNow;
+        public bool IsDeleted { get; set; } = false;
+        public DateTime? DeletedAt { get; set; } = null;
 
     }
 
