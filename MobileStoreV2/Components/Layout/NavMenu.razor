@@ -2,33 +2,12 @@
 @using MobileStoreV2.Components.Pages.AllDashboard
 @using MobileStoreV2.Components.Pages.ProductsCmpnt
 
-
-
-<MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
-
-    <MudTabPanel Text="Show Products">
-        <MudText> <Products /> </MudText>
-        
-    </MudTabPanel>
- 
-    <MudTabPanel Text="Dashboard">
-        <MudText><Dashboard/></MudText>
-    </MudTabPanel>
-    <MudTabPanel Text="Accounting">
-        <MudText><Accounting/></MudText>
-
-    </MudTabPanel>
-    <MudTabPanel Text="Buy Product">
-        <MudText><Buyproduct /></MudText>
-    </MudTabPanel>
-    <MudTabPanel Text="Sell Product">
-        <MudText><Sellproduct/></MudText>
-    </MudTabPanel>
-    <MudTabPanel Text="Options" Icon="@Icons.Material.Filled.Brightness5">
-        <MudText><Options /></MudText>
-    </MudTabPanel>
-    <MudTabPanel Text="Categorey" Icon="@Icons.Material.Filled.Brightness5">
-        <MudText><Category /></MudText>
-    </MudTabPanel>
-</MudTabs>
-
+<MudNavMenu>
+    <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Store" Href="ProductsList"> Products</MudNavLink>
+    <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.LibraryBooks" Href="Dashboard"> Dashboard</MudNavLink>
+    <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.AccountBox" Href="Accounting">Accounting</MudNavLink>
+    <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.AddCircle" Href="Buyproduct">Buyproduct</MudNavLink>
+    <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Group" Href="Sellproduct">Sellproduct</MudNavLink>
+    <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.KeyboardOptionKey" Href="Options">Options</MudNavLink>
+    <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Category" Href="Category">Category</MudNavLink>
+</MudNavMenu> 

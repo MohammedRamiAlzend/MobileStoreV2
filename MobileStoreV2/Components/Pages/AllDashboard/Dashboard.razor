@@ -34,7 +34,8 @@
 }
 <div class="continer">
 
-    <MudButton @onclick="OpenDialog" Variant="Variant.Filled" Color="Color.Primary" Style="">إضافة منتجات  </MudButton>
+    <MudButton Variant="Variant.Filled" @onclick="OpenDialog" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add"> إضافة منتجات </MudButton>
+
 </div>
 
 
@@ -146,65 +147,93 @@
 else
 {
 
-<MudTable Items="@filteredProducts" 
-    Hover="true" 
-    Breakpoint="Breakpoint.Sm" 
-    Loading="@_loading" 
-    LoadingProgressColor="Color.Info"
-    EditTrigger="@TableEditTrigger.EditButton"
-    Striped="true"
-    >
-    <ToolBarContent>
-        <MudTextField T="string" Label="Search"  @bind-Value="searchString"  TextChanged="FilterProducts"  Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-    </ToolBarContent>
-    <HeaderContent>
-        <MudTh>ID</MudTh>
-        <MudTh>Name</MudTh>
-        <MudTh>Discount</MudTh>
-        <MudTh>Description</MudTh>
-        <MudTh>Quantity</MudTh>
-        <MudTh>Price </MudTh>
-        <MudTh>Brand</MudTh>
-        <MudTh>Category</MudTh>
-        <MudTh>BarCode</MudTh>
-        <MudTh>BrandId</MudTh>
-        <MudTh>CategoryId</MudTh>
-        <MudTh>Delete</MudTh>
-        <MudTh>ImagePath</MudTh>
-        <MudTh>InsertDate</MudTh>
-    </HeaderContent>
-    <RowTemplate>
-        <MudTd DataLabel="Nr">@context.Id</MudTd>
-        <MudTd DataLabel="Nr">@context.Name</MudTd>
-        <MudTd DataLabel="Sign">@context.Discount</MudTd>
-        <MudTd DataLabel="Name">@context.Description</MudTd>
-        <MudTd DataLabel="Position" HideSmall="_hidePosition">@context.Quantity</MudTd>
-        <MudTd DataLabel="Molar mass">@context.Price</MudTd>
-        <MudTd DataLabel="Molar mass">@context.Brand?.Name</MudTd>
-        <MudTd DataLabel="Molar mass">@context.Category?.Name</MudTd>
-        <MudTd DataLabel="Molar mass">@context.BarCode</MudTd>
-        <MudTd DataLabel="Molar mass">@context.BrandId</MudTd>
-        <MudTd DataLabel="Molar mass">@context.CategoryId</MudTd>
-        <MudTd><MudIconButton OnClick="@(()=> deleteData(context.Id))" Icon="@Icons.Material.Filled.Delete" aria-label="delete"></MudIconButton></MudTd>
+    <MudTable Items="@filteredProducts"
+              Hover="true"
+              Breakpoint="Breakpoint.Sm"
+              Loading="@_loading"
+              LoadingProgressColor="Color.Info"
+              EditTrigger="@TableEditTrigger.EditButton"
+              Striped="true">
+        <ToolBarContent>
+            <MudTextField T="string" Label="Search" @bind-Value="searchString" TextChanged="FilterProducts" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>ID</MudTh>
+            <MudTh>Brand</MudTh>
+            <MudTh>Category</MudTh>
+            <MudTh>Name</MudTh>
+            <MudTh>Discount</MudTh>
+            <MudTh>Description</MudTh>
+            <MudTh>Quantity</MudTh>
+            <MudTh>Price </MudTh>
+            <MudTh>BarCode</MudTh>
+            <MudTh>BrandId</MudTh>
+            <MudTh>CategoryId</MudTh>
+            <MudTh>ImagePath</MudTh>
+            <MudTh>InsertDate</MudTh>
+            <MudTh>Edit</MudTh>
+            <MudTh>Delete</MudTh>
 
-        <MudTd DataLabel="Molar mass">@context.ImagePath</MudTd>
-        <MudTd DataLabel="Molar mass">@context.InsertDate</MudTd>
-    </RowTemplate>
-</MudTable>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Id">@context.Id</MudTd>
+            <MudTd DataLabel="Brand">@context.Brand?.Name</MudTd>
+            <MudTd DataLabel="Name">@context.Category?.Name</MudTd>
+            @if (_readOnly == true)
+            {
+                <MudTd DataLabel="Name">@context.Name</MudTd>
+                <MudTd DataLabel="Discount">@context.Discount</MudTd>
+                <MudTd DataLabel="Description">@context.Description</MudTd>
+                <MudTd DataLabel="Quantity" HideSmall="_hidePosition">@context.Quantity</MudTd>
+                <MudTd DataLabel="Price">@context.Price</MudTd>
+                <MudTd DataLabel="BarCode">@context.BarCode</MudTd>
+                <MudTd DataLabel="BrandId">@context.BrandId</MudTd>
+                <MudTd DataLabel="CategoryId">@context.CategoryId</MudTd>
+                <MudTd DataLabel="ImagePath">@context.ImagePath</MudTd>
+                <MudTd DataLabel="InsertDate">@context.InsertDate</MudTd>
+                <MudTd DataLabel="Edit"><MudIconButton Icon="@Icons.Material.Filled.Edit" Class="mx-2" OnClick="@(() => show())" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" /></MudTd>
+                <MudTd DataLabel="Delete"><MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(() => SureDialog(context.Id))" Variant="Variant.Filled" Color="Color.Error" Size="Size.Medium" /></MudTd>
+            }
+            else
+            {
+                <MudTd><MudTextField T="string" Label="Price" @bind-Value="context.Name" Required="true" RequiredError="Name is required!" /></MudTd>
+                <MudTd><MudTextField T="double" Label="Category" @bind-Value="context.Discount" Required="true" RequiredError="Discount is required!" /></MudTd>
+                <MudTd><MudTextField T="string" Label="Description" @bind-Value="context.Description" Required="true" RequiredError="Description is required!" /></MudTd>
+                <MudTd><MudTextField T="int" Label="Quantity" @bind-Value="context.Quantity" Required="true" RequiredError="Quantity is required!" /></MudTd>
+                <MudTd><MudTextField T="double" Label="Price" @bind-Value="context.Price" Required="true" RequiredError="Price is required!" /></MudTd>
+                @* <MudTd><MudTextField T="string" Label="Brand" @bind-Value="context.Brand?.Name" Required="true" RequiredError="Price is required!" /></MudTd> *@
+                @*  <MudTd><MudTextField T="string" Label="Category" @bind-Value="context.Category?.Name" Required="true" RequiredError="Price is required!" /></MudTd> *@
+                <MudTd><MudTextField T="int" Label="Category" @bind-Value="context.BarCode" Required="true" RequiredError="BarCode is required!" /></MudTd>
+                <MudTd><MudTextField T="int" Label="BrandId" @bind-Value="context.BrandId" Required="true" RequiredError="BrandId is required!" /></MudTd>
+                <MudTd><MudTextField T="int" Label="CategoryId" @bind-Value="context.CategoryId" Required="true" RequiredError="CategoryId is required!" /></MudTd>
+                <MudTd><MudTextField T="string" Label="ImagePath" @bind-Value="context.ImagePath" Required="true" RequiredError="ImagePath is required!" /></MudTd>
+                <MudTd><MudTextField T="DateTime" Label="ImagePath" @bind-Value="context.InsertDate" Required="true" RequiredError="InsertDate is required!" /></MudTd>
+                <MudTd><MudIconButton Icon="@Icons.Material.Filled.Save" OnClick="@(() => EditProduct(context.Id,context.Name,context.Description,context.Quantity,context.Price,context.BarCode,context.BrandId,context.CategoryId,context.ImagePath,context.InsertDate))" Class="mx-2" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" />  </MudTd>
+                <MudTd><MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="@(() => Close())" Variant="Variant.Filled" Color="Color.Error" Size="Size.Medium" />    </MudTd>
+            }
+        </RowTemplate>
+    </MudTable>
 
 
 }
 
 @code {
-
-   
     private bool _hidePosition;
     private bool _loading;
     private string searchString = "";
+    private bool _readOnly = true;
+
     public IEnumerable<Product> products = new List<Product>();
     public IEnumerable<Product> filteredProducts = new List<Product>();
-    public bool checkempty { get; set; }
 
+
+
+    public bool checkempty { get; set; }
+    public void show() => _readOnly = false;
+    public void Close() => _readOnly = true;
+
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; }
     protected override async Task OnInitializedAsync()
     {
         var request = await ProductService.GetAllProductsAsync();
@@ -219,24 +248,29 @@ else
     {
         success = true;
         var product = createProduct;
-        var requestRefresh = await ProductService.GetAllProductsAsync();
         var request = await ProductService.DeleteProductAsync(id);
         if (request.Success)
         {
-            products.Append(product);
-            products = requestRefresh.Data!;
-            filteredProducts = products;
-            StateHasChanged();
-  
 
+            StateHasChanged();
             Snackbar.Add("Remove Done", Severity.Success);
 
         }
         else
         {
             Snackbar.Add(request.Message, Severity.Error);
-            
+
         }
+
+        var requestRefresh = await ProductService.GetAllProductsAsync();
+        if (request.Success)
+        {
+            products = requestRefresh.Data!;
+        }
+
+        filteredProducts = products;
+        StateHasChanged();
+
     }
     // start code form
     Product createProduct = new Product();
@@ -255,7 +289,7 @@ else
             success = true;
             createProduct.InsertDate = DateTime.Now;
             var product = createProduct;
-            var request =  await ProductService.CreateProductAsync( product);
+            var request = await ProductService.CreateProductAsync(product);
             var requestRefresh = await ProductService.GetAllProductsAsync();
 
             if (request.Success)
@@ -275,7 +309,7 @@ else
         }
 
     }
-  
+
 
     // end code form
 
@@ -289,8 +323,6 @@ else
     private void Cancel() => showInnerComponent = false;
     private void CancelDone() => showInnerComponentDone = false;
 
-    [CascadingParameter]
-    private MudDialogInstance MudDialog { get; set; }
 
     //end modal
 
@@ -308,6 +340,63 @@ else
 
         }
     }
-        //End Filtring
+    //End Filtring
+
+    //start Edit fun
+    // context.Id,context.Name,context.Description,context.Quantity,context.Price,context.BarCode,context.BrandId,context.CategoryId,context.ImagePath,context.InsertDate
+    private async Task EditProduct(int id, string Name,string  Description ,int Quantity,   double price,int barcode , int brandid,int categoryid,string imagepath,DateTime insertdate )
+    {
+        createProduct.Name = Name;
+        createProduct.Description = Description;
+        createProduct.Quantity = Quantity;
+        createProduct.Price = price;
+        createProduct.BarCode = barcode;
+        createProduct.BrandId = brandid;
+        createProduct.CategoryId = categoryid;
+        createProduct.ImagePath = imagepath;
+        createProduct.InsertDate = insertdate;
+        createProduct.IsDeleted  = false;
+        createProduct.DeletedAt = null;
+        var product = createProduct;
+        _readOnly = false;
+        var response = await ProductService.UpdateProductAsync(id, product);
+        var requestRefresh = await ProductService.GetProductByIdAsync(id);
+
+        if (response.Success)
+        {
+            // products = requestRefresh.Data!;
+            filteredProducts = products;
+            Snackbar.Add("Modify Product with Id :" + id + " Done successfully ", Severity.Success);
+
+            StateHasChanged();
+            FilterProducts();
+            Close();
+        }
+        else
+        {
+            Snackbar.Add("Update  Not Done", Severity.Error);
+        }
+
+    }
+     //End Edit fun
+    //start Delete Dialog
+
+    string state = "Message box hasn't been opened yet";
+
+    private async void SureDialog(int id)
+    {
+        bool? result = await DialogService.ShowMessageBox(
+            "Warning",
+            "Are You Sure You Want To Delete This Prodcut !",
+            yesText: "Delete!", cancelText: "Cancel");
+
+        state = result == null ? "Canceled" : "Deleted!";
+        if (state == "Deleted!") deleteData(id);
+        StateHasChanged();
+    }
+
+
+    //End Delete Dialog
+
 
 }
