@@ -1,13 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using DataCore.Data;
-using DataCore.Models;
-using DataCore.Services.Interfaces;
+using MobileStoreV2.Data;
+using MobileStoreV2.Models;
+using MobileStoreV2.Services.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace DataCore.Services
+namespace MobileStoreV2.Services
 {
     public class ProductService : IProductService
     {
-
         private readonly ApplicationDbContext _context;
 
         public ProductService(ApplicationDbContext context)
@@ -17,7 +21,6 @@ namespace DataCore.Services
 
         public async Task<DataBaseRequest> CreateProductAsync(Product createProduct)
         {
-            Console.WriteLine("transition");
             Product product = new Product
             {
                 BarCode = createProduct.BarCode,
@@ -141,32 +144,6 @@ namespace DataCore.Services
             var request = await _context.Products
                                             .Include(x => x.Category)
                                             .Include(x => x.Brand)
-                                            .ToListAsync();
-            if (request != null)
-            {
-                return new DataBaseRequest<IEnumerable<Product>>
-                {
-                    Data = request,
-                    Message = "Product retrieved successfully",
-                    Success = true
-                };
-            }
-            else
-            {
-                return new DataBaseRequest<IEnumerable<Product>>
-                {
-                    Data = [],
-                    Message = "there is no Product or products",
-                    Success = false
-
-                };
-            }
-        }
-        public async Task<DataBaseRequest<IEnumerable<Product>>> GetAllProductsWithDeletedProductsAsync()
-        {
-            var request = await _context.Products
-                                            .Include(x => x.Category)
-                                            .Include(x => x.Brand)
                                             .AsNoTracking()
                                             .IgnoreQueryFilters()
                                             .ToListAsync();
@@ -190,6 +167,7 @@ namespace DataCore.Services
                 };
             }
         }
+
         public async Task<DataBaseRequest<Product>> GetProductByIdAsync(int id)
         {
             var request = await _context.Products
