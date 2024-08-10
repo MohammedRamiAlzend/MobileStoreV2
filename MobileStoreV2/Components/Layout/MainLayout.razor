@@ -5,27 +5,44 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 
+
 <MudLayout>
-    @*  <MudAppBar>
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        My Application 
 
+    <MudAppBar Elevation="1" Dense="true">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Href="https://github.com/MudBlazor/MudBlazor" Target="_blank" />
     </MudAppBar>
-  <MudDrawer @bind-Open="@_drawerOpen">
-        <NavMenu/> 
-    </MudDrawer> *@
-    <NavMenu />
+    <MudDrawer @bind-Open="@_open" ClipMode="_clipMode" Breakpoint="@_breakpoint" Elevation="1" Variant="@DrawerVariant.Mini">
 
+        <NavMenu />
+
+    </MudDrawer>
 
     <MudMainContent>
         @Body
     </MudMainContent>
 </MudLayout>
+
+
+
+
+
 @code {
     bool _drawerOpen = true;
 
     void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
+    }
+
+    private bool _open = false;
+    private bool _dense = true;
+    private Breakpoint _breakpoint = Breakpoint.Xl;
+    private DrawerClipMode _clipMode = DrawerClipMode.Always;
+
+    private void ToggleDrawer()
+    {
+        _open = !_open;
     }
 }

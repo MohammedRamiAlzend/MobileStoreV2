@@ -2,6 +2,8 @@
 using DataCore.Models;
 namespace DataCore.Data
 {
+
+    
     public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
