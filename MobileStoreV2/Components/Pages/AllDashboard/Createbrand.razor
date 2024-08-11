@@ -1,0 +1,55 @@
+﻿
+@using System.Net.Http.Json
+@using System.ComponentModel.DataAnnotations
+@inject IDialogService DialogService
+@using DataCore.Services.Interfaces
+@using DataCore.Models
+@inject IBrandService brandservice
+@inject ISnackbar Snackbar
+
+
+  <EditForm Model="@CreateBrand" OnValidSubmit="OnValidSubmit">
+            <DataAnnotationsValidator />
+            <MudGrid>
+                <MudItem xs="12" sm="12">
+                    <MudCard>
+                        <MudCardContent>
+                            <MudTextField Label="Name" HelperText="Max. 8 characters"
+                                  @bind-Value="CreateBrand.Name" For="@(() => CreateBrand.Name)" InputType="InputType.Text" />
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+            </MudGrid>
+
+        </EditForm>
+
+
+@code {
+    Brand CreateBrand = new Brand();
+    public IEnumerable<Brand> brands = new List<Brand>();
+
+    protected override async Task OnInitializedAsync()
+    {
+
+    }
+    private async void OnValidSubmit(EditContext context)
+    {
+        var brand = CreateBrand;
+        var request = await brandservice.CreateBrandAsync(brand);
+        var requestRefresh = await brandservice.GetAllBrandsAsync();
+
+        if (request.Success)
+        {
+
+            brands.Append(brand);
+            brands = requestRefresh.Data!;
+            StateHasChanged();
+        }
+        else
+        {
+            Snackbar.Add(request.Message, Severity.Error);
+
+        }
+    }
+
+}

@@ -5,7 +5,7 @@ VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MobileStoreV2", "MobileStoreV2\MobileStoreV2.csproj", "{3C9AA362-A48F-4C25-9271-00C52A90F50C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataCore", "DataCore\DataCore.csproj", "{BB79109B-C401-4C8E-9CF5-90F0632F9308}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataCore", "DataCore\DataCore.csproj", "{BB79109B-C401-4C8E-9CF5-90F0632F9308}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

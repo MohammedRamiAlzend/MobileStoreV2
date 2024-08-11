@@ -1,6 +1,7 @@
 ﻿@inherits LayoutComponentBase
-
-
+@using MobileStoreV2.Components.Pages
+@using MobileStoreV2.Components.Pages.AllDashboard
+@using MobileStoreV2.Components.Pages.ProductsCmpnt
 <MudThemeProvider />
 <MudDialogProvider />
 <MudSnackbarProvider />
@@ -20,6 +21,9 @@
     </MudDrawer>
 
     <MudMainContent>
+        <MudPaper Height="100%" Width="100%" Style="margin-bottom:30px;">
+            <Casual />
+        </MudPaper>
         @Body
     </MudMainContent>
 </MudLayout>

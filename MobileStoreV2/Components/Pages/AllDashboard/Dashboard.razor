@@ -8,7 +8,6 @@
 @inject IProductService ProductService
 @inject ISnackbar Snackbar
 
-@* @inject IJSRuntime _ijs *@
 
 
 <style>
@@ -38,6 +37,11 @@
 
 </div>
 
+<div class="continer">
+
+    <MudButton Variant="Variant.Filled" @onclick="OpenDialogBrand" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add"> إضافة علامة تجارية </MudButton>
+
+</div>
 
 
 
@@ -139,6 +143,17 @@
 
 </MudDialog>
 
+
+<MudDialog @bind-IsVisible="showInnerComponentBrands">
+
+    <TitleContent>
+        Add Brand
+    </TitleContent>
+    <DialogContent>
+      <Createbrand/>
+    </DialogContent>
+</MudDialog>
+
 @* End add product form *@
 @if (filteredProducts == null)
 {
@@ -204,8 +219,26 @@ else
                 @* <MudTd><MudTextField T="string" Label="Brand" @bind-Value="context.Brand?.Name" Required="true" RequiredError="Price is required!" /></MudTd> *@
                 @*  <MudTd><MudTextField T="string" Label="Category" @bind-Value="context.Category?.Name" Required="true" RequiredError="Price is required!" /></MudTd> *@
                 <MudTd><MudTextField T="int" Label="Category" @bind-Value="context.BarCode" Required="true" RequiredError="BarCode is required!" /></MudTd>
-                <MudTd><MudTextField T="int" Label="BrandId" @bind-Value="context.BrandId" Required="true" RequiredError="BrandId is required!" /></MudTd>
-                <MudTd><MudTextField T="int" Label="CategoryId" @bind-Value="context.CategoryId" Required="true" RequiredError="CategoryId is required!" /></MudTd>
+                @* <MudTd><MudTextField T="int" Label="BrandId" @bind-Value="context.BrandId" Required="true" RequiredError="BrandId is required!" /></MudTd> *@
+                <MudTd>
+                    <MudSelect T="int" Label="BrandId" AnchorOrigin="Origin.BottomCenter">
+                        @foreach (var filter in filteredProducts)
+                        {
+                            <MudSelectItem Value="filter.BrandId" />
+                        }
+
+                    </MudSelect>
+                </MudTd>
+                @* <MudTd><MudTextField T="int" Label="CategoryId" @bind-Value="context.CategoryId" Required="true" RequiredError="CategoryId is required!" /></MudTd> *@
+                <MudTd>
+                    <MudSelect T="int" Label="CategoryId" AnchorOrigin="Origin.BottomCenter">
+                        @foreach (var filter in filteredProducts)
+                        {
+                            <MudSelectItem Value="filter.CategoryId" />
+                        }
+
+                    </MudSelect>
+                </MudTd>
                 <MudTd><MudTextField T="string" Label="ImagePath" @bind-Value="context.ImagePath" Required="true" RequiredError="ImagePath is required!" /></MudTd>
                 <MudTd><MudTextField T="DateTime" Label="ImagePath" @bind-Value="context.InsertDate" Required="true" RequiredError="InsertDate is required!" /></MudTd>
                 <MudTd><MudIconButton Icon="@Icons.Material.Filled.Save" OnClick="@(() => EditProduct(context.Id,context.Name,context.Description,context.Quantity,context.Price,context.BarCode,context.BrandId,context.CategoryId,context.ImagePath,context.InsertDate))" Class="mx-2" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" />  </MudTd>
@@ -215,6 +248,9 @@ else
     </MudTable>
 
 
+
+
+
 }
 
 @code {
@@ -222,18 +258,25 @@ else
     private bool _loading;
     private string searchString = "";
     private bool _readOnly = true;
-
     public IEnumerable<Product> products = new List<Product>();
+    public IEnumerable<Brand> brands = new List<Brand>();
     public IEnumerable<Product> filteredProducts = new List<Product>();
-
-
-
     public bool checkempty { get; set; }
     public void show() => _readOnly = false;
     public void Close() => _readOnly = true;
-
     [CascadingParameter]
     private MudDialogInstance MudDialog { get; set; }
+    //start modal
+    private bool showInnerComponent = false;
+    private bool showInnerComponentBrands = false;
+    private bool showInnerComponentDone = false;
+    private readonly DialogOptions _dialogOptions = new() { FullWidth = true };
+    private void OpenDialog() => showInnerComponent = true;
+    private void OpenDialogBrand() => showInnerComponentBrands = true;
+    private void OpenDialogDone() => showInnerComponentDone = true;
+    private void Cancel() => showInnerComponent = false;
+    private void CancelDone() => showInnerComponentDone = false;
+    //end modal
     protected override async Task OnInitializedAsync()
     {
         var request = await ProductService.GetAllProductsAsync();
@@ -243,11 +286,22 @@ else
         }
 
         filteredProducts = products;
+
+
+        // var requestBrand = await BrandService.GetAllBrandsAsync();
+        // if (requestBrand.Success)
+        // {
+        //     brands = requestBrand.Data!;
+        // }
+
+
+
     }
     private async Task deleteData(int id)
     {
         success = true;
         var product = createProduct;
+
         var request = await ProductService.DeleteProductAsync(id);
         if (request.Success)
         {
@@ -313,20 +367,6 @@ else
 
     // end code form
 
-    //start modal
-
-    private bool showInnerComponent = false;
-    private bool showInnerComponentDone = false;
-    private readonly DialogOptions _dialogOptions = new() { FullWidth = true };
-    private void OpenDialog() => showInnerComponent = true;
-    private void OpenDialogDone() => showInnerComponentDone = true;
-    private void Cancel() => showInnerComponent = false;
-    private void CancelDone() => showInnerComponentDone = false;
-
-
-    //end modal
-
-
     //Start Filtring
     private void FilterProducts()
     {
@@ -344,7 +384,7 @@ else
 
     //start Edit fun
     // context.Id,context.Name,context.Description,context.Quantity,context.Price,context.BarCode,context.BrandId,context.CategoryId,context.ImagePath,context.InsertDate
-    private async Task EditProduct(int id, string Name,string  Description ,int Quantity,   double price,int barcode , int brandid,int categoryid,string imagepath,DateTime insertdate )
+    private async Task EditProduct(int id, string Name, string Description, int Quantity, double price, int barcode, int brandid, int categoryid, string imagepath, DateTime insertdate)
     {
         createProduct.Name = Name;
         createProduct.Description = Description;
@@ -355,7 +395,7 @@ else
         createProduct.CategoryId = categoryid;
         createProduct.ImagePath = imagepath;
         createProduct.InsertDate = insertdate;
-        createProduct.IsDeleted  = false;
+        createProduct.IsDeleted = false;
         createProduct.DeletedAt = null;
         var product = createProduct;
         _readOnly = false;
@@ -367,7 +407,6 @@ else
             // products = requestRefresh.Data!;
             filteredProducts = products;
             Snackbar.Add("Modify Product with Id :" + id + " Done successfully ", Severity.Success);
-
             StateHasChanged();
             FilterProducts();
             Close();
@@ -378,7 +417,7 @@ else
         }
 
     }
-     //End Edit fun
+    //End Edit fun
     //start Delete Dialog
 
     string state = "Message box hasn't been opened yet";
