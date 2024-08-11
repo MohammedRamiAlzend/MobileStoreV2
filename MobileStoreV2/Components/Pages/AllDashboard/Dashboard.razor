@@ -32,9 +32,7 @@
     checkempty = false;
 }
 <div class="continer">
-
     <MudButton Variant="Variant.Filled" @onclick="OpenDialog" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add"> إضافة منتجات </MudButton>
-
 </div>
 
 <div class="continer">
@@ -42,8 +40,6 @@
     <MudButton Variant="Variant.Filled" @onclick="OpenDialogBrand" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add"> إضافة علامة تجارية </MudButton>
 
 </div>
-
-
 
 @* start add product form *@
 
@@ -247,9 +243,7 @@ else
         </RowTemplate>
     </MudTable>
 
-
-
-
+    <Createbrand/>
 
 }
 
@@ -286,16 +280,6 @@ else
         }
 
         filteredProducts = products;
-
-
-        // var requestBrand = await BrandService.GetAllBrandsAsync();
-        // if (requestBrand.Success)
-        // {
-        //     brands = requestBrand.Data!;
-        // }
-
-
-
     }
     private async Task deleteData(int id)
     {
