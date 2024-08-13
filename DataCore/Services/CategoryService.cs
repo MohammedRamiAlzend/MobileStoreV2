@@ -4,6 +4,8 @@ using DataCore.Models;
 using DataCore.Services.Interfaces;
 
 
+
+
 namespace DataCore.Services
 {
     public class CategoryService : ICategoryService
@@ -27,7 +29,7 @@ namespace DataCore.Services
             {
                 return new DataBaseRequest
                 {
-                    Message = "Category created successfully",
+                    Message = "Category Created Successfully",
                     Success = true,
                 };
             }

@@ -1,23 +1,22 @@
-﻿@page "/Createbrand"
+﻿@page "/categor"
 @using System.Net.Http.Json
 @using System.ComponentModel.DataAnnotations
 @inject IDialogService DialogService
 @using DataCore.Services.Interfaces
 @using DataCore.Models
-@inject IBrandService brandservice
+@inject ICategoryService categoryService
 @inject ISnackbar Snackbar
 
-<h3>Brands</h3>
+<h3>Cateorey</h3>
 
-<EditForm Model="@CreateBrand" OnValidSubmit="OnValidSubmit">
+<EditForm Model="@CreateCategory" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator />
     <MudGrid>
         <MudItem xs="12" sm="12">
             <MudCard>
                 <MudCardContent>
-                    @* <MudTextField Label="Name" HelperText="Max. 8 characters"@bind-Value="CreateBrand.Name" For="@(() => CreateBrand.Name)" InputType="InputType.Text" /> *@
-                    <MudTextField T="string" Label="Username" @bind-Value="CreateBrand.Name" For="@(() => CreateBrand.Name)" Required="true" RequiredError="User name is required!" />
-
+                    @* <MudTextField Label="Name" HelperText="Max. 8 characters"@bind-Value="CreateCategory.Name" For="@(() => CreateCategory.Name)" InputType="InputType.Text" /> *@
+                    <MudTextField T="string" Label="Username"  @bind-Value="CreateCategory.Name" For="@(() => CreateCategory.Name)" Required="true" RequiredError="User name is required!" />
                 </MudCardContent>
                 <MudCardActions Class="d-xl-inline-flex" Style="display:flex;justify-content:end">
                     <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Add</MudButton>
@@ -27,7 +26,11 @@
     </MudGrid>
 </EditForm>
 
-<MudTable Items="@brands" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
+
+
+
+
+<MudTable Items="@category" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
     <HeaderContent>
         <MudTh>Name</MudTh>
         <MudTh>Delete</MudTh>
@@ -38,37 +41,39 @@
     </RowTemplate>
 </MudTable>
 
-
 @code {
-    Brand CreateBrand = new Brand();
+
+    Category CreateCategory = new Category();
 
     private bool _readOnly = true;
-    public IEnumerable<Brand> brands = new List<Brand>();
+
+    public IEnumerable<Category> category = new List<Category>();
     private bool _hidePosition;
     private bool _loading;
+
     protected override async Task OnInitializedAsync()
     {
-        var requestbrand = await brandservice.GetAllBrandsAsync();
-        if (requestbrand.Success)brands = requestbrand.Data!;
+        var requestbrand = await categoryService.GetAllCategoryAsync();
+        if (requestbrand.Success) category = requestbrand.Data!;
     }
     private async void OnValidSubmit(EditContext context)
     {
-        if (CreateBrand.Name == null)
-        {
+        if(CreateCategory.Name== null ){
             Snackbar.Add("Name failed is required", Severity.Error);
             return;
         }
-        var brand = CreateBrand;
-        var request = await brandservice.CreateBrandAsync(brand);
-        var requestRefresh = await brandservice.GetAllBrandsAsync();
+
+        var brand = CreateCategory;
+        var request = await categoryService.CreateCategoryAsync(brand);
+        var requestRefresh = await categoryService.GetAllCategoryAsync();
 
         if (request.Success)
         {
 
-            brands.Append(brand);
-            brands = requestRefresh.Data!;
-            Snackbar.Add("Add Brand Done Successfully", Severity.Success);
-            CreateBrand = new Brand();
+            category.Append(brand);
+            category = requestRefresh.Data!;
+            Snackbar.Add("Add Category Done Successfully", Severity.Success);
+            CreateCategory = new Category();
             StateHasChanged();
         }
         else
@@ -81,10 +86,10 @@
     }
     private async Task deleteData(int id)
     {
-    
-        var product = CreateBrand;
 
-        var request = await brandservice.DeleteBrandAsync(id);
+        var product = CreateCategory;
+
+        var request = await categoryService.DeleteCategoryAsync(id);
         if (request.Success)
         {
 
@@ -98,10 +103,10 @@
 
         }
 
-        var requestRefresh = await brandservice.GetAllBrandsAsync();
+        var requestRefresh = await categoryService.GetAllCategoryAsync();
         if (request.Success)
         {
-            brands = requestRefresh.Data!;
+            category = requestRefresh.Data!;
         }
 
         StateHasChanged();

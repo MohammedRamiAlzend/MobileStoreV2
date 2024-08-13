@@ -37,7 +37,9 @@
 
 <div class="continer">
 
-    <MudButton Variant="Variant.Filled" @onclick="OpenDialogBrand" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add"> إضافة علامة تجارية </MudButton>
+    <MudButton Variant="Variant.Filled" @onclick="OpenDialogBrand" Color="Color.Primary"   StartIcon="@Icons.Material.Filled.Add" Class="mx-2"> إضافة علامة تجارية </MudButton>
+
+    <MudButton Variant="Variant.Filled" @onclick="OpenDialogCategory" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add"> إضافة صنف </MudButton>
 
 </div>
 
@@ -140,13 +142,25 @@
 </MudDialog>
 
 
-<MudDialog @bind-IsVisible="showInnerComponentBrands">
+<MudDialog @bind-IsVisible="showInnerComponentBrands" >
 
     <TitleContent>
         Add Brand
     </TitleContent>
     <DialogContent>
       <Createbrand/>
+    </DialogContent>
+</MudDialog>
+
+
+
+<MudDialog @bind-IsVisible="showInnerComponentCategory">
+
+    <TitleContent>
+        Add Category
+    </TitleContent>
+    <DialogContent>
+        <Cateorey />
     </DialogContent>
 </MudDialog>
 
@@ -243,7 +257,6 @@ else
         </RowTemplate>
     </MudTable>
 
-    <Createbrand/>
 
 }
 
@@ -263,13 +276,19 @@ else
     //start modal
     private bool showInnerComponent = false;
     private bool showInnerComponentBrands = false;
+    private bool showInnerComponentCategory = false;
     private bool showInnerComponentDone = false;
     private readonly DialogOptions _dialogOptions = new() { FullWidth = true };
     private void OpenDialog() => showInnerComponent = true;
-    private void OpenDialogBrand() => showInnerComponentBrands = true;
+    private void OpenDialogBrand() =>showInnerComponentBrands = true;
+    private void OpenDialogCategory() => showInnerComponentCategory = true;
     private void OpenDialogDone() => showInnerComponentDone = true;
     private void Cancel() => showInnerComponent = false;
     private void CancelDone() => showInnerComponentDone = false;
+
+
+   
+
     //end modal
     protected override async Task OnInitializedAsync()
     {
@@ -336,6 +355,8 @@ else
                 products.Append(product);
                 products = requestRefresh.Data!;
                 filteredProducts = products;
+                Snackbar.Add("Add Product Done successfully", Severity.Success);
+
                 StateHasChanged();
             }
             else
