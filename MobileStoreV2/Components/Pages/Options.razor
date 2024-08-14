@@ -1,6 +1,6 @@
 ﻿@page "/Options"
 <h3>Options</h3>
-
+@using MobileStoreV2.Components.Pages.AllDashboard
 <link href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" rel="stylesheet">
 
 
@@ -36,7 +36,7 @@
         <MudPaper Height="400px" Width="100%">
             <MudContainer Fixed="true">
                 <MudPaper Height="400px" Width="100%" Square="true" >
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary">Create Database</MudButton>
+                    <CreateDatabase/>
                 </MudPaper>
             </MudContainer>
         </MudPaper>

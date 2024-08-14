@@ -6,6 +6,10 @@
 @using DataCore.Services.Interfaces
 @using DataCore.Models
 @inject IProductService ProductService
+@inject IBrandService brandservice
+@inject ICategoryService categoryService
+
+
 @inject ISnackbar Snackbar
 
 
@@ -231,20 +235,21 @@ else
                 <MudTd><MudTextField T="int" Label="Category" @bind-Value="context.BarCode" Required="true" RequiredError="BarCode is required!" /></MudTd>
                 @* <MudTd><MudTextField T="int" Label="BrandId" @bind-Value="context.BrandId" Required="true" RequiredError="BrandId is required!" /></MudTd> *@
                 <MudTd>
-                    <MudSelect T="int" Label="BrandId" AnchorOrigin="Origin.BottomCenter">
-                        @foreach (var filter in filteredProducts)
+                    <MudSelect T="string" Label="BrandId" AnchorOrigin="Origin.BottomCenter">
+                        @foreach (var filter in brands)
                         {
-                            <MudSelectItem Value="filter.BrandId" />
+                            <MudSelectItem Value="filter.Name" />
+
                         }
 
                     </MudSelect>
                 </MudTd>
                 @* <MudTd><MudTextField T="int" Label="CategoryId" @bind-Value="context.CategoryId" Required="true" RequiredError="CategoryId is required!" /></MudTd> *@
                 <MudTd>
-                    <MudSelect T="int" Label="CategoryId" AnchorOrigin="Origin.BottomCenter">
-                        @foreach (var filter in filteredProducts)
+                    <MudSelect T="string" Label="CategoryId" AnchorOrigin="Origin.BottomCenter">
+                        @foreach (var filter in category)
                         {
-                            <MudSelectItem Value="filter.CategoryId" />
+                            <MudSelectItem Value="filter.Name" />
                         }
 
                     </MudSelect>
@@ -267,6 +272,8 @@ else
     private bool _readOnly = true;
     public IEnumerable<Product> products = new List<Product>();
     public IEnumerable<Brand> brands = new List<Brand>();
+    public IEnumerable<Category> category = new List<Category>();
+
     public IEnumerable<Product> filteredProducts = new List<Product>();
     public bool checkempty { get; set; }
     public void show() => _readOnly = false;
@@ -287,6 +294,9 @@ else
     private void CancelDone() => showInnerComponentDone = false;
 
 
+
+
+
    
 
     //end modal
@@ -299,6 +309,14 @@ else
         }
 
         filteredProducts = products;
+
+
+        var requestbrand = await brandservice.GetAllBrandsAsync();
+        if (requestbrand.Success) brands = requestbrand.Data!;
+    
+        var requestGategory = await categoryService.GetAllCategoryAsync();
+        if (requestGategory.Success) category = requestGategory.Data!;
+
     }
     private async Task deleteData(int id)
     {

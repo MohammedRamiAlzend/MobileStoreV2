@@ -1,6 +1,6 @@
 ﻿@page "/database-management"
 @using Microsoft.EntityFrameworkCore
-
+@using DataCore.Services
 @using DataCore.Data
 @using MudBlazor
 @inject ApplicationDbContext DbContext
@@ -14,7 +14,8 @@
 @inject IDialogService DialogService
 @using DataCore.Services.Interfaces
 @using DataCore.Models
-@inject IProductService ProductService
+@inject Createdatabase createDatabase
+
 @inject ISnackbar Snackbar
 
 
@@ -93,7 +94,7 @@ else
             // Apply pending migrations
             await DbContext.Database.MigrateAsync();
             message = "Migrations applied successfully.";
-            databases = await ProductService.GetAllDatabasesAsync();
+            databases = await createDatabase.GetAllDatabasesAsync();
 
             loadding = false;
         }
@@ -108,13 +109,13 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        databases = await ProductService.GetAllDatabasesAsync();
+        databases = await createDatabase.GetAllDatabasesAsync();
     }
     //End get all DataBases
     private void NavigateToLSignup()
     {
         loaddingR = true;
-        Navigation.NavigateTo("/");
+        Navigation.NavigateTo("/sdwad");
 
     }
 

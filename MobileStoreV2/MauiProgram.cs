@@ -24,8 +24,8 @@ namespace MobileStoreV2
             //var connectionString = "Server=DESKTOP-SVMILGI\\DELL;Database=MobileStore;Trusted_Connection=True;TrustServerCertificate=True;";
             //Console.WriteLine(Environment.MachineName);
 
-            //var connectionString = $"Server={Environment.MachineName}\\{Environment.UserName};Database=MobileStore;Trusted_Connection=True;TrustServerCertificate=True;";
-            var connectionString = $"Server={Environment.MachineName};Database=MobileStore;Trusted_Connection=True;TrustServerCertificate=True;";
+            var connectionString = $"Server={Environment.MachineName}\\{Environment.UserName};Database=MobileStore;Trusted_Connection=True;TrustServerCertificate=True;";
+            //var connectionString = $"Server={Environment.MachineName};Database=MobileStore;Trusted_Connection=True;TrustServerCertificate=True;";
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
@@ -33,6 +33,7 @@ namespace MobileStoreV2
             builder.Services.AddTransient<IProductService, ProductService>();
             builder.Services.AddTransient<ICategoryService, CategoryService>();
             builder.Services.AddTransient<IBrandService, BrandService>();
+            builder.Services.AddTransient<Createdatabase>();
 
             builder.Services.AddMauiBlazorWebView();
             builder.Services.AddMudServices();

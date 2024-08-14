@@ -1,7 +1,11 @@
-﻿<Router AppAssembly="@typeof(MauiProgram).Assembly">
+﻿@using MobileStoreV2.Components.Pages
+<Router AppAssembly="@typeof(MauiProgram).Assembly">
     <Found Context="routeData">
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(Layout.MainLayout)" />
         
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />
     </Found>
+    <NotFound>
+        <Pagenotfound/>
+    </NotFound>
 </Router>
