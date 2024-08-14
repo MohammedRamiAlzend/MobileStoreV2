@@ -1,0 +1,122 @@
+﻿@page "/database-management"
+@using Microsoft.EntityFrameworkCore
+
+@using DataCore.Data
+@using MudBlazor
+@inject ApplicationDbContext DbContext
+
+@inject ISnackbar Snackbar
+
+@inject NavigationManager Navigation
+
+@using System.Net.Http.Json
+@using System.ComponentModel.DataAnnotations
+@inject IDialogService DialogService
+@using DataCore.Services.Interfaces
+@using DataCore.Models
+@inject IProductService ProductService
+@inject ISnackbar Snackbar
+
+
+
+@using Microsoft.AspNetCore.Authorization
+@* @attribute [Authorize(Policy = "admin")] *@
+
+
+<h3>
+    Database Management System
+
+</h3>
+
+
+
+
+@if (message != null)
+{
+    <MudText Typo="Typo.body1">@message</MudText>
+
+}
+@if (databases == null)
+{
+    <p><em>No databases found.</em></p>
+}
+else if (!databases.Any())
+{
+    <p>No databases found.</p>
+}
+else
+{
+    <ul>
+        @foreach (var db in databases)
+        {
+            <h2>Your Database : @db </h2>
+        }
+    </ul>
+}
+
+<MudButton Variant="Variant.Filled" Color="Color.Secondary" Class="mx-2" OnClick="ApplyMigrations">
+    Apply Creation
+    @if (loadding == true)
+    {
+        <MudProgressCircular Class="mx-2" Color="Color.Primary" Size="Size.Small" Indeterminate="true" />
+    }
+</MudButton>
+@if (message != null || databases != null)
+{
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="NavigateToLSignup">
+        Register
+        @if (loaddingR == true)
+        {
+            <MudProgressCircular Class="mx-2" Color="Color.Dark" Size="Size.Small" Indeterminate="true" />
+        }
+    </MudButton>
+}
+
+
+<MudSpacer />
+
+@code {
+    private string message;
+    
+    bool Visiable;
+    private bool loadding;
+    private bool loaddingR;
+
+
+    private async Task ApplyMigrations()
+    {
+
+        try
+        {
+            loadding = true;
+
+            // Apply pending migrations
+            await DbContext.Database.MigrateAsync();
+            message = "Migrations applied successfully.";
+            databases = await ProductService.GetAllDatabasesAsync();
+
+            loadding = false;
+        }
+        catch (Exception ex)
+        {
+            message = $"Error applying migrations: {ex.Message}";
+        }
+    }
+
+    //start get all DataBases
+    private List<string> databases;
+
+    protected override async Task OnInitializedAsync()
+    {
+        databases = await ProductService.GetAllDatabasesAsync();
+    }
+    //End get all DataBases
+    private void NavigateToLSignup()
+    {
+        loaddingR = true;
+        Navigation.NavigateTo("/");
+
+    }
+
+  
+}
