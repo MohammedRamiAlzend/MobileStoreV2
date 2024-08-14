@@ -3,14 +3,19 @@
 @using System.Net.Http.Json
 @using System.ComponentModel.DataAnnotations
 @inject IDialogService DialogService
+@using DataCore.Data
 @using DataCore.Services.Interfaces
 @using DataCore.Models
 @inject IProductService ProductService
 @inject IBrandService brandservice
 @inject ICategoryService categoryService
-
+@using Microsoft.AspNetCore.Components
+@using System.Globalization;
 
 @inject ISnackbar Snackbar
+
+@using Microsoft.EntityFrameworkCore;
+
 
 
 
@@ -235,10 +240,10 @@ else
                 <MudTd><MudTextField T="int" Label="Category" @bind-Value="context.BarCode" Required="true" RequiredError="BarCode is required!" /></MudTd>
                 @* <MudTd><MudTextField T="int" Label="BrandId" @bind-Value="context.BrandId" Required="true" RequiredError="BrandId is required!" /></MudTd> *@
                 <MudTd>
-                    <MudSelect T="string" Label="BrandId" AnchorOrigin="Origin.BottomCenter">
+                    <MudSelect T="int" Label="BrandId" @bind-Value="context.BrandId" AnchorOrigin="Origin.BottomCenter">
                         @foreach (var filter in brands)
                         {
-                            <MudSelectItem Value="filter.Name" />
+                            <MudSelectItem Value="filter.Id" />
 
                         }
 
@@ -246,23 +251,26 @@ else
                 </MudTd>
                 @* <MudTd><MudTextField T="int" Label="CategoryId" @bind-Value="context.CategoryId" Required="true" RequiredError="CategoryId is required!" /></MudTd> *@
                 <MudTd>
-                    <MudSelect T="string" Label="CategoryId" AnchorOrigin="Origin.BottomCenter">
+                    <MudSelect T="int" Label="CategoryId" @bind-Value="context.CategoryId" AnchorOrigin="Origin.BottomCenter">
                         @foreach (var filter in category)
                         {
-                            <MudSelectItem Value="filter.Name" />
+                            <MudSelectItem Value="filter.Id" />
                         }
 
                     </MudSelect>
                 </MudTd>
                 <MudTd><MudTextField T="string" Label="ImagePath" @bind-Value="context.ImagePath" Required="true" RequiredError="ImagePath is required!" /></MudTd>
                 <MudTd><MudTextField T="DateTime" Label="ImagePath" @bind-Value="context.InsertDate" Required="true" RequiredError="InsertDate is required!" /></MudTd>
-                <MudTd><MudIconButton Icon="@Icons.Material.Filled.Save" OnClick="@(() => EditProduct(context.Id,context.Name,context.Description,context.Quantity,context.Price,context.BarCode,context.BrandId,context.CategoryId,context.ImagePath,context.InsertDate))" Class="mx-2" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" />  </MudTd>
+                <MudTd><MudIconButton Icon="@Icons.Material.Filled.Save" OnClick="@(() => EditProduct(context.Id,context.Name,context.Description,context.Quantity,context.BrandId,context.CategoryId,context.Price,context.BarCode,context.ImagePath,context.InsertDate))" Class="mx-2" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" />  </MudTd>
                 <MudTd><MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="@(() => Close())" Variant="Variant.Filled" Color="Color.Error" Size="Size.Medium" />    </MudTd>
             }
         </RowTemplate>
     </MudTable>
 
+    <MudChip T="string" Color="Color.Primary">@BrandValue</MudChip>
 
+
+    @CategoryValue;
 }
 
 @code {
@@ -270,6 +278,9 @@ else
     private bool _loading;
     private string searchString = "";
     private bool _readOnly = true;
+    private int BrandValue { get; set; }
+    private string CategoryValue { get; set; }
+
     public IEnumerable<Product> products = new List<Product>();
     public IEnumerable<Brand> brands = new List<Brand>();
     public IEnumerable<Category> category = new List<Category>();
@@ -292,12 +303,13 @@ else
     private void OpenDialogDone() => showInnerComponentDone = true;
     private void Cancel() => showInnerComponent = false;
     private void CancelDone() => showInnerComponentDone = false;
+    private readonly ApplicationDbContext _context;
 
 
 
 
 
-   
+
 
     //end modal
     protected override async Task OnInitializedAsync()
@@ -313,7 +325,7 @@ else
 
         var requestbrand = await brandservice.GetAllBrandsAsync();
         if (requestbrand.Success) brands = requestbrand.Data!;
-    
+
         var requestGategory = await categoryService.GetAllCategoryAsync();
         if (requestGategory.Success) category = requestGategory.Data!;
 
@@ -407,19 +419,32 @@ else
 
     //start Edit fun
     // context.Id,context.Name,context.Description,context.Quantity,context.Price,context.BarCode,context.BrandId,context.CategoryId,context.ImagePath,context.InsertDate
-    private async Task EditProduct(int id, string Name, string Description, int Quantity, double price, int barcode, int brandid, int categoryid, string imagepath, DateTime insertdate)
+    private async Task EditProduct(int id, string Name, string Description, int Quantity, int brainid , int categoryId,double price, int barcode, string imagepath, DateTime insertdate)
     {
+
+
+        // var resultcategorycategory = await _context.Categories.Where(x => x.Name == CategoryValue).FirstOrDefaultAsync();
+
+        // var request = await _context.Categories.FirstOrDefaultAsync(p => p.Name == CategoryValue);
+
+        // var resultcategorybrand = await _context.Brands.Where(x => x.Name == BrandValue).Select(x => x.Id).FirstOrDefaultAsync();
+    
+            // Snackbar.Add(request, Severity.Error);
+
+     
+
         createProduct.Name = Name;
         createProduct.Description = Description;
         createProduct.Quantity = Quantity;
         createProduct.Price = price;
         createProduct.BarCode = barcode;
-        createProduct.BrandId = brandid;
-        createProduct.CategoryId = categoryid;
+        createProduct.BrandId = brainid;
+        createProduct.CategoryId = categoryId;
         createProduct.ImagePath = imagepath;
         createProduct.InsertDate = insertdate;
         createProduct.IsDeleted = false;
         createProduct.DeletedAt = null;
+
         var product = createProduct;
         _readOnly = false;
         var response = await ProductService.UpdateProductAsync(id, product);
