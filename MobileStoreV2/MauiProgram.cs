@@ -1,11 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using DataCore.Data;
-using MudBlazor.Services;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using DataCore.Services.Interfaces;
-using DataCore.Services;
-
+﻿
 namespace MobileStoreV2
 {
     public static class MauiProgram
@@ -35,15 +28,17 @@ namespace MobileStoreV2
             builder.Services.AddTransient<IBrandService, BrandService>();
             builder.Services.AddTransient<Createdatabase>();
 
+
             builder.Services.AddMauiBlazorWebView();
             builder.Services.AddMudServices();
 
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
-
-            return builder.Build();
+            var app = builder.Build();
+            DataSeeder.EnsurePopulated(app);
+            return app;
         }
     }
 }

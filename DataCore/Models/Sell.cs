@@ -1,14 +1,7 @@
-﻿using DataCore.Models.SoftDelete;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace DataCore.Models
 {
-    public class Sell:ISoftDelete
+    public class Sell : ISoftDelete
     {
         // Primary key
         public int Id { get; set; }

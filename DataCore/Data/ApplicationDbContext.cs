@@ -3,11 +3,12 @@ using DataCore.Models;
 namespace DataCore.Data
 {
 
-    
+
     public class ApplicationDbContext : DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
+
         }
 
         // DbSet for Products
@@ -30,36 +31,23 @@ namespace DataCore.Data
             //optionsBuilder.UseSqlServer($"Server={Environment.MachineName}\\{Environment.UserName};Database=MobileStore;Trusted_Connection=True;TrustServerCertificate=True;");
             optionsBuilder
                    .AddInterceptors(new SoftDeleteInterceptor());
+
+
             base.OnConfiguring(optionsBuilder);
 
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Bill>()
-            .HasQueryFilter(x => x.DeletedAt.HasValue == false);
-
-            modelBuilder.Entity<Brand>()
-            .HasQueryFilter(x => x.DeletedAt.HasValue == false);
-
-            modelBuilder.Entity<Product>()
-            .HasQueryFilter(x => x.DeletedAt.HasValue == false);
-
-            modelBuilder.Entity<Category>()
-            .HasQueryFilter(x => x.DeletedAt.HasValue == false);
-
-            modelBuilder.Entity<Sell>()
-            .HasQueryFilter(x => x.DeletedAt.HasValue == false);
-
-            modelBuilder.Entity<Product>(entity =>
-            {
-                // Other configurations
-                entity.Property(e => e.IsDeleted).HasDefaultValue(false);
-                entity.Property(e => e.DeletedAt).HasColumnType("datetime2");
-            });
-
+            //modelBuilder.Entity<Product>(entity =>
+            //{
+            //    // Other configurations
+            //    entity.Property(e => e.IsDeleted).HasDefaultValue(false);
+            //    entity.Property(e => e.DeletedAt).HasColumnType("datetime2");
+            //});
 
             // Configuring the one-to-many relationship between Product and Barnd
             modelBuilder.Entity<Product>()
+                .HasQueryFilter(x => x.IsDeleted == false)
                 .HasOne(c => c.Brand)
                 .WithMany(p => p.Products)
                 .HasForeignKey(p => p.BrandId)
@@ -67,6 +55,7 @@ namespace DataCore.Data
 
             // Configuring the one-to-many relationship between Product and Category
             modelBuilder.Entity<Product>()
+                .HasQueryFilter(x => x.IsDeleted == false)
                 .HasOne(c => c.Category)
                 .WithMany(p => p.Products)
                 .HasForeignKey(p => p.CategoryId)
@@ -77,15 +66,17 @@ namespace DataCore.Data
 
             // Configuring the one-to-many relationship between Bill and Sell
             modelBuilder.Entity<Bill>()
+                .HasQueryFilter(x => x.IsDeleted == false)
                 .HasMany(b => b.Sells)
                 .WithOne(s => s.Bill)
                 .HasForeignKey(s => s.BillId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-        
+
 
             // Configuring the one-to-many relationship between Brand and Product
             modelBuilder.Entity<Brand>()
+                .HasQueryFilter(x => x.IsDeleted == false)
                 .HasMany(b => b.Products)
                 .WithOne(p => p.Brand)
                 .HasForeignKey(p => p.BrandId)
@@ -93,10 +84,12 @@ namespace DataCore.Data
 
             // Configuring the one-to-many relationship between Category and Product
             modelBuilder.Entity<Category>()
+                .HasQueryFilter(x => x.IsDeleted == false)
                 .HasMany(c => c.Products)
                 .WithOne(p => p.Category)
                 .HasForeignKey(p => p.CategoryId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
+
     }
 }

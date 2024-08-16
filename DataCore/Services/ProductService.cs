@@ -1,9 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using DataCore.Data;
-using DataCore.Models;
-using DataCore.Services.Interfaces;
-using System.Diagnostics;
-
+﻿
 namespace DataCore.Services
 {
     public class ProductService : IProductService
@@ -16,7 +11,7 @@ namespace DataCore.Services
         public ProductService(ApplicationDbContext context, DbContextOptions<ApplicationDbContext> options)
         {
             _context = context;
-      
+
 
         }
 
@@ -69,8 +64,9 @@ namespace DataCore.Services
             }
             try
             {
-                product.IsDeleted = true;
-                product.DeletedAt = DateTime.UtcNow;
+                //product.IsDeleted = true;
+                //product.DeletedAt = DateTime.UtcNow;
+                _context.Entry(product).State = EntityState.Deleted;
                 _context.Products.Remove(product);
                 var result = await _context.SaveChangesAsync();
                 if (result > 0)
@@ -231,7 +227,7 @@ namespace DataCore.Services
 
             }
         }
-      
+
 
     }
 }
