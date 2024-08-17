@@ -253,7 +253,7 @@ else
                 </MudTd>
                 <MudTd><MudTextField T="string" Label="ImagePath" @bind-Value="context.ImagePath" Required="true" RequiredError="ImagePath is required!" /></MudTd>
                 <MudTd><MudTextField T="DateTime" Label="ImagePath" @bind-Value="context.InsertDate" Required="true" RequiredError="InsertDate is required!" /></MudTd>
-                <MudTd><MudIconButton Icon="@Icons.Material.Filled.Save" OnClick="@(() => EditProduct(context.Id,context.Name,context.Description,context.Quantity,context.BrandId,context.CategoryId,context.Price,context.BarCode,context.ImagePath,context.InsertDate))" Class="mx-2" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" />  </MudTd>
+                <MudTd><MudIconButton Icon="@Icons.Material.Filled.Save" OnClick="@(() => EditProduct(context))" Class="mx-2" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" />  </MudTd>
                 <MudTd><MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="@(() => Close())" Variant="Variant.Filled" Color="Color.Error" Size="Size.Medium" />    </MudTd>
             }
         </RowTemplate>
@@ -411,43 +411,64 @@ else
 
     //start Edit fun
     // context.Id,context.Name,context.Description,context.Quantity,context.Price,context.BarCode,context.BrandId,context.CategoryId,context.ImagePath,context.InsertDate
-    private async Task EditProduct(int id, string Name, string Description, int Quantity, int brainid , int categoryId,double price, int barcode, string imagepath, DateTime insertdate)
+    // private async Task EditProduct(int id, string Name, string Description, int Quantity, int brainid , int categoryId,double price, int barcode, string imagepath, DateTime insertdate)
+    // {
+
+
+    //     Snackbar.Add(CategoryValue, Severity.Success);
+
+    //   var catenames = await  GetCategoryByIdAsync(CategoryValue);
+
+        
+        
+    //     // var request = await _context.Categories.FirstOrDefaultAsync(p => p.Name == CategoryValue);
+
+    //     // Snackbar.Add(request, Severity.Error);
+
+
+    //     createProduct.Name = Name;
+    //     createProduct.Description = Description;
+    //     createProduct.Quantity = Quantity;
+    //     createProduct.Price = price;
+    //     createProduct.BarCode = barcode;
+    //     createProduct.BrandId = brainid;
+    //     createProduct.CategoryId = 2;
+    //     createProduct.ImagePath = imagepath;
+    //     createProduct.InsertDate = insertdate;
+    //     createProduct.IsDeleted = false;
+    //     createProduct.DeletedAt = null;
+
+    //     var product = createProduct;
+    //     _readOnly = false;
+    //     var response = await ProductService.UpdateProductAsync(id, product);
+    //     var requestRefresh = await ProductService.GetProductByIdAsync(id);
+
+    //     if (response.Success)
+    //     {
+    //         // products = requestRefresh.Data!;
+    //         filteredProducts = products;
+    //         Snackbar.Add("Modify Product with Id :" + id + " Done successfully ", Severity.Success);
+    //         StateHasChanged();
+    //         FilterProducts();
+    //         Close();
+    //     }
+    //     else
+    //     {
+    //         Snackbar.Add("Update  Not Done", Severity.Error);
+    //     }
+
+    // }
+    private async Task EditProduct(Product product)
     {
-
-
-        Snackbar.Add(CategoryValue, Severity.Success);
-
-      var catenames = await  GetCategoryByIdAsync(CategoryValue);
-
-        
-        
-        // var request = await _context.Categories.FirstOrDefaultAsync(p => p.Name == CategoryValue);
-
-        // Snackbar.Add(request, Severity.Error);
-
-
-        createProduct.Name = Name;
-        createProduct.Description = Description;
-        createProduct.Quantity = Quantity;
-        createProduct.Price = price;
-        createProduct.BarCode = barcode;
-        createProduct.BrandId = brainid;
-        createProduct.CategoryId = 2;
-        createProduct.ImagePath = imagepath;
-        createProduct.InsertDate = insertdate;
-        createProduct.IsDeleted = false;
-        createProduct.DeletedAt = null;
-
-        var product = createProduct;
         _readOnly = false;
-        var response = await ProductService.UpdateProductAsync(id, product);
-        var requestRefresh = await ProductService.GetProductByIdAsync(id);
+        var response = await ProductService.UpdateProductAsync(product.Id, product);
+        var requestRefresh = await ProductService.GetProductByIdAsync(product.Id);
 
         if (response.Success)
         {
             // products = requestRefresh.Data!;
             filteredProducts = products;
-            Snackbar.Add("Modify Product with Id :" + id + " Done successfully ", Severity.Success);
+            Snackbar.Add("Modify Product with Id :" + product.Id + " Done successfully ", Severity.Success);
             StateHasChanged();
             FilterProducts();
             Close();
