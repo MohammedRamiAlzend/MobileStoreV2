@@ -111,15 +111,7 @@
 
                                 @if (success)
                                 {
-                                    createProduct.Name = "";
-                                    createProduct.BarCode = 0;
-                                    createProduct.BrandId = 0;
-                                    createProduct.CategoryId = 0;
-                                    createProduct.Description = "";
-                                    createProduct.Discount = 0;
-                                    createProduct.ImagePath = "";
-                                    createProduct.Price = 0;
-                                    createProduct.Quantity = 0;
+                                    createProduct = new Product();
                                     <MudAlert Severity="Severity.Success">Add Done Successfully </MudAlert>
                                 }
                                 else
@@ -251,10 +243,10 @@ else
                 </MudTd>
                 @* <MudTd><MudTextField T="int" Label="CategoryId" @bind-Value="context.CategoryId" Required="true" RequiredError="CategoryId is required!" /></MudTd> *@
                 <MudTd>
-                    <MudSelect T="int" Label="CategoryId" @bind-Value="context.CategoryId" AnchorOrigin="Origin.BottomCenter">
+                    <MudSelect T="string" Label="CategoryId" @bind-Value="CategoryValue" AnchorOrigin="Origin.BottomCenter">
                         @foreach (var filter in category)
                         {
-                            <MudSelectItem Value="filter.Id" />
+                            <MudSelectItem Value="filter.Name" />
                         }
 
                     </MudSelect>
@@ -423,15 +415,16 @@ else
     {
 
 
-        // var resultcategorycategory = await _context.Categories.Where(x => x.Name == CategoryValue).FirstOrDefaultAsync();
+        Snackbar.Add(CategoryValue, Severity.Success);
 
+      var catenames = await  GetCategoryByIdAsync(CategoryValue);
+
+        
+        
         // var request = await _context.Categories.FirstOrDefaultAsync(p => p.Name == CategoryValue);
 
-        // var resultcategorybrand = await _context.Brands.Where(x => x.Name == BrandValue).Select(x => x.Id).FirstOrDefaultAsync();
-    
-            // Snackbar.Add(request, Severity.Error);
+        // Snackbar.Add(request, Severity.Error);
 
-     
 
         createProduct.Name = Name;
         createProduct.Description = Description;
@@ -439,7 +432,7 @@ else
         createProduct.Price = price;
         createProduct.BarCode = barcode;
         createProduct.BrandId = brainid;
-        createProduct.CategoryId = categoryId;
+        createProduct.CategoryId = 2;
         createProduct.ImagePath = imagepath;
         createProduct.InsertDate = insertdate;
         createProduct.IsDeleted = false;
@@ -464,6 +457,30 @@ else
             Snackbar.Add("Update  Not Done", Severity.Error);
         }
 
+    }
+
+    public async Task<DataBaseRequest<Category>> GetCategoryByIdAsync(string catName)
+    {
+        var request = await _context.Categories.Where(x => x.Name == catName).FirstOrDefaultAsync();
+        
+        if (request == null)
+        {
+            return new DataBaseRequest<Category>
+                {
+                    Message = "Category not found",
+                    Success = false,
+                    Data = new Category { Name = "" },
+                };
+        }
+        else
+        {
+            return new DataBaseRequest<Category>
+                {
+                    Message = $"The category {request.Name} successfully retrieved",
+                    Success = true,
+                    Data = request,
+                };
+        }
     }
     //End Edit fun
     //start Delete Dialog
