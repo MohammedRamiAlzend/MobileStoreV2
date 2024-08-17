@@ -8,6 +8,7 @@ namespace DataCore.Services.Interfaces
         Task<DataBaseRequest<IEnumerable<Brand>>> GetAllBrandsWithDeletedAsync();
 
         Task<DataBaseRequest<Brand>> GetBrandByIdAsync(int id);
+        Task<DataBaseRequest<Brand>> GetBrandByNameAsync(string name);
         Task<DataBaseRequest> CreateBrandAsync(Brand createBrand);
         Task<DataBaseRequest> UpdateBrandAsync(int id, Brand brand);
         Task<DataBaseRequest> DeleteBrandAsync(int id);

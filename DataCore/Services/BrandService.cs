@@ -145,7 +145,28 @@ public class BrandService : IBrandService
             };
         }
     }
-
+    public async Task<DataBaseRequest<Brand>> GetBrandByNameAsync(string name)
+    {
+        var request = await _context.Brands.Where(x => x.Name.ToLower() == name.ToLower()).FirstAsync();
+        if (request == null)
+        {
+            return new DataBaseRequest<Brand>
+            {
+                Message = "Brand not found",
+                Success = false,
+                Data = new Brand { Name = "" },
+            };
+        }
+        else
+        {
+            return new DataBaseRequest<Brand>
+            {
+                Message = $"The Brand {request.Name} successfully retrieved",
+                Success = true,
+                Data = request,
+            };
+        }
+    }
     public async Task<DataBaseRequest> UpdateBrandAsync(int id, Brand brand)
     {
         var request = await _context.Brands.FindAsync(id);
