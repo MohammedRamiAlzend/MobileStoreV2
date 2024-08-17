@@ -8,6 +8,28 @@ public class CategoryService : ICategoryService
     {
         _context = context;
     }
+    public async Task<DataBaseRequest<Category>> GetCategoryByNameAsync(string name)
+    {
+        var request = await _context.Categories.Where(x => x.Name.ToLower() == name.ToLower()).FirstAsync();
+        if (request == null)
+        {
+            return new DataBaseRequest<Category>
+            {
+                Message = "Category not found",
+                Success = false,
+                Data = new Category { Name = "" },
+            };
+        }
+        else
+        {
+            return new DataBaseRequest<Category>
+            {
+                Message = $"The category {request.Name} successfully retrieved",
+                Success = true,
+                Data = request,
+            };
+        }
+    }
 
     public async Task<DataBaseRequest> CreateCategoryAsync(Category createCategory)
     {

@@ -5,6 +5,7 @@
         Task<DataBaseRequest<IEnumerable<Category>>> GetAllCategoryAsync();
         Task<DataBaseRequest<IEnumerable<Category>>> GetAllCategoryWithDeletedAsync();
         Task<DataBaseRequest<Category>> GetCategoryByIdAsync(int id);
+        Task<DataBaseRequest<Category>> GetCategoryByNameAsync(string name);
         Task<DataBaseRequest> CreateCategoryAsync(Category createCategory);
         Task<DataBaseRequest> UpdateCategoryAsync(int id, Category Category);
         Task<DataBaseRequest> DeleteCategoryAsync(int id);
