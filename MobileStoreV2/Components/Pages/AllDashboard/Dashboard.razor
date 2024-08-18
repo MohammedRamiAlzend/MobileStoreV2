@@ -143,6 +143,13 @@
 </MudDialog>
 
 
+@* <MudTabs Elevation="4" Rounded="true" Centered="true" Color="@Color.Primary">
+    <MudTabPanel Text=" Add Brand"><MudText> <Createbrand /> </MudText></MudTabPanel>
+    <MudTabPanel Text="Add Category" >  <MudText> <Cateorey /> </MudText>  </MudTabPanel>
+</MudTabs> *@
+
+ 
+
 <MudDialog @bind-IsVisible="showInnerComponentBrands">
 
     <TitleContent>
@@ -172,11 +179,13 @@
 }
 else
 {
-
     <MudTable Items="@filteredProducts"
               Hover="true"
+           
+              Editable="true"
               Breakpoint="Breakpoint.Sm"
               Loading="@_loading"
+              
               LoadingProgressColor="Color.Info"
               EditTrigger="@TableEditTrigger.EditButton"
               Striped="true">
@@ -185,12 +194,8 @@ else
         </ToolBarContent>
         <HeaderContent>
             <MudTh>ID</MudTh>
-            @if (_readOnly == true)
-            {
-
-                <MudTh>Brand</MudTh>
-                <MudTh>Category</MudTh>
-            }
+            <MudTh>Brand</MudTh>
+            <MudTh>Category</MudTh>
             <MudTh>Name</MudTh>
             <MudTh>Discount</MudTh>
             <MudTh>Description</MudTh>
@@ -201,15 +206,14 @@ else
             <MudTh>InsertDate</MudTh>
             <MudTh>Edit</MudTh>
             <MudTh>Delete</MudTh>
-
         </HeaderContent>
-        <RowTemplate>
+        <RowTemplate >
 
             @if (_readOnly == true)
             {
                 <MudTd DataLabel="Id">@context.Id</MudTd>
                 <MudTd DataLabel="Brand">@context.Brand?.Name</MudTd>
-                <MudTd DataLabel="Name">@context.Category?.Name</MudTd>
+                <MudTd DataLabel="Categor">@context.Category?.Name</MudTd>
                 <MudTd DataLabel="Name">@context.Name</MudTd>
                 <MudTd DataLabel="Discount">@context.Discount</MudTd>
                 <MudTd DataLabel="Description">@context.Description</MudTd>
@@ -220,29 +224,24 @@ else
                 <MudTd DataLabel="InsertDate">@context.InsertDate</MudTd>
                 <MudTd DataLabel="Edit"><MudIconButton Icon="@Icons.Material.Filled.Edit" Class="mx-2" OnClick="@(() => show())" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" /></MudTd>
                 <MudTd DataLabel="Delete"><MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(() => SureDialog(context.Id))" Variant="Variant.Filled" Color="Color.Error" Size="Size.Medium" /></MudTd>
+          
             }
-            else if (_readOnly == false)
+            else 
             {
-                <MudTd DataLabel="Id">@context.Id</MudTd>
-                <MudTd><MudTextField T="string" Label="Price" @bind-Value="context.Name" Required="true" RequiredError="Name is required!" /></MudTd>
-                <MudTd><MudTextField T="double" Label="Category" @bind-Value="context.Discount" Required="true" RequiredError="Discount is required!" /></MudTd>
-                <MudTd><MudTextField T="string" Label="Description" @bind-Value="context.Description" Required="true" RequiredError="Description is required!" /></MudTd>
-                <MudTd><MudTextField T="int" Label="Quantity" @bind-Value="context.Quantity" Required="true" RequiredError="Quantity is required!" /></MudTd>
-                <MudTd><MudTextField T="double" Label="Price" @bind-Value="context.Price" Required="true" RequiredError="Price is required!" /></MudTd>
-                <MudTd><MudTextField T="int" Label="Category" @bind-Value="context.BarCode" Required="true" RequiredError="BarCode is required!" /></MudTd>
+              
+                    <MudTd DataLabel="Id">@context.Id</MudTd>
+               
                 <MudTd>
-                    <MudSelect T="string" Label="BrandId" @bind-Value="BrandValue" AnchorOrigin="Origin.BottomCenter">
+                    <MudSelect T="string" Label="brands" @bind-Value="BrandValue" AnchorOrigin="Origin.BottomCenter">
                         @foreach (var filter in brands)
                         {
                             <MudSelectItem Value="filter.Name" />
-
                         }
-
                     </MudSelect>
+
                 </MudTd>
-                @* <MudTd><MudTextField T="int" Label="CategoryId" @bind-Value="context.CategoryId" Required="true" RequiredError="CategoryId is required!" /></MudTd> *@
                 <MudTd>
-                    <MudSelect T="string" Label="CategoryId" @bind-Value="CategoryValue" AnchorOrigin="Origin.BottomCenter">
+                    <MudSelect T="string" Label="category" @bind-Value="CategoryValue" AnchorOrigin="Origin.BottomCenter">
                         @foreach (var filter in category)
                         {
                             <MudSelectItem Value="filter.Name" />
@@ -250,34 +249,39 @@ else
 
                     </MudSelect>
                 </MudTd>
+            
+                <MudTd><MudTextField T="string" Label="Name" @bind-Value="context.Name" Required="true" RequiredError="Name is required!" /></MudTd>
+                <MudTd><MudTextField T="double" Label="Discount" @bind-Value="context.Discount" Required="true" RequiredError="Discount is required!" /></MudTd>
+                <MudTd><MudTextField T="string" Label="Description" @bind-Value="context.Description" Required="true" RequiredError="Description is required!" /></MudTd>
+                <MudTd><MudTextField T="int" Label="Quantity" @bind-Value="context.Quantity" Required="true" RequiredError="Quantity is required!" /></MudTd>
+                <MudTd><MudTextField T="double" Label="Price" @bind-Value="context.Price" Required="true" RequiredError="Price is required!" /></MudTd>
+                <MudTd><MudTextField T="int" Label="Category" @bind-Value="context.BarCode" Required="true" RequiredError="BarCode is required!" /></MudTd>
                 <MudTd><MudTextField T="string" Label="ImagePath" @bind-Value="context.ImagePath" Required="true" RequiredError="ImagePath is required!" /></MudTd>
-                <MudTd><MudTextField T="DateTime" Label="ImagePath" @bind-Value="context.InsertDate" Required="true" RequiredError="InsertDate is required!" /></MudTd>
+                <MudTd><MudTextField T="DateTime" Label="InsertDate" @bind-Value="context.InsertDate" Required="true" RequiredError="InsertDate is required!" /></MudTd>
                 <MudTd><MudIconButton Icon="@Icons.Material.Filled.Save" OnClick="@(() => EditProduct(context))" Class="mx-2" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" />  </MudTd>
                 <MudTd><MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="@(() => Close())" Variant="Variant.Filled" Color="Color.Error" Size="Size.Medium" />    </MudTd>
             }
-
         </RowTemplate>
     </MudTable>
 
     @* <MudChip T="string" Color="Color.Primary">@GetCurrentConntextId</MudChip> *@
 
 
- 
+
 }
 
 @code {
+
     private bool _hidePosition;
     private bool _loading;
     private string searchString = "";
     private bool _readOnly = true;
     private string BrandValue { get; set; }
     private string CategoryValue { get; set; }
-
     public IEnumerable<Product> products = new List<Product>();
+    public IEnumerable<Product> filteredProducts = new List<Product>();
     public IEnumerable<Brand> brands = new List<Brand>();
     public IEnumerable<Category> category = new List<Category>();
-
-    public IEnumerable<Product> filteredProducts = new List<Product>();
     public bool checkempty { get; set; }
     public void show() => _readOnly = false;
     public void Close() => _readOnly = true;
@@ -295,15 +299,8 @@ else
     private void OpenDialogDone() => showInnerComponentDone = true;
     private void Cancel() => showInnerComponent = false;
     private void CancelDone() => showInnerComponentDone = false;
-    private readonly ApplicationDbContext _context;
-
-
-
-
-
-
-
     //end modal
+  
     protected override async Task OnInitializedAsync()
     {
         var request = await ProductService.GetAllProductsAsync();
@@ -354,15 +351,10 @@ else
     // start code form
     Product createProduct = new Product();
     bool success;
-
-
-
     private async void OnValidSubmit(EditContext context)
     {
-        if (createProduct.Name == null || createProduct.BarCode == 0 || createProduct.BrandId == 0 || createProduct.CategoryId == 0 || createProduct.Price == 0 || createProduct.Quantity == 0)
-        {
-            checkempty = true;
-        }
+
+        if (createProduct.Name == null || createProduct.BarCode == 0 || createProduct.BrandId == 0 || createProduct.CategoryId == 0 || createProduct.Price == 0 || createProduct.Quantity == 0) checkempty = true;
         else
         {
             success = true;
@@ -413,7 +405,6 @@ else
 
     private async Task EditProduct(Product product)
     {
-        Snackbar.Add(product.Id.ToString(), Severity.Error);
         var GetCategory = await categoryService.GetCategoryByNameAsync(CategoryValue);
         if (GetCategory.Success)
         {
