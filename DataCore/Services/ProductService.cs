@@ -28,7 +28,7 @@ namespace DataCore.Services
                 CategoryId = createProduct.CategoryId,
                 Description = createProduct.Description,
                 Discount = createProduct.Discount,
-                ImagePath = createProduct.ImagePath,
+                ImageId = createProduct.ImageId,
                 InsertDate = createProduct.InsertDate,
                 Price = createProduct.Price,
                 Quantity = createProduct.Quantity
@@ -109,7 +109,7 @@ namespace DataCore.Services
                 request.Description = product.Description;
                 request.Price = product.Price;
                 request.Discount = product.Discount;
-                request.ImagePath = product.ImagePath;
+                request.ImageId = product.ImageId;
                 request.Quantity = product.Quantity;
                 request.BarCode = product.BarCode;
                 request.InsertDate = product.InsertDate;

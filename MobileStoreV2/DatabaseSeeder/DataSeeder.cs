@@ -20,10 +20,10 @@ public static class DataSeeder
         {
             dbContext.Database.Migrate();
         }
-        foreach (var seeder in _seeders)
-        {
-            seeder.Seed(dbContext);
-        }
+        //foreach (var seeder in _seeders)
+        //{
+        //    seeder.Seed(dbContext);l
+        //}
     }
 
 }

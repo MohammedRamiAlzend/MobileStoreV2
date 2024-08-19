@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using DataCore.Models;
+using DataCore.Models.DataCore.Models;
 namespace DataCore.Data
 {
 
@@ -25,6 +26,9 @@ namespace DataCore.Data
 
         // DbSet for Brands
         public DbSet<Brand> Brands { get; set; }
+
+        // DbSet for Brands
+        public DbSet<ImageModel> images { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

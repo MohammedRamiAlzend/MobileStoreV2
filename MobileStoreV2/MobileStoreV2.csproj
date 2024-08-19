@@ -79,4 +79,9 @@
 		<ProjectReference Include="..\DataCore\DataCore.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="wwwroot\upload-multi\" />
+	  <Folder Include="wwwroot\uploads\" />
+	</ItemGroup>
+
 </Project>

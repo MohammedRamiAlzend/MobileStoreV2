@@ -14,6 +14,7 @@ public abstract class BaseSeeder<TEntity> : IEntitySeeder where TEntity : class
             dbContext.Set<TEntity>().AddRange(data);
             dbContext.SaveChanges();
         }
+
     }
 
     public virtual void Seed(ApplicationDbContext dbContext)

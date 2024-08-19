@@ -95,6 +95,7 @@ else
             <MudTh>Quantity</MudTh>
             <MudTh>Price </MudTh>
             <MudTh>BarCode</MudTh>
+            <MudTh>image</MudTh>
             <MudTh>ImagePath</MudTh>
             <MudTh>InsertDate</MudTh>
             <MudTh>Edit</MudTh>
@@ -113,7 +114,8 @@ else
                 <MudTd DataLabel="Quantity" HideSmall="_hidePosition">@context.Quantity</MudTd>
                 <MudTd DataLabel="Price">@context.Price</MudTd>
                 <MudTd DataLabel="BarCode">@context.BarCode</MudTd>
-                <MudTd DataLabel="ImagePath">@context.ImagePath</MudTd>
+                <MudTd DataLabel="BarCode">@context.Image?.ImageName</MudTd>
+                <MudTd DataLabel="ImageId">@context.ImageId</MudTd>
                 <MudTd DataLabel="InsertDate">@context.InsertDate</MudTd>
                 <MudTd DataLabel="Edit"><MudIconButton Icon="@Icons.Material.Filled.Edit" Class="mx-2" OnClick="@(() => show())" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" /></MudTd>
                 <MudTd DataLabel="Delete"><MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(() => SureDialog(context.Id))" Variant="Variant.Filled" Color="Color.Error" Size="Size.Medium" /></MudTd>
@@ -145,24 +147,14 @@ else
                 <MudTd><MudTextField T="int" Label="Quantity" @bind-Value="context.Quantity" Required="true" RequiredError="Quantity is required!" /></MudTd>
                 <MudTd><MudTextField T="double" Label="Price" @bind-Value="context.Price" Required="true" RequiredError="Price is required!" /></MudTd>
                 <MudTd><MudTextField T="int" Label="Category" @bind-Value="context.BarCode" Required="true" RequiredError="BarCode is required!" /></MudTd>
-                <MudTd><MudTextField T="string" Label="ImagePath" @bind-Value="context.ImagePath" Required="true" RequiredError="ImagePath is required!" /></MudTd>
+                <MudTd><MudTextField T="int" Label="ImageId" @bind-Value="context.ImageId" Required="true" RequiredError="ImageId is required!" /></MudTd>
                 <MudTd><MudTextField T="DateTime" Label="InsertDate" @bind-Value="context.InsertDate" Required="true" RequiredError="InsertDate is required!" /></MudTd>
                 <MudTd><MudIconButton Icon="@Icons.Material.Filled.Save" OnClick="@(() => EditProduct(context))" Class="mx-2" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" />  </MudTd>
                 <MudTd><MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="@(() => Close())" Variant="Variant.Filled" Color="Color.Error" Size="Size.Medium" />    </MudTd>
             }
         </RowTemplate>
     </MudTable>
-    var dlg = new Microsoft.Win32.OpenFileDialog
-{
-    Title = "Select an Image",
-    Filter = "Images |*.jpg; *.png",
-    CheckFileExists = true
-};
-
-if (dlg.ShowDialog() == true)
-{
-    
-}
+ 
 
 }
 @code {

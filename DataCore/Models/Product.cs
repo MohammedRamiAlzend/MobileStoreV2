@@ -1,4 +1,6 @@
-﻿namespace DataCore.Models
+﻿using DataCore.Models.DataCore.Models;
+
+namespace DataCore.Models
 {
     public class Product : ISoftDelete
     {
@@ -18,8 +20,14 @@
         public double Discount { get; set; }
 
         // Path to the product image
-        public string? ImagePath { get; set; }
+        //public string? ImagePath { get; set; }
 
+        // Foreign key to the image entity
+        public int ImageId { get; set; }
+
+
+        // Navigation property to the Image entity
+        public ImageModel? Image { get; set; }
         // Quantity of the product in stock
         public int Quantity { get; set; }
 
