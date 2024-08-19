@@ -7,7 +7,6 @@
 @inject IBrandService brandservice
 @inject ISnackbar Snackbar
 
-<h3>Brands</h3>
 
 <EditForm Model="@CreateBrand" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator />
@@ -15,8 +14,7 @@
         <MudItem xs="12" sm="12">
             <MudCard>
                 <MudCardContent>
-                    @* <MudTextField Label="Name" HelperText="Max. 8 characters"@bind-Value="CreateBrand.Name" For="@(() => CreateBrand.Name)" InputType="InputType.Text" /> *@
-                    <MudTextField T="string" Label="Username" @bind-Value="CreateBrand.Name" For="@(() => CreateBrand.Name)" Required="true" RequiredError="User name is required!" />
+                        <MudTextField T="string" Label="Username" @bind-Value="CreateBrand.Name" For="@(() => CreateBrand.Name)" Required="true" RequiredError="User name is required!" />
 
                 </MudCardContent> 
                 <MudCardActions Class="d-xl-inline-flex" Style="display:flex;justify-content:end">
@@ -24,6 +22,7 @@
                 </MudCardActions>
             </MudCard>
         </MudItem>
+
     </MudGrid>
 </EditForm>
 
@@ -34,7 +33,7 @@
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Nr">@context.Name</MudTd>
-        <MudTd DataLabel="Delete"><MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(() => deleteData(context.Id))" Variant="Variant.Filled" Color="Color.Error" Size="Size.Medium" /></MudTd>
+        <MudTd DataLabel="Delete"><MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(() => SureDialog(context.Id))" Variant="Variant.Filled" Color="Color.Error" Size="Size.Medium" /></MudTd>
     </RowTemplate>
 </MudTable>
 
@@ -107,4 +106,22 @@
         StateHasChanged();
 
     }
+    //start Delete Dialog
+
+    string state = "Message box hasn't been opened yet";
+
+    private async void SureDialog(int id)
+    {
+        bool? result = await DialogService.ShowMessageBox(
+            "Warning",
+            "Are You Sure You Want To Delete This Brand !",
+            yesText: "Delete!", cancelText: "Cancel");
+
+        state = result == null ? "Canceled" : "Deleted!";
+        if (state == "Deleted!") deleteData(id);
+        StateHasChanged();
+    }
+
+
+    //End Delete Dialog
 }

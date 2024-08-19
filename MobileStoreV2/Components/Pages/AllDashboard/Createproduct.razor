@@ -1,0 +1,205 @@
+﻿@using System.Net.Http.Json
+@using System.ComponentModel.DataAnnotations
+@inject IDialogService DialogService
+@using DataCore.Services.Interfaces
+@using DataCore.Models
+@inject IProductService ProductService
+@inject IBrandService brandservice
+@inject ICategoryService categoryService
+@inject ISnackbar Snackbar
+
+
+
+
+<EditForm Model="@createProduct" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="12">
+            <MudCard>
+
+                <MudCardContent>
+                    @* <MudTextField Label="Name" @bind-Value="createProduct.Name" For="@(() => createProduct.Name)" InputType="InputType.Text" /> *@
+                    @* <MudTextField T="string" Label="Name" Required="true" @bind-Value="createProduct.Name" For="@(() => createProduct.Name)" RequiredError="Name is required!" /> *@
+                    <MudTextField T="string" Label="Name" @bind-Value="createProduct.Name" Required="true"  RequiredError=" Name is required!" />
+                    <MudTextField Label="BarCode" Class="mt-3"
+                                  @bind-Value="createProduct.BarCode" For="@(() => createProduct.BarCode)" InputType="InputType.Number" />
+              
+                    <MudSelect T="string" Label="Brand" @bind-Value="BrandValue" Required="true" RequiredError=" Brand is required!" AnchorOrigin="Origin.BottomCenter">
+                        @foreach (var filter in brands)
+                        {
+                            <MudSelectItem Value="filter.Name" />
+                        }
+                    </MudSelect>
+               
+                    <MudSelect T="string" Label="category" @bind-Value="CategoryValue" AnchorOrigin="Origin.BottomCenter">
+                        @foreach (var filter in category)
+                        {
+                            <MudSelectItem Value="filter.Name" />
+                        }
+
+                    </MudSelect>
+
+                    <MudTextField Label="Description" HelperText="Repeat the Brand" Class="mt-3"
+                                  @bind-Value="createProduct.Description" For="@(() => createProduct.Description)" InputType="InputType.Text" />
+                    <MudTextField Label="Discount" HelperText="Repeat the Brand" Class="mt-3"
+                                  @bind-Value="createProduct.Discount" For="@(() => createProduct.Discount)" InputType="InputType.Number" />
+                    <MudTextField Label="ImagePath" HelperText="Repeat the Brand" Class="mt-3"
+                                  @bind-Value="createProduct.ImagePath" For="@(() => createProduct.ImagePath)" InputType="InputType.Text" />
+
+           @*          <MudTextField Label="Price" HelperText="Repeat the Price" Class="mt-3"
+                                  @bind-Value="createProduct.Price" Required ="true"  InputType="InputType.Number" /> *@
+                    <MudTextField T="double" Label="Price" @bind-Value="createProduct.Price" Required="true" RequiredError=" Price is required!" />
+
+                @*     <MudTextField Label="Quantity" HelperText="Repeat the Quantity" Class="mt-3"
+                                  @bind-Value="createProduct.Quantity" Required="true" InputType="InputType.Number" /> *@
+                    <MudTextField T="int" Label="Quantity" @bind-Value="createProduct.Quantity" Required="true" RequiredError=" Quantity is required!" />
+
+
+                </MudCardContent>
+                <MudCardActions Class="d-xl-inline-flex" Style="display:flex;justify-content:end">
+                    <MudButton OnClick="Cancel" Variant="Variant.Filled" Style="margin-right:15px">Cancel</MudButton>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Add</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+        @* start Validation Summary *@
+
+        <MudDialog @bind-IsVisible="showInnerComponentDone">
+
+            <TitleContent>
+                <MudText Typo="Typo.h6">
+                    <MudIcon Typo="Typo.subtitle2" Class="mr-3" /> Validation Summary;
+                </MudText>
+
+            </TitleContent>
+            <DialogContent>
+                <MudItem>
+                    <MudPaper Class="pa-4 ">
+
+                        @if (success)
+                        {
+                            createProduct = new Product();
+                            <MudAlert Severity="Severity.Success">Add Done Successfully </MudAlert>
+                        }
+                        else
+                        {
+                            <MudText Color="@Color.Error">
+
+                                <ValidationSummary />
+                            </MudText>
+                        }
+
+                    </MudPaper>
+                </MudItem>
+            </DialogContent>
+            <DialogActions>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="CancelDone" Class="px-10">Close</MudButton>
+            </DialogActions>
+
+        </MudDialog>
+        @* End Validation Summary *@
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2" Align="Align.Center">
+                add product for your collcation
+            </MudText>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+@if (checkempty == true)
+{
+    Snackbar.Add("You Should for fill input ", Severity.Warning);
+    checkempty = false;
+}
+
+@code {
+    Product createProduct = new Product();
+    public IEnumerable<Product> products = new List<Product>();
+    public IEnumerable<Product> filteredProducts = new List<Product>();
+    public IEnumerable<Brand> brands = new List<Brand>();
+    public IEnumerable<Category> category = new List<Category>();
+    private bool showInnerComponent = false;
+    private bool showInnerComponentDone = false;
+    private void Cancel() => showInnerComponent = false;
+    private void CancelDone() => showInnerComponentDone = false;
+    private void OpenDialogDone() => showInnerComponentDone = true;
+    public bool checkempty { get; set; }
+    private string BrandValue { get; set; }
+    private string CategoryValue { get; set; }
+    bool success;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var request = await ProductService.GetAllProductsAsync();
+        if (request.Success)
+        {
+            products = request.Data!;
+        }
+
+        filteredProducts = products;
+
+
+        var requestbrand = await brandservice.GetAllBrandsAsync();
+        if (requestbrand.Success) brands = requestbrand.Data!;
+
+        var requestGategory = await categoryService.GetAllCategoryAsync();
+        if (requestGategory.Success) category = requestGategory.Data!;
+
+    }
+
+
+    private async void OnValidSubmit(EditContext context)
+    {
+
+        if (createProduct.Name == null || createProduct.BarCode == 0 || CategoryValue == null || BrandValue == null || createProduct.Price == 0 || createProduct.Quantity == 0) checkempty = true;
+        else
+        {
+            success = true;
+
+            var GetCategory = await categoryService.GetCategoryByNameAsync(CategoryValue);
+            if (GetCategory.Success)
+            {
+                createProduct.CategoryId = GetCategory.Data!.Id;
+            }
+            else
+            {
+                Snackbar.Add("change category", Severity.Error);
+            }
+
+            var GetBrand = await brandservice.GetBrandByNameAsync(BrandValue);
+            if (GetBrand.Success)
+            {
+                createProduct.BrandId = GetBrand.Data!.Id;
+            }
+            else
+            {
+                Snackbar.Add("change brand", Severity.Error);
+            }
+
+
+            createProduct.InsertDate = DateTime.Now;
+            var product = createProduct;
+            var request = await ProductService.CreateProductAsync(product);
+            var requestRefresh = await ProductService.GetAllProductsAsync();
+
+            if (request.Success)
+            {
+
+                products.Append(product);
+                products = requestRefresh.Data!;
+                filteredProducts = products;
+                Snackbar.Add("Add Product Done successfully", Severity.Success);
+
+                StateHasChanged();
+            }
+            else
+            {
+                Snackbar.Add(request.Message, Severity.Error);
+
+            }
+            OpenDialogDone();
+        }
+
+    }
+
+}

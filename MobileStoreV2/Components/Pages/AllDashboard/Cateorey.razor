@@ -7,7 +7,7 @@
 @inject ICategoryService categoryService
 @inject ISnackbar Snackbar
 
-<h3>Cateorey</h3>
+
 
 <EditForm Model="@CreateCategory" OnValidSubmit="OnValidSubmit">
     <DataAnnotationsValidator />
@@ -15,7 +15,6 @@
         <MudItem xs="12" sm="12">
             <MudCard>
                 <MudCardContent>
-                    @* <MudTextField Label="Name" HelperText="Max. 8 characters"@bind-Value="CreateCategory.Name" For="@(() => CreateCategory.Name)" InputType="InputType.Text" /> *@
                     <MudTextField T="string" Label="Username"  @bind-Value="CreateCategory.Name" For="@(() => CreateCategory.Name)" Required="true" RequiredError="User name is required!" />
                 </MudCardContent>
                 <MudCardActions Class="d-xl-inline-flex" Style="display:flex;justify-content:end">
@@ -37,7 +36,7 @@
     </HeaderContent>
     <RowTemplate>
         <MudTd DataLabel="Nr">@context.Name</MudTd>
-        <MudTd DataLabel="Delete"><MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(() => deleteData(context.Id))" Variant="Variant.Filled" Color="Color.Error" Size="Size.Medium" /></MudTd>
+        <MudTd DataLabel="Delete"><MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(() => SureDialog(context.Id))" Variant="Variant.Filled" Color="Color.Error" Size="Size.Medium" /></MudTd>
     </RowTemplate>
 </MudTable>
 
@@ -112,4 +111,22 @@
         StateHasChanged();
 
     }
+    //start Delete Dialog
+
+    string state = "Message box hasn't been opened yet";
+
+    private async void SureDialog(int id)
+    {
+        bool? result = await DialogService.ShowMessageBox(
+            "Warning",
+            "Are You Sure You Want To Delete This Category !",
+            yesText: "Delete!", cancelText: "Cancel");
+
+        state = result == null ? "Canceled" : "Deleted!";
+        if (state == "Deleted!") deleteData(id);
+        StateHasChanged();
+    }
+
+
+    //End Delete Dialog
 }
