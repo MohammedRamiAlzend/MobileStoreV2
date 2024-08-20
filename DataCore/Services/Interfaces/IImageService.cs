@@ -15,6 +15,9 @@ namespace DataCore.Services.Interfaces
         Task<DataBaseRequest> CreateImageAsync(ImageModel createimage);
 
         Task<DataBaseRequest> DeleteImageAsync(int id);
+        Task<DataBaseRequest<ImageModel>> GetImageByNameAsync(string name);
+
+        
 
 
     }

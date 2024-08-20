@@ -107,6 +107,28 @@ namespace DataCore.Services
 
         }
 
-
+        public async Task<DataBaseRequest<ImageModel>> GetImageByNameAsync(string  name)
+        {
+            
+            var request = await _context.images.Where(x => x.ImageName == name).FirstAsync();
+            if (request == null)
+            {
+                return new DataBaseRequest<ImageModel>
+                {
+                    Message = "image not found",
+                    Success = false,
+                    Data = new ImageModel { ImageData= null },
+                };
+            }
+            else
+            {
+                return new DataBaseRequest<ImageModel>
+                {
+                    Message = $"The image {request.ImageName} successfully retrieved",
+                    Success = true,
+                    Data = request,
+                };
+            }
+        }
     }
 }

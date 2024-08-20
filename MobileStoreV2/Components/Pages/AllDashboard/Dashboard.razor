@@ -6,7 +6,9 @@
 @inject IProductService ProductService
 @inject IBrandService brandservice
 @inject ICategoryService categoryService
+@inject IImageService imageserivce
 @using DataCore.Data
+@using DataCore.Models.DataCore.Models
 @using DataCore.Services.Interfaces
 @using DataCore.Models
 @using Microsoft.AspNetCore.Components
@@ -25,22 +27,21 @@
         align-items: center;
     }
 
-    }
+    
 </style>
-
-
 
 <div class="continer">
     <MudButton Variant="Variant.Filled" @onclick="OpenDialog" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add"> إضافة منتجات </MudButton>
     <MudButton Variant="Variant.Filled" @onclick="OpenDialogBrand" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Class="mx-2"> إضافة علامة تجارية </MudButton>
     <MudButton Variant="Variant.Filled" @onclick="OpenDialogCategory" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add"> إضافة صنف </MudButton>
-</div>
+    <MudButton Variant="Variant.Filled" @onclick="OpenDialogImage" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Image" Class="mx-2"> إضافة صورة </MudButton>
+</div> 
 @* start add product form *@
 
 <MudDialog @bind-IsVisible="showInnerComponent">
     <TitleContent> Add Product</TitleContent>
     <DialogContent>
-        <Createproduct/>
+        <Createproduct OnButtonClick="HandleButtonClick" />
     </DialogContent>
 
 </MudDialog>
@@ -56,14 +57,22 @@
     <TitleContent>Add Brand</TitleContent>
     <DialogContent>
         <Createbrand />
+  
     </DialogContent>
 </MudDialog>
 
 <MudDialog @bind-IsVisible="showInnerComponentCategory">
-
     <TitleContent>Add Category</TitleContent>
     <DialogContent>
         <Cateorey />
+    </DialogContent>
+</MudDialog>
+
+
+<MudDialog @bind-IsVisible="showInnerComponentImage">
+    <TitleContent>Add Image</TitleContent>
+    <DialogContent>
+        <Uploadimage />
     </DialogContent>
 </MudDialog>
 
@@ -147,7 +156,19 @@ else
                 <MudTd><MudTextField T="int" Label="Quantity" @bind-Value="context.Quantity" Required="true" RequiredError="Quantity is required!" /></MudTd>
                 <MudTd><MudTextField T="double" Label="Price" @bind-Value="context.Price" Required="true" RequiredError="Price is required!" /></MudTd>
                 <MudTd><MudTextField T="int" Label="Category" @bind-Value="context.BarCode" Required="true" RequiredError="BarCode is required!" /></MudTd>
-                <MudTd><MudTextField T="int" Label="ImageId" @bind-Value="context.ImageId" Required="true" RequiredError="ImageId is required!" /></MudTd>
+                @* <MudTd><MudTextField T="int" Label="ImageId" @bind-Value="context.ImageId" Required="true" RequiredError="ImageId is required!" /></MudTd> *@
+                <MudTd>
+                    <MudSelect T="int" Label="ImageValue" @bind-Value="ImageValue" AnchorOrigin="Origin.BottomCenter">
+                        @foreach (var filter in images)
+                        {
+                            <MudSelectItem Value= "filter.Id"/>
+                            
+                            
+                            
+                        }
+                    </MudSelect>
+
+                </MudTd>
                 <MudTd><MudTextField T="DateTime" Label="InsertDate" @bind-Value="context.InsertDate" Required="true" RequiredError="InsertDate is required!" /></MudTd>
                 <MudTd><MudIconButton Icon="@Icons.Material.Filled.Save" OnClick="@(() => EditProduct(context))" Class="mx-2" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" />  </MudTd>
                 <MudTd><MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="@(() => Close())" Variant="Variant.Filled" Color="Color.Error" Size="Size.Medium" />    </MudTd>
@@ -164,10 +185,13 @@ else
     private bool _readOnly = true;
     private string BrandValue { get; set; }
     private string CategoryValue { get; set; }
+    private int ImageValue { get; set; }
     public IEnumerable<Product> products = new List<Product>();
     public IEnumerable<Product> filteredProducts = new List<Product>();
     public IEnumerable<Brand> brands = new List<Brand>();
     public IEnumerable<Category> category = new List<Category>();
+    public IEnumerable<ImageModel> images = new List<ImageModel>();
+    
     public bool checkempty { get; set; }
     public void show() => _readOnly = false;
     public void Close() => _readOnly = true;
@@ -177,15 +201,22 @@ else
     private bool showInnerComponent = false;
     private bool showInnerComponentBrands = false;
     private bool showInnerComponentCategory = false;
+    private bool showInnerComponentImage = false;
     private bool showInnerComponentDone = false;
     private readonly DialogOptions _dialogOptions = new() { FullWidth = true };
     private void OpenDialog() => showInnerComponent = true;
     private void OpenDialogBrand() => showInnerComponentBrands = true;
     private void OpenDialogCategory() => showInnerComponentCategory = true;
     private void OpenDialogDone() => showInnerComponentDone = true;
+    private void OpenDialogImage() => showInnerComponentImage = true;
     private void Cancel() => showInnerComponent = false;
     private void CancelDone() => showInnerComponentDone = false;
     //end modal
+
+    private void HandleButtonClick()
+    {
+        showInnerComponent = false;
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -203,6 +234,12 @@ else
 
         var requestGategory = await categoryService.GetAllCategoryAsync();
         if (requestGategory.Success) category = requestGategory.Data!;
+
+
+        var requestImage = await imageserivce.GetAllImageAsync();
+        if (requestImage.Success) images = requestImage.Data!;
+
+
 
     }
     private async Task deleteData(int id)
@@ -256,7 +293,7 @@ else
                 products = requestRefresh.Data!;
                 filteredProducts = products;
                 Snackbar.Add("Add Product Done successfully", Severity.Success);
-
+                
                 StateHasChanged();
             }
             else
