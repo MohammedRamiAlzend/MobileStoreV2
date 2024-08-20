@@ -15,7 +15,6 @@
             <MudCard>
                 <MudCardContent>
                         <MudTextField T="string" Label="Username" @bind-Value="CreateBrand.Name" For="@(() => CreateBrand.Name)" Required="true" RequiredError="User name is required!" />
-
                 </MudCardContent> 
                 <MudCardActions Class="d-xl-inline-flex" Style="display:flex;justify-content:end">
                     <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Add</MudButton>
@@ -118,7 +117,7 @@
             yesText: "Delete!", cancelText: "Cancel");
 
         state = result == null ? "Canceled" : "Deleted!";
-        if (state == "Deleted!") deleteData(id);
+        if (state == "Deleted!") await deleteData(id);
         StateHasChanged();
     }
 

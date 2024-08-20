@@ -149,7 +149,7 @@
             yesText: "Delete!", cancelText: "Cancel");
 
         state = result == null ? "Canceled" : "Deleted!";
-        if (state == "Deleted!") deleteData(id);
+        if (state == "Deleted!") await deleteData(id);
         StateHasChanged();
     }
 

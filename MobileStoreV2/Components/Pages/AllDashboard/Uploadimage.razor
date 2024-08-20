@@ -13,7 +13,6 @@
 @inject ISnackbar Snackbar
 @using Microsoft.EntityFrameworkCore;
 
-<h3>Chouse Your Image To Upload</h3>
 
 <InputFile OnChange="HandleFileSelected" />
 
@@ -21,53 +20,36 @@
 {
     <p>Uploaded File: @uploadedImageName</p>
 }
-
-<MudTable Items="@images" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
-    <HeaderContent>
-
-        <MudTh>ImageData</MudTh>
-
-
-    </HeaderContent>
-    <RowTemplate>
-        <MudTd DataLabel="ImageData"><img width="100" height="100" src="data:image;base64,@Convert.ToBase64String(context.ImageData)" alt="@context.ImageData" /></MudTd>
-    </RowTemplate>
-</MudTable>
-
 @code {
     private IBrowserFile selectedFile;
     private string uploadedImageName;
     public IEnumerable<ImageModel> images = new List<ImageModel>();
     ImageModel CreateImage = new ImageModel();
+    [Parameter] public EventCallback<string> OnButtonClick { get; set; }
 
-    private bool _loading;
 
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
-
+    
         selectedFile = e.File;
         var GetiamgeName = images.Where(x => x.ImageName == selectedFile.Name).FirstOrDefault();
         if (GetiamgeName != null)
         {
             Snackbar.Add("image Name Allready Exsits ", Severity.Warning);
+
+            //start Get SelectedImageName
+            await OnButtonClick.InvokeAsync(selectedFile.Name);
+            //End Get SelectedImageNames
             return;
         }
 
         if (selectedFile != null)
         {
             uploadedImageName = selectedFile.Name;
-
-            // var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
-
-            // using (var fileStream = new FileStream(filePath, FileMode.Create))
-            // {
-            //     await selectedFile.OpenReadStream().CopyToAsync(fileStream);
-            // }
-
             var fileBytes = new byte[selectedFile.Size];
+
             await selectedFile.OpenReadStream().ReadAsync(fileBytes);
             uploadedImageName = selectedFile.Name;
-
 
             // Save the image using the service
             CreateImage.ImageName = selectedFile.Name;
@@ -77,6 +59,7 @@
             CreateImage.DeletedAt = null;
             var image = CreateImage;
             var request = await imageservice.CreateImageAsync(image);
+
             var requestRefresh = await imageservice.GetAllImageAsync();
             if (request.Success)
             {
@@ -86,6 +69,10 @@
                 Snackbar.Add($"Add Image {uploadedImageName} Done Successfully", Severity.Success);
                 Snackbar.Add(request.Message, Severity.Success);
                 CreateImage = new ImageModel();
+
+                //start Get SelectedImageName
+                await OnButtonClick.InvokeAsync(selectedFile.Name);
+                //End Get SelectedImageNames
                 StateHasChanged();
             }
             else Snackbar.Add(request.Message, Severity.Error);
@@ -105,19 +92,12 @@
             Snackbar.Add(request.Message, Severity.Success);
 
         }
-        else
-        {
-            Snackbar.Add(request.Message, Severity.Error);
+        else Snackbar.Add(request.Message, Severity.Error);
 
-        }
 
         var requestRefresh = await imageservice.GetAllImageAsync();
 
-        if (request.Success)
-        {
-            images = requestRefresh.Data!;
-        }
-
+        if (request.Success)images = requestRefresh.Data!;
         StateHasChanged();
 
     }

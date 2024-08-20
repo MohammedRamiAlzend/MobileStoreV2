@@ -11,6 +11,32 @@
 
 @inject ISnackbar Snackbar
 
+<style>
+
+    .continer {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .ImageSize {
+        /* padding: 50px; */
+        transition: transform .5s; /* Animation */
+        width: 250px;
+        height: 250px;
+        margin: 0 auto;
+        position: relative;
+        cursor: pointer;
+    }
+
+    .buttonCssClass {
+        transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+    }
+</style>
+
 
 
 
@@ -19,7 +45,6 @@
     <MudGrid>
         <MudItem xs="12" sm="12">
             <MudCard>
-
                 <MudCardContent>
                     @* <MudTextField Label="Name" @bind-Value="createProduct.Name" For="@(() => createProduct.Name)" InputType="InputType.Text" /> *@
                     @* <MudTextField T="string" Label="Name" Required="true" @bind-Value="createProduct.Name" For="@(() => createProduct.Name)" RequiredError="Name is required!" /> *@
@@ -33,44 +58,101 @@
                             <MudSelectItem Value="filter.Name" />
                         }
                     </MudSelect>
-
+                 
                     <MudSelect T="string" Label="category" @bind-Value="CategoryValue" AnchorOrigin="Origin.BottomCenter">
                         @foreach (var filter in category)
                         {
                             <MudSelectItem Value="filter.Name" />
                         }
-
                     </MudSelect>
 
                     <MudTextField Label="Description" HelperText="Repeat the Brand" Class="mt-3"
                                   @bind-Value="createProduct.Description" For="@(() => createProduct.Description)" InputType="InputType.Text" />
                     <MudTextField Label="Discount" HelperText="Repeat the Brand" Class="mt-3"
                                   @bind-Value="createProduct.Discount" For="@(() => createProduct.Discount)" InputType="InputType.Number" />
-        
-                    <MudSelect T="string" Label="images" @bind-Value="ImageValue" AnchorOrigin="Origin.BottomCenter">
+                    <MudTextField T="double" Label="Price" @bind-Value="createProduct.Price" Required="true" RequiredError=" Price is required!" />
+                    <MudTextField T="int" Label="Quantity" @bind-Value="createProduct.Quantity" Required="true" RequiredError=" Quantity is required!" />
+                    <MudForm>
+                        <MudRadioGroup @bind-Value="SelectedOption">
+                            <MudRadio Value="@("Radio 1")" Color="Color.Primary" Dense="true">Chouse from Exsit Images</MudRadio>
+                            <MudRadio Value="@("Radio 2")" Color="Color.Dark">upload image</MudRadio>
+                        </MudRadioGroup>
+                    </MudForm>
+                    @if (SelectedOption == "Radio 1")
+                    {
+                        <MudSelect T="string" Label="images" @bind-Value="ImageValue" AnchorOrigin="Origin.BottomCenter">
+                            @foreach (var filter in images)
+                            {
+                                <MudSelectItem T="string" Value="filter.ImageName">
+                                    <img style="width: 32px; height: 32px; margin-right: 10px;" src="data:image;base64,@Convert.ToBase64String(filter.ImageData)" />
+                                    @filter.ImageName
+                                </MudSelectItem>
+                            }
+
+                        </MudSelect>
+                    }                    
+              
+                    @if (SelectedOption == "Radio 2")
+                    {
+                        <Uploadimage OnButtonClick="HandleButtonClick" />
+                    }
+                    @if (ImageValue != null && SelectedOption == "Radio 2")
+                    {
+
                         @foreach (var filter in images)
                         {
-                            @* <MudSelectItem Value="filter.ImageName"/> *@
-                            <MudSelectItem T="string" Value="filter.ImageName">@filter.ImageName</MudSelectItem>
+                            if (filter.ImageName == ImageValue)
+                            {
+                                @if (!ImageLoad)
+                                {
+
+                                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="200px" />
+                                    <MudCardContent>
+                                        <MudSkeleton Width="30%" Height="42px;" />
+                                        <MudSkeleton Width="80%" />
+                                        <MudSkeleton Width="100%" />
+                                    </MudCardContent>
+                                    <MudCardActions>
+                                        <MudSkeleton Width="64px" Height="40px" Class="ml-2" />
+                                        <MudSkeleton Width="105px" Height="40px" Class="ml-3" />
+                                    </MudCardActions>
+                                }
+                                else
+                                {
+
+                                    <div class="continer">
+                                        <img src="data:image;base64,@Convert.ToBase64String(filter.ImageData)" class="ImageSize @buttonCssClass" onclick="@ToggleButtonStyle" />
+                                    </div>
+                                }
+                            }
                         }
-                 
-                    </MudSelect>
-
-                 
-                    <MudTextField T="double" Label="Price" @bind-Value="createProduct.Price" Required="true" RequiredError=" Price is required!" />
-
-              
-                    <MudTextField T="int" Label="Quantity" @bind-Value="createProduct.Quantity" Required="true" RequiredError=" Quantity is required!" />
-
-
-                    @foreach (var filter in images)
-                    {
-                        @if (ImageValue != null && filter.ImageName == ImageValue)
-                        {
-                            <img width="200" height="200" src="data:image;base64,@Convert.ToBase64String(filter.ImageData)" alt="@filter.ImageData" />
-                        }
-
                     }
+                    else if (ImageValue != null && SelectedOption == "Radio 1")
+                    {
+                        GetImageFunc();
+                        @if (!ImageLoad)
+                        {
+
+                            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="200px" />
+                            <MudCardContent>
+                                <MudSkeleton Width="30%" Height="42px;" />
+                                <MudSkeleton Width="80%" />
+                                <MudSkeleton Width="100%" />
+                            </MudCardContent>
+                            <MudCardActions>
+                                <MudSkeleton Width="64px" Height="40px" Class="ml-2" />
+                                <MudSkeleton Width="105px" Height="40px" Class="ml-3" />
+                            </MudCardActions>
+
+                        }
+                        else
+                        {
+                            <div class="continer">
+                                <img src="data:image;base64,@Convert.ToBase64String(GetImage.ImageData)" class="ImageSize @buttonCssClass" onclick="@ToggleButtonStyle" />
+                            </div>
+                        }
+                    }
+
                 </MudCardContent>
                 <MudCardActions Class="d-xl-inline-flex" Style="display:flex;justify-content:end">
                     <MudButton OnClick="Cancel" Variant="Variant.Filled" Style="margin-right:15px">Cancel</MudButton>
@@ -123,6 +205,8 @@
     </MudGrid>
 </EditForm>
 
+
+
 @if (checkempty == true)
 {
     Snackbar.Add("You Should for fill input ", Severity.Warning);
@@ -130,7 +214,9 @@
 }
 
 @code {
+    bool success;
     Product createProduct = new Product();
+    ImageModel GetImage = new ImageModel();
     public IEnumerable<Product> products = new List<Product>();
     public IEnumerable<Product> filteredProducts = new List<Product>();
     public IEnumerable<Brand> brands = new List<Brand>();
@@ -140,27 +226,30 @@
     private bool showInnerComponent = false;
     private bool showInnerComponentDone = false;
     // private void Cancel() => showInnerComponent = false;
-    private async Task Cancel() => await OnButtonClick.InvokeAsync();
-    private void CancelDone() => showInnerComponentDone = false;
-    private void OpenDialogDone() => showInnerComponentDone = true;
     public bool checkempty { get; set; }
     private string BrandValue { get; set; }
     private string CategoryValue { get; set; }
     private string ImageValue { get; set; }
-    bool success;
+    private bool isClicked = false;
+    private string buttonCssClass => isClicked ? "buttonCssClass" : "";
+    public string SelectedOption { get; set; } = "Radio 1";
+    private bool ImageLoad = false;
 
+
+
+
+    private async Task Cancel() => await OnButtonClick.InvokeAsync();
+    private void CancelDone() => showInnerComponentDone = false;
+    private void OpenDialogDone() => showInnerComponentDone = true;
+    private void ToggleButtonStyle() => isClicked = !isClicked;
 
     protected override async Task OnInitializedAsync()
     {
+
+
         var request = await ProductService.GetAllProductsAsync();
-        if (request.Success)
-        {
-            products = request.Data!;
-        }
-
+        if (request.Success) products = request.Data!;
         filteredProducts = products;
-
-
         var requestbrand = await brandservice.GetAllBrandsAsync();
         if (requestbrand.Success) brands = requestbrand.Data!;
 
@@ -171,6 +260,28 @@
         if (requestImage.Success) images = requestImage.Data!;
     }
 
+
+    private async Task GetImageFunc()
+    {
+
+
+        if (ImageValue != null)
+        {
+            try
+            {
+                var ImageValueBind = images.Where(x => x.ImageName == ImageValue).Select(x => x.ImageData).FirstOrDefault();
+                GetImage.ImageData = ImageValueBind;
+                ImageLoad = true;
+            }
+            catch
+            {
+                Snackbar.Add("image not add ", Severity.Error);
+
+            }
+        }
+
+
+    }
 
     private async void OnValidSubmit(EditContext context)
     {
@@ -215,6 +326,14 @@
             OpenDialogDone();
         }
 
+    }
+
+    private async Task HandleButtonClick(string GetValue)
+    {
+        ImageValue = GetValue;
+        var requestImage = await imageserivce.GetAllImageAsync();
+        if (requestImage.Success) images = requestImage.Data!;
+        ImageLoad = true;
     }
 
 }

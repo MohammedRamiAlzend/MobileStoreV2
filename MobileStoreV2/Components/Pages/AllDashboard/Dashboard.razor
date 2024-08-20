@@ -34,7 +34,6 @@
     <MudButton Variant="Variant.Filled" @onclick="OpenDialog" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add"> إضافة منتجات </MudButton>
     <MudButton Variant="Variant.Filled" @onclick="OpenDialogBrand" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Class="mx-2"> إضافة علامة تجارية </MudButton>
     <MudButton Variant="Variant.Filled" @onclick="OpenDialogCategory" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add"> إضافة صنف </MudButton>
-    <MudButton Variant="Variant.Filled" @onclick="OpenDialogImage" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Image" Class="mx-2"> إضافة صورة </MudButton>
 </div> 
 @* start add product form *@
 
@@ -382,7 +381,7 @@ else
             yesText: "Delete!", cancelText: "Cancel");
 
         state = result == null ? "Canceled" : "Deleted!";
-        if (state == "Deleted!") deleteData(id);
+        if (state == "Deleted!") await deleteData(id);
         StateHasChanged();
     }
 
