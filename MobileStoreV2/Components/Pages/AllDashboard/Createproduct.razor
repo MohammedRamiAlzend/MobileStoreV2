@@ -92,7 +92,7 @@
 
                     @if (SelectedOption == "Radio 2")
                     {
-                        <Uploadimage OnButtonClick="HandleButtonClick" />
+                        <Uploadimage OnButtonClick="HandleButtonClick"   />
                     }
                     @if (ImageValue != null && SelectedOption == "Radio 2")
                     {
@@ -160,39 +160,6 @@
         </MudItem>
         @* start Validation Summary *@
 
-        <MudDialog @bind-IsVisible="showInnerComponentDone">
-
-            <TitleContent>
-                <MudText Typo="Typo.h6">
-                    <MudIcon Typo="Typo.subtitle2" Class="mr-3" /> Validation Summary;
-                </MudText>
-
-            </TitleContent>
-            <DialogContent>
-                <MudItem>
-                    <MudPaper Class="pa-4 ">
-
-                        @if (success)
-                        {
-                            createProduct = new Product();
-                            <MudAlert Severity="Severity.Success">Add Done Successfully </MudAlert>
-                        }
-                        else
-                        {
-                            <MudText Color="@Color.Error">
-
-                                <ValidationSummary />
-                            </MudText>
-                        }
-
-                    </MudPaper>
-                </MudItem>
-            </DialogContent>
-            <DialogActions>
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="CancelDone" Class="px-10">Close</MudButton>
-            </DialogActions>
-
-        </MudDialog>
         @* End Validation Summary *@
         <MudItem xs="12">
             <MudText Typo="Typo.body2" Align="Align.Center">
@@ -216,9 +183,9 @@
     public IEnumerable<Category> category = new List<Category>();
     public IEnumerable<ImageModel> images = new List<ImageModel>();
     [Parameter] public EventCallback<bool> OnButtonClick { get; set; }
-    [Parameter] public EventCallback<bool> refresh { get; set; }
+    [Parameter] public EventCallback<bool> refreshProduct { get; set; }
     private bool showInnerComponent = false;
-    private bool showInnerComponentDone = false;
+
     // private void Cancel() => showInnerComponent = false;
     private string BrandValue { get; set; }
     private string CategoryValue { get; set; }
@@ -227,15 +194,8 @@
     private string buttonCssClass => isClicked ? "buttonCssClass" : "";
     public string SelectedOption { get; set; } = "Radio 1";
     private bool ImageLoad = false;
-    [CascadingParameter]
-    private MudDialogInstance MudDialog { get; set; }
-
-
-
-     private async Task Cancel() => await OnButtonClick.InvokeAsync();
-    
-    private void CancelDone() => showInnerComponentDone = false;
-    private void OpenDialogDone() => showInnerComponentDone = true;
+    [CascadingParameter]private MudDialogInstance MudDialog { get; set; }
+    private async Task Cancel() => await OnButtonClick.InvokeAsync();
     private void ToggleButtonStyle() => isClicked = !isClicked;
 
     protected override async Task OnInitializedAsync()
@@ -310,14 +270,14 @@
                 products = requestRefresh.Data!;
                 filteredProducts = products;
 
-                await refresh.InvokeAsync(); //refresh Dashboard table
+                await refreshProduct.InvokeAsync(); //refresh Dashboard table
                 Snackbar.Add("Add Product Done successfully", Severity.Success);
-
+                createProduct = new Product();
                 StateHasChanged();
             }
             else
                 Snackbar.Add(request.Message, Severity.Error);
-            OpenDialogDone();
+        
         }
 
     }

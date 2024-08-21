@@ -16,10 +16,6 @@
 
 <InputFile OnChange="HandleFileSelected" />
 
-@if (uploadedImageName != null)
-{
-    <p>Uploaded File: @uploadedImageName</p>
-}
 @code {
     private IBrowserFile selectedFile;
     private string uploadedImageName;
@@ -45,9 +41,10 @@
 
         if (selectedFile != null)
         {
-            uploadedImageName = selectedFile.Name;
+            uploadedImageName = DateTime.Now.Microsecond.ToString() + "_" + selectedFile.Name;
 
-            var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+            // var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+            var filePath = Path.Combine("C:\\Users\\Dell\\Desktop\\MobileStore\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
             using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
                 await selectedFile.OpenReadStream().CopyToAsync(fileStream);
@@ -55,12 +52,10 @@
 
             var fileBytes = new byte[selectedFile.Size];
             await selectedFile.OpenReadStream().ReadAsync(fileBytes);
-            uploadedImageName = selectedFile.Name;
-
-
+            // uploadedImageName = selectedFile.Name;
             // Save the image using the service
-            CreateImage.ImageName = selectedFile.Name;
-            CreateImage.ImagePath = $"uploads/{Path.GetFileName(selectedFile.Name)}";
+            CreateImage.ImageName = uploadedImageName;
+            CreateImage.ImagePath = $"uploads/{Path.GetFileName(uploadedImageName)}";
             CreateImage.DeletedAt = DateTime.Now;
             CreateImage.IsDeleted = false;
             CreateImage.DeletedAt = null;
@@ -69,14 +64,13 @@
             var requestRefresh = await imageservice.GetAllImageAsync();
             if (request.Success)
             {
-
                 images.Append(image);
                 images = requestRefresh.Data!;
                 Snackbar.Add($"Add Image {uploadedImageName} Done Successfully", Severity.Success);
                 Snackbar.Add(request.Message, Severity.Success);
                 CreateImage = new ImageModel();
                 //Start Send imageValue 
-                await OnButtonClick.InvokeAsync(selectedFile.Name);
+                await OnButtonClick.InvokeAsync(uploadedImageName);
            
                 //End Send imageValue 
                 StateHasChanged();

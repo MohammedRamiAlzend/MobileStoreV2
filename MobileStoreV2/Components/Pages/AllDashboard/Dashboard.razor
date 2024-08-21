@@ -40,7 +40,7 @@
 <MudDialog @bind-IsVisible="showInnerComponent">
     <TitleContent> Add Product</TitleContent>
     <DialogContent>
-        <Createproduct OnButtonClick="HandleButtonClick"   />
+        <Createproduct OnButtonClick="HandleButtonClick" refreshProduct="HandleRefresh" />
     </DialogContent>
 
 </MudDialog>
@@ -100,8 +100,8 @@ else
             <MudTh>Quantity</MudTh>
             <MudTh>Price </MudTh>
             <MudTh>BarCode</MudTh>
-            <MudTh>image</MudTh>
-            <MudTh>ImagePath</MudTh>
+            <MudTh>imagePath</MudTh>
+            <MudTh>ImageId</MudTh>
             <MudTh>InsertDate</MudTh>
             <MudTh>Edit</MudTh>
             <MudTh>Delete</MudTh>
@@ -207,16 +207,14 @@ else
     private void Cancel() => showInnerComponent = false;
     private void CancelDone() => showInnerComponentDone = false;
     //end modal
-
-    private async Task HandleButtonClick()
+    private async Task HandleButtonClick()=>showInnerComponent = false;
+    private async Task HandleRefresh()
     {
-        showInnerComponent = false;
         var request = await ProductService.GetAllProductsAsync();
         if (request.Success) products = request.Data!;
         filteredProducts = products;
-
     }
-
+    
     protected override async Task OnInitializedAsync()
     {
         var request = await ProductService.GetAllProductsAsync();

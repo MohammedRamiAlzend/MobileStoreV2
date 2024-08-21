@@ -13,31 +13,25 @@
 @inject ISnackbar Snackbar
 @using Microsoft.EntityFrameworkCore;
 
-<h3>Chouse Your Image To Upload</h3>
 
 <InputFile OnChange="HandleFileSelected" />
 
-@* @if (uploadedImageName != null)
-{
-    <p>Uploaded File: @uploadedImageName</p>
-} *@
 
 
 
-<MudPaper Elevation="1" Class="pa-4">
+@* <MudPaper Elevation="1" Class="pa-4">
     @foreach (var filter in images)
     {
 
         <MudPaper Height="400px" Width="100%">
             <MudContainer MaxWidth="MaxWidth.Small">
-                @* <MudImage Src="@filter.ImagePath" Width="300" Height="300" /> *@
                 <img src="@($"{filter.ImagePath}?{Guid.NewGuid()}")" height="300" width="300" alt="Uploaded Image" />
 
             </MudContainer>
         </MudPaper>
         
     }
-</MudPaper>
+</MudPaper> *@
 
 <MudTable Items="@images" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
     <HeaderContent>
@@ -80,9 +74,10 @@
 
         if (selectedFile != null)
         {
-            uploadedImageName = selectedFile.Name;
+            uploadedImageName = DateTime.Now.Microsecond.ToString() + "_" + selectedFile.Name;
 
-            var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+            // var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+            var filePath = Path.Combine("C:\\Users\\Dell\\Desktop\\MobileStore\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
             //var filePath = Path.Combine(Env.webrootpath, "uploads", uploadedFileName);
 
             using (var fileStream = new FileStream(filePath, FileMode.Create))
@@ -98,8 +93,8 @@
 
 
             // Save the image using the service
-            CreateImage.ImageName = selectedFile.Name;
-            CreateImage.ImagePath = $"/uploads/{Path.GetFileName(selectedFile.Name)}";
+            CreateImage.ImageName = uploadedImageName;
+            CreateImage.ImagePath = $"uploads/{Path.GetFileName(uploadedImageName)}";
             CreateImage.DeletedAt = DateTime.Now;
             CreateImage.IsDeleted = false;
             CreateImage.DeletedAt = null;
@@ -122,32 +117,16 @@
     private async Task deleteData(int id)
     {
         Snackbar.Add(id.ToString(), Severity.Success);
-
-
         var request = await imageservice.DeleteImageAsync(id);
-
         if (request.Success)
         {
-
             StateHasChanged();
             Snackbar.Add(request.Message, Severity.Success);
-
         }
-        else
-        {
-            Snackbar.Add(request.Message, Severity.Error);
-
-        }
-
+        else Snackbar.Add(request.Message, Severity.Error);
         var requestRefresh = await imageservice.GetAllImageAsync();
-
-        if (request.Success)
-        {
-            images = requestRefresh.Data!;
-        }
-
+        if (request.Success) images = requestRefresh.Data!;
         StateHasChanged();
-
     }
 
     protected override async Task OnInitializedAsync()
