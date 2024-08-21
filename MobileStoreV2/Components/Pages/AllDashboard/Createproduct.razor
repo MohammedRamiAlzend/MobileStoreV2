@@ -10,6 +10,8 @@
 @inject IImageService imageserivce
 @inject ISnackbar Snackbar
 @using System.IO
+@inject ApplicationDbContext Context
+
 
 <style>
 
@@ -40,7 +42,7 @@
 
 
 
-<EditForm  Model="@createProduct" OnValidSubmit="OnValidSubmit">
+<EditForm Model="@createProduct" OnValidSubmit="OnValidSubmit">
 
     <DataAnnotationsValidator />
     <MudGrid>
@@ -56,15 +58,15 @@
                             <MudSelectItem Value="filter.Name" />
                         }
                     </MudSelect>
-                 
+
                     <MudSelect T="string" Label="category" @bind-Value="CategoryValue" AnchorOrigin="Origin.BottomCenter">
                         @foreach (var filter in category)
                         {
                             <MudSelectItem Value="filter.Name" />
                         }
                     </MudSelect>
-                    <MudTextField Label="Description"  Class="mt-3" @bind-Value="createProduct.Description"  InputType="InputType.Text" />
-                    <MudTextField Label="Discount" HelperText="Repeat the Brand" Class="mt-3"@bind-Value="createProduct.Discount" For="@(() => createProduct.Discount)" InputType="InputType.Number" />
+                    <MudTextField Label="Description" Class="mt-3" @bind-Value="createProduct.Description" InputType="InputType.Text" />
+                    <MudTextField Label="Discount" HelperText="Repeat the Brand" Class="mt-3" @bind-Value="createProduct.Discount" For="@(() => createProduct.Discount)" InputType="InputType.Number" />
                     <MudTextField T="double" Label="Price" @bind-Value="createProduct.Price" Required="true" HelperText="Repeat the Description" RequiredError=" Price is required!" />
                     <MudTextField T="int" Label="Quantity" @bind-Value="createProduct.Quantity" HelperText="Repeat the Quantity" Required="true" RequiredError=" Quantity is required!" />
                     <MudForm>
@@ -75,18 +77,19 @@
                     </MudForm>
                     @if (SelectedOption == "Radio 1")
                     {
+
                         <MudSelect T="string" Label="images" @bind-Value="ImageValue" AnchorOrigin="Origin.BottomCenter">
                             @foreach (var filter in images)
                             {
                                 <MudSelectItem T="string" Value="filter.ImageName">
-                                    <img style="width: 32px; height: 32px; margin-right: 10px;" src="data:image;base64,@Convert.ToBase64String(filter.ImageData)" />
-                                    
+                                    <MudImage Src="@filter.ImagePath" Width="32" />
                                     @filter.ImageName
+
                                 </MudSelectItem>
                             }
-
                         </MudSelect>
-                    }                    
+                    }
+
                     @if (SelectedOption == "Radio 2")
                     {
                         <Uploadimage OnButtonClick="HandleButtonClick" />
@@ -114,7 +117,8 @@
                                 else
                                 {
                                     <div class="continer">
-                                        <img src="data:image;base64,@Convert.ToBase64String(filter.ImageData)" class="ImageSize @buttonCssClass" onclick="@ToggleButtonStyle" />
+                                        @* <img src="data:image;base64,@Convert.ToBase64String(filter.ImageData)" class="ImageSize @buttonCssClass" onclick="@ToggleButtonStyle" /> *@
+                                        <img src="@filter.ImagePath" class="ImageSize  @buttonCssClass" alt="@filter.ImagePath" onclick="@ToggleButtonStyle" />
                                     </div>
                                 }
                             }
@@ -141,7 +145,7 @@
                         else
                         {
                             <div class="continer">
-                                <img src="data:image;base64,@Convert.ToBase64String(GetImage.ImageData)" class="ImageSize @buttonCssClass" onclick="@ToggleButtonStyle" />
+                                <img src="@GetImage.ImagePath" class="ImageSize @buttonCssClass" alt="@GetImage.ImagePath" onclick="@ToggleButtonStyle" />
                             </div>
                         }
                     }
@@ -149,7 +153,7 @@
                 </MudCardContent>
                 <MudCardActions Class="d-xl-inline-flex" Style="display:flex;justify-content:end">
                     <MudButton OnClick="Cancel" Variant="Variant.Filled" Style="margin-right:15px">Cancel</MudButton>
-                    <MudButton ButtonType="ButtonType.Submit"  Variant="Variant.Filled" Color="Color.Primary">Add</MudButton>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Add</MudButton>
                 </MudCardActions>
 
             </MudCard>
@@ -199,30 +203,10 @@
 </EditForm>
 
 
-<MudSelect T="string" Label="images" @bind-Value="selectedImagePath" AnchorOrigin="Origin.BottomCenter">
-    @foreach (var filter in imagesList)
-    {
-        <MudSelectItem T="string" Value="filter.Name">
-            <img style="width: 32px; height: 32px; margin-right: 10px;" src="../Resources/Images/dotnet_bot.svg" />
-            @* <MudImage Src="" Alt="Selected Image" Width="32" /> *@
-            @filter.Name
-        </MudSelectItem>
-    }
 
-</MudSelect>
-<img width="300" height="300" src="../wwwroot/404.jpg"/>
-@if (checkempty == true)
-{
-    Snackbar.Add("You Should for fill input ", Severity.Warning);
-    checkempty = false;
-}
+
 
 @code {
- 
-    
-    private List<ImageModelList> imagesList = new List<ImageModelList>();
-    private string selectedImagePath;
-
     bool success;
     Product createProduct = new Product();
     ImageModel GetImage = new ImageModel();
@@ -232,10 +216,10 @@
     public IEnumerable<Category> category = new List<Category>();
     public IEnumerable<ImageModel> images = new List<ImageModel>();
     [Parameter] public EventCallback<bool> OnButtonClick { get; set; }
+    [Parameter] public EventCallback<bool> refresh { get; set; }
     private bool showInnerComponent = false;
     private bool showInnerComponentDone = false;
     // private void Cancel() => showInnerComponent = false;
-    public bool checkempty { get; set; }
     private string BrandValue { get; set; }
     private string CategoryValue { get; set; }
     private string ImageValue { get; set; }
@@ -243,19 +227,19 @@
     private string buttonCssClass => isClicked ? "buttonCssClass" : "";
     public string SelectedOption { get; set; } = "Radio 1";
     private bool ImageLoad = false;
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; }
 
 
 
-
-    private async Task Cancel() => await OnButtonClick.InvokeAsync();
+     private async Task Cancel() => await OnButtonClick.InvokeAsync();
+    
     private void CancelDone() => showInnerComponentDone = false;
     private void OpenDialogDone() => showInnerComponentDone = true;
     private void ToggleButtonStyle() => isClicked = !isClicked;
 
     protected override async Task OnInitializedAsync()
     {
-
-
         var request = await ProductService.GetAllProductsAsync();
         if (request.Success) products = request.Data!;
         filteredProducts = products;
@@ -267,22 +251,7 @@
 
         var requestImage = await imageserivce.GetAllImageAsync();
         if (requestImage.Success) images = requestImage.Data!;
-
-
-        var imagesDirectory = Path.Combine("C:\\Users\\Dell\\Desktop\\MobileStore\\MobileStoreV2\\MobileStoreV2\\Resources\\Images\\", "uploads");
-        
-        var imageFiles = Directory.GetFiles(imagesDirectory);
-        foreach (var file in imageFiles)
-        {
-            imagesList.Add(new ImageModelList
-                {
-                    Name = Path.GetFileName(file),
-                    Path = $"/images/{Path.GetFileName(file)}"
-                });
-        }
-
     }
-
 
     private async Task GetImageFunc()
     {
@@ -292,14 +261,13 @@
         {
             try
             {
-                var ImageValueBind = images.Where(x => x.ImageName == ImageValue).Select(x => x.ImageData).FirstOrDefault();
-                GetImage.ImageData = ImageValueBind;
+                var ImageValueBind = images.Where(x => x.ImageName == ImageValue).Select(x => x.ImagePath).FirstOrDefault();
+                GetImage.ImagePath = ImageValueBind;
                 ImageLoad = true;
             }
             catch
             {
                 Snackbar.Add("image not add ", Severity.Error);
-
             }
         }
 
@@ -309,7 +277,8 @@
     private async void OnValidSubmit(EditContext context)
     {
 
-        if (createProduct.Name == null || createProduct.BarCode == 0 || CategoryValue == null || BrandValue == null || createProduct.Price == 0 || createProduct.Quantity == 0) checkempty = true;
+        if (createProduct.Name == null || createProduct.BarCode == 0 || CategoryValue == null || BrandValue == null || createProduct.Price == 0 || createProduct.Quantity == 0)
+            Snackbar.Add("You Should for fill input", Severity.Warning);
         else
         {
             success = true;
@@ -340,6 +309,8 @@
                 products.Append(product);
                 products = requestRefresh.Data!;
                 filteredProducts = products;
+
+                await refresh.InvokeAsync(); //refresh Dashboard table
                 Snackbar.Add("Add Product Done successfully", Severity.Success);
 
                 StateHasChanged();
@@ -356,7 +327,14 @@
         ImageValue = GetValue;
         var requestImage = await imageserivce.GetAllImageAsync();
         if (requestImage.Success) images = requestImage.Data!;
+
+
         ImageLoad = true;
+        await Context.SaveChangesAsync();
+        StateHasChanged();
+
+
+
     }
 
 }

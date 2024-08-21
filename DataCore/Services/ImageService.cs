@@ -48,7 +48,7 @@ namespace DataCore.Services
             ImageModel Image = new ImageModel
             {
                 ImageName = CreateImage.ImageName,
-                ImageData = CreateImage.ImageData,
+                ImagePath = CreateImage.ImagePath,
                 UploadDate = CreateImage.UploadDate,
                 IsDeleted = CreateImage.IsDeleted,
                 DeletedAt = CreateImage.DeletedAt,
@@ -117,7 +117,7 @@ namespace DataCore.Services
                 {
                     Message = "image not found",
                     Success = false,
-                    Data = new ImageModel { ImageData= null },
+                    Data = new ImageModel { ImagePath= "" },
                 };
             }
             else

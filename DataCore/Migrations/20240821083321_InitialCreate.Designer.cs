@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataCore.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240819134031_InitialCreate")]
+    [Migration("20240821083321_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -111,11 +111,11 @@ namespace DataCore.Migrations
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<byte[]>("ImageData")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
                     b.Property<string>("ImageName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagePath")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

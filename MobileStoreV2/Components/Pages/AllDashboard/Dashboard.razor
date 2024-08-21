@@ -40,16 +40,13 @@
 <MudDialog @bind-IsVisible="showInnerComponent">
     <TitleContent> Add Product</TitleContent>
     <DialogContent>
-        <Createproduct OnButtonClick="HandleButtonClick" />
+        <Createproduct OnButtonClick="HandleButtonClick"   />
     </DialogContent>
 
 </MudDialog>
 
 
-@* <MudTabs Elevation="4" Rounded="true" Centered="true" Color="@Color.Primary">
-    <MudTabPanel Text=" Add Brand"><MudText> <Createbrand /> </MudText></MudTabPanel>
-    <MudTabPanel Text="Add Category">  <MudText> <Cateorey /> </MudText>  </MudTabPanel>
-</MudTabs> *@
+
 
 <MudDialog @bind-IsVisible="showInnerComponentBrands">
 
@@ -155,7 +152,6 @@ else
                 <MudTd><MudTextField T="int" Label="Quantity" @bind-Value="context.Quantity" Required="true" RequiredError="Quantity is required!" /></MudTd>
                 <MudTd><MudTextField T="double" Label="Price" @bind-Value="context.Price" Required="true" RequiredError="Price is required!" /></MudTd>
                 <MudTd><MudTextField T="int" Label="Category" @bind-Value="context.BarCode" Required="true" RequiredError="BarCode is required!" /></MudTd>
-                @* <MudTd><MudTextField T="int" Label="ImageId" @bind-Value="context.ImageId" Required="true" RequiredError="ImageId is required!" /></MudTd> *@
                 <MudTd>
                     <MudSelect T="int" Label="ImageValue" @bind-Value="ImageValue" AnchorOrigin="Origin.BottomCenter">
                         @foreach (var filter in images)
@@ -212,19 +208,19 @@ else
     private void CancelDone() => showInnerComponentDone = false;
     //end modal
 
-    private void HandleButtonClick()
+    private async Task HandleButtonClick()
     {
         showInnerComponent = false;
+        var request = await ProductService.GetAllProductsAsync();
+        if (request.Success) products = request.Data!;
+        filteredProducts = products;
+
     }
 
     protected override async Task OnInitializedAsync()
     {
         var request = await ProductService.GetAllProductsAsync();
-        if (request.Success)
-        {
-            products = request.Data!;
-        }
-
+        if (request.Success)products = request.Data!;
         filteredProducts = products;
 
 
@@ -234,12 +230,8 @@ else
         var requestGategory = await categoryService.GetAllCategoryAsync();
         if (requestGategory.Success) category = requestGategory.Data!;
 
-
         var requestImage = await imageserivce.GetAllImageAsync();
         if (requestImage.Success) images = requestImage.Data!;
-
-
-
     }
     private async Task deleteData(int id)
     {

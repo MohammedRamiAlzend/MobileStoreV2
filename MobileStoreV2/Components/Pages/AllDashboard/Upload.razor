@@ -22,11 +22,28 @@
     <p>Uploaded File: @uploadedImageName</p>
 } *@
 
+
+
+<MudPaper Elevation="1" Class="pa-4">
+    @foreach (var filter in images)
+    {
+
+        <MudPaper Height="400px" Width="100%">
+            <MudContainer MaxWidth="MaxWidth.Small">
+                @* <MudImage Src="@filter.ImagePath" Width="300" Height="300" /> *@
+                <img src="@($"{filter.ImagePath}?{Guid.NewGuid()}")" height="300" width="300" alt="Uploaded Image" />
+
+            </MudContainer>
+        </MudPaper>
+        
+    }
+</MudPaper>
+
 <MudTable Items="@images" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
     <HeaderContent>
         <MudTh>id</MudTh>
         <MudTh>ImageName</MudTh>
-        <MudTh>ImageData</MudTh>
+        <MudTh>ImagePath</MudTh>
         <MudTh>UploadData</MudTh>
         <MudTh>Action</MudTh>
 
@@ -34,7 +51,8 @@
     <RowTemplate>
         <MudTd DataLabel="Id">@context.Id</MudTd>
         <MudTd DataLabel="ImageName">@context.ImageName</MudTd>
-        <MudTd DataLabel="ImageData"><img width="100" height="100" src="data:image;base64,@Convert.ToBase64String(context.ImageData)" alt="@context.ImageData" /></MudTd>
+        @* <MudTd DataLabel="Imagepath"><img width="100" height="100" src="data:image;base64,@Convert.ToBase64String(context.ImageData)" alt="@context.ImageData" /></MudTd> *@
+        <MudTd DataLabel="Imagepath">@context.ImagePath</MudTd>
         <MudTd DataLabel="UploadDate">@context.UploadDate</MudTd>
         <MudTd DataLabel="Delete"><MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(() => SureDialog(context.Id))" Variant="Variant.Filled" Color="Color.Error" Size="Size.Medium" /></MudTd>
 
@@ -64,21 +82,24 @@
         {
             uploadedImageName = selectedFile.Name;
 
-            // var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+            var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+            //var filePath = Path.Combine(Env.webrootpath, "uploads", uploadedFileName);
 
-            // using (var fileStream = new FileStream(filePath, FileMode.Create))
-            // {
-            //     await selectedFile.OpenReadStream().CopyToAsync(fileStream);
-            // }
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await selectedFile.OpenReadStream().CopyToAsync(fileStream);
+             
 
+            }
+            StateHasChanged();
             var fileBytes = new byte[selectedFile.Size];
             await selectedFile.OpenReadStream().ReadAsync(fileBytes);
             uploadedImageName = selectedFile.Name;
 
-       
+
             // Save the image using the service
             CreateImage.ImageName = selectedFile.Name;
-            CreateImage.ImageData = fileBytes;
+            CreateImage.ImagePath = $"/uploads/{Path.GetFileName(selectedFile.Name)}";
             CreateImage.DeletedAt = DateTime.Now;
             CreateImage.IsDeleted = false;
             CreateImage.DeletedAt = null;

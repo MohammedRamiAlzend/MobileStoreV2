@@ -28,6 +28,7 @@
     [Parameter] public EventCallback<string> OnButtonClick { get; set; }
 
 
+
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
 
@@ -36,38 +37,35 @@
         if (GetiamgeName != null)
         {
             Snackbar.Add("image Name Allready Exsits ", Severity.Warning);
-
-            //start Get SelectedImageName
+            //Start Send imageValue
             await OnButtonClick.InvokeAsync(selectedFile.Name);
-            //End Get SelectedImageNames
+            //End Send imageValue
             return;
         }
 
         if (selectedFile != null)
         {
-            uploadedImageName = "MS_"+selectedFile.Name;
-            //start Store Image in upload File
-            var filePath = Path.Combine("C:\\Users\\Dell\\Desktop\\MobileStore\\MobileStoreV2\\MobileStoreV2\\Resources\\Images\\", "uploads", uploadedImageName);
+            uploadedImageName = selectedFile.Name;
 
+            var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
             using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
                 await selectedFile.OpenReadStream().CopyToAsync(fileStream);
             }
 
             var fileBytes = new byte[selectedFile.Size];
-
             await selectedFile.OpenReadStream().ReadAsync(fileBytes);
             uploadedImageName = selectedFile.Name;
 
+
             // Save the image using the service
             CreateImage.ImageName = selectedFile.Name;
-            CreateImage.ImageData = fileBytes;
+            CreateImage.ImagePath = $"uploads/{Path.GetFileName(selectedFile.Name)}";
             CreateImage.DeletedAt = DateTime.Now;
             CreateImage.IsDeleted = false;
             CreateImage.DeletedAt = null;
             var image = CreateImage;
             var request = await imageservice.CreateImageAsync(image);
-
             var requestRefresh = await imageservice.GetAllImageAsync();
             if (request.Success)
             {
@@ -77,10 +75,10 @@
                 Snackbar.Add($"Add Image {uploadedImageName} Done Successfully", Severity.Success);
                 Snackbar.Add(request.Message, Severity.Success);
                 CreateImage = new ImageModel();
-
-                //start Get SelectedImageName
+                //Start Send imageValue 
                 await OnButtonClick.InvokeAsync(selectedFile.Name);
-                //End Get SelectedImageNames
+           
+                //End Send imageValue 
                 StateHasChanged();
             }
             else Snackbar.Add(request.Message, Severity.Error);
@@ -88,6 +86,7 @@
     }
     private async Task deleteData(int id)
     {
+        await OnButtonClick.InvokeAsync(selectedFile.Name);
         Snackbar.Add(id.ToString(), Severity.Success);
 
 
@@ -114,10 +113,7 @@
     {
 
         var request = await imageservice.GetAllImageAsync();
-        if (request.Success)
-        {
-            images = request.Data!;
-        }
+        if (request.Success)images = request.Data!;        
 
     }
     string state = "Message box hasn't been opened yet";
