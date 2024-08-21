@@ -58,7 +58,6 @@
 
             var fileBytes = new byte[selectedFile.Size];
             await selectedFile.OpenReadStream().ReadAsync(fileBytes);
-            // uploadedImageName = selectedFile.Name;
             // Save the image using the service
             CreateImage.ImageName = uploadedImageName;
             CreateImage.ImagePath = $"uploads/{Path.GetFileName(uploadedImageName)}";
@@ -72,7 +71,6 @@
             {
                 images.Append(image);
                 images = requestRefresh.Data!;
-                Snackbar.Add($"Add Image {uploadedImageName} Done Successfully", Severity.Success);
                 Snackbar.Add(request.Message, Severity.Success);
                 CreateImage = new ImageModel();
                 //Start Send imageValue 

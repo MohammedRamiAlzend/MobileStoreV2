@@ -45,7 +45,6 @@
     <RowTemplate>
         <MudTd DataLabel="Id">@context.Id</MudTd>
         <MudTd DataLabel="ImageName">@context.ImageName</MudTd>
-        @* <MudTd DataLabel="Imagepath"><img width="100" height="100" src="data:image;base64,@Convert.ToBase64String(context.ImageData)" alt="@context.ImageData" /></MudTd> *@
         <MudTd DataLabel="Imagepath">@context.ImagePath</MudTd>
         <MudTd DataLabel="UploadDate">@context.UploadDate</MudTd>
         <MudTd DataLabel="Delete"><MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(() => SureDialog(context.Id))" Variant="Variant.Filled" Color="Color.Error" Size="Size.Medium" /></MudTd>
@@ -109,10 +108,8 @@
             var requestRefresh = await imageservice.GetAllImageAsync();
             if (request.Success)
             {
-
                 images.Append(image);
                 images = requestRefresh.Data!;
-                Snackbar.Add($"Add Image {uploadedImageName} Done Successfully", Severity.Success);
                 Snackbar.Add(request.Message, Severity.Success);
                 CreateImage = new ImageModel();
                 StateHasChanged();
