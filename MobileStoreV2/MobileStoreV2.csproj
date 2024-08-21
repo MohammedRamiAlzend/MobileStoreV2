@@ -80,8 +80,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="wwwroot\upload-multi\" />
+	  <Folder Include="Resources\Images\uploads\" />
 	  <Folder Include="wwwroot\uploads\" />
+	  <Folder Include="wwwroot\upload-multi\" />
 	</ItemGroup>
 
 </Project>

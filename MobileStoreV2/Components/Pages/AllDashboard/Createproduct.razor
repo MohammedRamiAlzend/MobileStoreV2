@@ -8,8 +8,8 @@
 @inject IBrandService brandservice
 @inject ICategoryService categoryService
 @inject IImageService imageserivce
-
 @inject ISnackbar Snackbar
+@using System.IO
 
 <style>
 
@@ -40,18 +40,16 @@
 
 
 
-<EditForm Model="@createProduct" OnValidSubmit="OnValidSubmit">
+<EditForm  Model="@createProduct" OnValidSubmit="OnValidSubmit">
+
     <DataAnnotationsValidator />
     <MudGrid>
         <MudItem xs="12" sm="12">
             <MudCard>
                 <MudCardContent>
-                    @* <MudTextField Label="Name" @bind-Value="createProduct.Name" For="@(() => createProduct.Name)" InputType="InputType.Text" /> *@
-                    @* <MudTextField T="string" Label="Name" Required="true" @bind-Value="createProduct.Name" For="@(() => createProduct.Name)" RequiredError="Name is required!" /> *@
                     <MudTextField T="string" Label="Name" @bind-Value="createProduct.Name" Required="true" RequiredError=" Name is required!" />
                     <MudTextField Label="BarCode" Class="mt-3"
                                   @bind-Value="createProduct.BarCode" For="@(() => createProduct.BarCode)" InputType="InputType.Number" />
-
                     <MudSelect T="string" Label="Brand" @bind-Value="BrandValue" Required="true" RequiredError=" Brand is required!" AnchorOrigin="Origin.BottomCenter">
                         @foreach (var filter in brands)
                         {
@@ -65,13 +63,10 @@
                             <MudSelectItem Value="filter.Name" />
                         }
                     </MudSelect>
-
-                    <MudTextField Label="Description" HelperText="Repeat the Brand" Class="mt-3"
-                                  @bind-Value="createProduct.Description" For="@(() => createProduct.Description)" InputType="InputType.Text" />
-                    <MudTextField Label="Discount" HelperText="Repeat the Brand" Class="mt-3"
-                                  @bind-Value="createProduct.Discount" For="@(() => createProduct.Discount)" InputType="InputType.Number" />
-                    <MudTextField T="double" Label="Price" @bind-Value="createProduct.Price" Required="true" RequiredError=" Price is required!" />
-                    <MudTextField T="int" Label="Quantity" @bind-Value="createProduct.Quantity" Required="true" RequiredError=" Quantity is required!" />
+                    <MudTextField Label="Description"  Class="mt-3" @bind-Value="createProduct.Description"  InputType="InputType.Text" />
+                    <MudTextField Label="Discount" HelperText="Repeat the Brand" Class="mt-3"@bind-Value="createProduct.Discount" For="@(() => createProduct.Discount)" InputType="InputType.Number" />
+                    <MudTextField T="double" Label="Price" @bind-Value="createProduct.Price" Required="true" HelperText="Repeat the Description" RequiredError=" Price is required!" />
+                    <MudTextField T="int" Label="Quantity" @bind-Value="createProduct.Quantity" HelperText="Repeat the Quantity" Required="true" RequiredError=" Quantity is required!" />
                     <MudForm>
                         <MudRadioGroup @bind-Value="SelectedOption">
                             <MudRadio Value="@("Radio 1")" Color="Color.Primary" Dense="true">Chouse from Exsit Images</MudRadio>
@@ -85,13 +80,13 @@
                             {
                                 <MudSelectItem T="string" Value="filter.ImageName">
                                     <img style="width: 32px; height: 32px; margin-right: 10px;" src="data:image;base64,@Convert.ToBase64String(filter.ImageData)" />
+                                    
                                     @filter.ImageName
                                 </MudSelectItem>
                             }
 
                         </MudSelect>
                     }                    
-              
                     @if (SelectedOption == "Radio 2")
                     {
                         <Uploadimage OnButtonClick="HandleButtonClick" />
@@ -105,7 +100,6 @@
                             {
                                 @if (!ImageLoad)
                                 {
-
                                     <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="200px" />
                                     <MudCardContent>
                                         <MudSkeleton Width="30%" Height="42px;" />
@@ -119,7 +113,6 @@
                                 }
                                 else
                                 {
-
                                     <div class="continer">
                                         <img src="data:image;base64,@Convert.ToBase64String(filter.ImageData)" class="ImageSize @buttonCssClass" onclick="@ToggleButtonStyle" />
                                     </div>
@@ -156,7 +149,7 @@
                 </MudCardContent>
                 <MudCardActions Class="d-xl-inline-flex" Style="display:flex;justify-content:end">
                     <MudButton OnClick="Cancel" Variant="Variant.Filled" Style="margin-right:15px">Cancel</MudButton>
-                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Add</MudButton>
+                    <MudButton ButtonType="ButtonType.Submit"  Variant="Variant.Filled" Color="Color.Primary">Add</MudButton>
                 </MudCardActions>
 
             </MudCard>
@@ -206,7 +199,18 @@
 </EditForm>
 
 
+<MudSelect T="string" Label="images" @bind-Value="selectedImagePath" AnchorOrigin="Origin.BottomCenter">
+    @foreach (var filter in imagesList)
+    {
+        <MudSelectItem T="string" Value="filter.Name">
+            <img style="width: 32px; height: 32px; margin-right: 10px;" src="../Resources/Images/dotnet_bot.svg" />
+            @* <MudImage Src="" Alt="Selected Image" Width="32" /> *@
+            @filter.Name
+        </MudSelectItem>
+    }
 
+</MudSelect>
+<img width="300" height="300" src="../wwwroot/404.jpg"/>
 @if (checkempty == true)
 {
     Snackbar.Add("You Should for fill input ", Severity.Warning);
@@ -214,6 +218,11 @@
 }
 
 @code {
+ 
+    
+    private List<ImageModelList> imagesList = new List<ImageModelList>();
+    private string selectedImagePath;
+
     bool success;
     Product createProduct = new Product();
     ImageModel GetImage = new ImageModel();
@@ -258,6 +267,20 @@
 
         var requestImage = await imageserivce.GetAllImageAsync();
         if (requestImage.Success) images = requestImage.Data!;
+
+
+        var imagesDirectory = Path.Combine("C:\\Users\\Dell\\Desktop\\MobileStore\\MobileStoreV2\\MobileStoreV2\\Resources\\Images\\", "uploads");
+        
+        var imageFiles = Directory.GetFiles(imagesDirectory);
+        foreach (var file in imageFiles)
+        {
+            imagesList.Add(new ImageModelList
+                {
+                    Name = Path.GetFileName(file),
+                    Path = $"/images/{Path.GetFileName(file)}"
+                });
+        }
+
     }
 
 

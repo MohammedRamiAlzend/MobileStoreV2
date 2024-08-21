@@ -30,7 +30,7 @@
 
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
-    
+
         selectedFile = e.File;
         var GetiamgeName = images.Where(x => x.ImageName == selectedFile.Name).FirstOrDefault();
         if (GetiamgeName != null)
@@ -45,7 +45,15 @@
 
         if (selectedFile != null)
         {
-            uploadedImageName = selectedFile.Name;
+            uploadedImageName = "MS_"+selectedFile.Name;
+            //start Store Image in upload File
+            var filePath = Path.Combine("C:\\Users\\Dell\\Desktop\\MobileStore\\MobileStoreV2\\MobileStoreV2\\Resources\\Images\\", "uploads", uploadedImageName);
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await selectedFile.OpenReadStream().CopyToAsync(fileStream);
+            }
+
             var fileBytes = new byte[selectedFile.Size];
 
             await selectedFile.OpenReadStream().ReadAsync(fileBytes);
@@ -97,7 +105,7 @@
 
         var requestRefresh = await imageservice.GetAllImageAsync();
 
-        if (request.Success)images = requestRefresh.Data!;
+        if (request.Success) images = requestRefresh.Data!;
         StateHasChanged();
 
     }
