@@ -14,7 +14,7 @@
 @using Microsoft.EntityFrameworkCore;
 
 
-<InputFile OnChange="HandleFileSelected" />
+<InputFile OnChange="HandleFileSelected" accept=".jpeg,.png,.jpg" />
 
 
 
@@ -65,10 +65,17 @@
     {
 
         selectedFile = e.File;
+        
         var GetiamgeName = images.Where(x => x.ImageName == selectedFile.Name).FirstOrDefault();
         if (GetiamgeName != null)
         {
             Snackbar.Add("image Name Allready Exsits ", Severity.Warning);
+            return;
+        }
+        var ContentType = selectedFile.ContentType;
+        if (ContentType != "image/png".ToString() && ContentType != "image/jpeg".ToString() && ContentType != "image/jpg".ToString())
+        {
+            Snackbar.Add($"file type (({ContentType})) not accpetd ", Severity.Warning);
             return;
         }
 
@@ -89,7 +96,6 @@
             StateHasChanged();
             var fileBytes = new byte[selectedFile.Size];
             await selectedFile.OpenReadStream().ReadAsync(fileBytes);
-            uploadedImageName = selectedFile.Name;
 
 
             // Save the image using the service

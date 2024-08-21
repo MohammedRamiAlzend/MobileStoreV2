@@ -14,7 +14,7 @@
 @using Microsoft.EntityFrameworkCore;
 
 
-<InputFile OnChange="HandleFileSelected" />
+<InputFile accept=".jpeg,.png,.jpg" OnChange="HandleFileSelected" />
 
 @code {
     private IBrowserFile selectedFile;
@@ -36,6 +36,12 @@
             //Start Send imageValue
             await OnButtonClick.InvokeAsync(selectedFile.Name);
             //End Send imageValue
+            return;
+        }
+        var ContentType = selectedFile.ContentType;
+        if (ContentType != "image/png".ToString() && ContentType != "image/jpeg".ToString() && ContentType != "image/jpg".ToString())
+        {
+            Snackbar.Add($"file type (({ContentType})) not accpetd ", Severity.Warning);
             return;
         }
 
