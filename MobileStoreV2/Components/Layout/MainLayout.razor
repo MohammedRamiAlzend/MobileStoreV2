@@ -2,38 +2,46 @@
 @using MobileStoreV2.Components.Pages
 @using MobileStoreV2.Components.Pages.AllDashboard
 @using MobileStoreV2.Components.Pages.ProductsCmpnt
-<MudThemeProvider />
+
+<MudThemeProvider IsDarkMode="darkMode" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
 
 <MudLayout>
 
-    <MudAppBar Elevation="1" Dense="true">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
-        <MudSpacer />
-        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit" Href="https://github.com/MudBlazor/MudBlazor" Target="_blank" />
-    </MudAppBar>
-    <MudDrawer @bind-Open="@_open" ClipMode="_clipMode" Breakpoint="@_breakpoint" Elevation="1" Variant="@DrawerVariant.Mini">
+    <MudRTLProvider RightToLeft="@_rightToLeft">
 
-        <NavMenu />
 
-    </MudDrawer>
 
-    <MudMainContent>
-        <MudPaper Height="100%" Width="100%" Style="margin-bottom:30px;">
-            <Casual />
-        </MudPaper>
-        @Body
-    </MudMainContent>
+        <MudAppBar Elevation="1" Dense="true">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
+            <MudSpacer />
+            <MudToggleIconButton @bind-Toggled="darkMode" Icon="@Icons.Material.Filled.LightMode" Color="Color.Inherit" ToggledIcon="@Icons.Material.Filled.DarkMode" ToggledColor="@Color.Inherit" />
+            <MudSwitch @bind-Value="_rightToLeft" Label="@Localizer("En")" Color="Color.Warning" />
+
+        </MudAppBar>
+        <MudDrawer @bind-Open="@_open" ClipMode="_clipMode" Breakpoint="@_breakpoint" Elevation="1" Variant="@DrawerVariant.Mini">
+
+            <NavMenu _rightToLeft ="@_rightToLeft"/>
+
+        </MudDrawer>
+
+        <MudMainContent>
+            <MudPaper Height="100%" Width="100%" Style="margin-bottom:30px;">
+                <Casual />
+            </MudPaper>
+            @Body
+        </MudMainContent>
+    </MudRTLProvider>
 </MudLayout>
-
-
-
 
 
 @code {
     bool _drawerOpen = true;
+    bool darkMode = false;
+    private bool _rightToLeft = false;
+    private string RightToLeftText { get; set; }
 
     void DrawerToggle()
     {
@@ -48,5 +56,12 @@
     private void ToggleDrawer()
     {
         _open = !_open;
+    }
+
+    private string Localizer(string key)
+    {
+         if (key.Equals("En"))
+            return _rightToLeft ? "Ar" : "En";
+        return "";
     }
 }

@@ -13,20 +13,19 @@
 @inject ISnackbar Snackbar
 @using Microsoft.EntityFrameworkCore;
 
-<h3>Chouse Your Image To Upload</h3>
+@using Microsoft.AspNetCore.Components.Forms
 
-<InputFile OnChange="HandleFileSelected" />
 
-@* @if (uploadedImageName != null)
-{
-    <p>Uploaded File: @uploadedImageName</p>
-} *@
+
+<InputFile OnChange="HandleFileSelected" accept="image/jpeg,image/png" />
+
+
 
 <MudTable Items="@images" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
     <HeaderContent>
         <MudTh>id</MudTh>
         <MudTh>ImageName</MudTh>
-        <MudTh>ImageData</MudTh>
+        <MudTh>ImagePath</MudTh>
         <MudTh>UploadData</MudTh>
         <MudTh>Action</MudTh>
 
@@ -34,12 +33,15 @@
     <RowTemplate>
         <MudTd DataLabel="Id">@context.Id</MudTd>
         <MudTd DataLabel="ImageName">@context.ImageName</MudTd>
-        <MudTd DataLabel="ImageData"><img width="100" height="100" src="data:image;base64,@Convert.ToBase64String(context.ImageData)" alt="@context.ImageData" /></MudTd>
+        <MudTd DataLabel="Imagepath">@context.ImagePath</MudTd>
         <MudTd DataLabel="UploadDate">@context.UploadDate</MudTd>
         <MudTd DataLabel="Delete"><MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(() => SureDialog(context.Id))" Variant="Variant.Filled" Color="Color.Error" Size="Size.Medium" /></MudTd>
 
     </RowTemplate>
 </MudTable>
+
+
+
 
 @code {
     private IBrowserFile selectedFile;
@@ -47,38 +49,50 @@
     public IEnumerable<ImageModel> images = new List<ImageModel>();
     ImageModel CreateImage = new ImageModel();
 
+    private byte[] tempCoverImage = Array.Empty<byte>();
+
+
     private bool _loading;
 
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
 
         selectedFile = e.File;
+
+        UploadFiles(selectedFile);
         var GetiamgeName = images.Where(x => x.ImageName == selectedFile.Name).FirstOrDefault();
         if (GetiamgeName != null)
         {
             Snackbar.Add("image Name Allready Exsits ", Severity.Warning);
             return;
         }
+        var ContentType = selectedFile.ContentType;
+        if (ContentType != "image/png".ToString() && ContentType != "image/jpeg".ToString() && ContentType != "image/jpg".ToString())
+        {
+            Snackbar.Add($"file type (({ContentType})) not accpetd ", Severity.Warning);
+            return;
+        }
 
         if (selectedFile != null)
         {
-            uploadedImageName = selectedFile.Name;
+            uploadedImageName = DateTime.Now.Microsecond.ToString() + "_" + selectedFile.Name;
 
-            // var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+          //   var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+            var filePath = Path.Combine("C:\\Users\\Dell\\Desktop\\MobileStore\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+            //var filePath = Path.Combine(Env.webrootpath, "uploads", uploadedFileName);
 
-            // using (var fileStream = new FileStream(filePath, FileMode.Create))
-            // {
-            //     await selectedFile.OpenReadStream().CopyToAsync(fileStream);
-            // }
-
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await selectedFile.OpenReadStream().CopyToAsync(fileStream);
+            }
+            StateHasChanged();
             var fileBytes = new byte[selectedFile.Size];
             await selectedFile.OpenReadStream().ReadAsync(fileBytes);
-            uploadedImageName = selectedFile.Name;
 
-       
+
             // Save the image using the service
-            CreateImage.ImageName = selectedFile.Name;
-            CreateImage.ImageData = fileBytes;
+            CreateImage.ImageName = uploadedImageName;
+            CreateImage.ImagePath = $"uploads/{Path.GetFileName(uploadedImageName)}";
             CreateImage.DeletedAt = DateTime.Now;
             CreateImage.IsDeleted = false;
             CreateImage.DeletedAt = null;
@@ -87,10 +101,8 @@
             var requestRefresh = await imageservice.GetAllImageAsync();
             if (request.Success)
             {
-
                 images.Append(image);
                 images = requestRefresh.Data!;
-                Snackbar.Add($"Add Image {uploadedImageName} Done Successfully", Severity.Success);
                 Snackbar.Add(request.Message, Severity.Success);
                 CreateImage = new ImageModel();
                 StateHasChanged();
@@ -101,32 +113,23 @@
     private async Task deleteData(int id)
     {
         Snackbar.Add(id.ToString(), Severity.Success);
-
-
         var request = await imageservice.DeleteImageAsync(id);
-
+        var GetImageById = await imageservice.GetImageByIdAsync(id);
         if (request.Success)
         {
+            //Strat Delete from file
+            
+            var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", GetImageById.Data!.ImageName);
+            System.IO.File.Delete(filePath);
+            //end Delete from file
 
             StateHasChanged();
             Snackbar.Add(request.Message, Severity.Success);
-
         }
-        else
-        {
-            Snackbar.Add(request.Message, Severity.Error);
-
-        }
-
+        else Snackbar.Add(request.Message, Severity.Error);
         var requestRefresh = await imageservice.GetAllImageAsync();
-
-        if (request.Success)
-        {
-            images = requestRefresh.Data!;
-        }
-
+        if (request.Success) images = requestRefresh.Data!;
         StateHasChanged();
-
     }
 
     protected override async Task OnInitializedAsync()
@@ -152,5 +155,23 @@
         if (state == "Deleted!") await deleteData(id);
         StateHasChanged();
     }
+    // ================================== for image ==============================================
 
+    private string GetImageSrc(byte[]? coverImage)
+    {
+        if (coverImage == null || coverImage.Length == 0)
+            return "https://cdn.iconscout.com/icon/free/png-256/free-photo-camera-1780425-1517754.png";
+        //return null;
+        var base64Image = Convert.ToBase64String(coverImage);
+        return $"data:image/png;base64,{base64Image}";
+    }
+    private async Task UploadFiles(IBrowserFile file)
+    {
+        selectedFile = file;
+        var buffer = new byte[selectedFile.Size];
+        await selectedFile.OpenReadStream().ReadAsync(buffer);
+        tempCoverImage = buffer;
+
+    }
 }
+

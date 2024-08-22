@@ -48,7 +48,7 @@ namespace DataCore.Services
             ImageModel Image = new ImageModel
             {
                 ImageName = CreateImage.ImageName,
-                ImageData = CreateImage.ImageData,
+                ImagePath = CreateImage.ImagePath,
                 UploadDate = CreateImage.UploadDate,
                 IsDeleted = CreateImage.IsDeleted,
                 DeletedAt = CreateImage.DeletedAt,
@@ -117,7 +117,7 @@ namespace DataCore.Services
                 {
                     Message = "image not found",
                     Success = false,
-                    Data = new ImageModel { ImageData = null },
+                    Data = new ImageModel { ImagePath= "" },
                 };
             }
             else
@@ -130,5 +130,28 @@ namespace DataCore.Services
                 };
             }
         }
+        public async Task<DataBaseRequest<ImageModel>> GetImageByIdAsync(int id)
+        {
+            var request = await _context.images.Where(x=>x.Id == id).FirstOrDefaultAsync();
+            if (request != null)
+            {
+                return new DataBaseRequest<ImageModel>
+                {
+                    Data = request,
+                    Message = "image Found!",
+                    Success = true,
+                };
+            }
+            else
+            {
+                return new DataBaseRequest<ImageModel>
+                {
+                    Data = new ImageModel(),
+                    Message = $"The image with {id} not Found"
+                };
+
+            }
+        }
+
     }
 }

@@ -14,7 +14,7 @@
         <MudItem xs="12" sm="12">
             <MudCard>
                 <MudCardContent>
-                        <MudTextField T="string" Label="Username" @bind-Value="CreateBrand.Name" For="@(() => CreateBrand.Name)" Required="true" RequiredError="User name is required!" />
+                        <MudTextField T="string" Label="Brand Name " @bind-Value="CreateBrand.Name" For="@(() => CreateBrand.Name)" Required="true" RequiredError="User name is required!" />
                 </MudCardContent> 
                 <MudCardActions Class="d-xl-inline-flex" Style="display:flex;justify-content:end">
                     <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Add</MudButton>
@@ -44,6 +44,8 @@
     public IEnumerable<Brand> brands = new List<Brand>();
     private bool _hidePosition;
     private bool _loading;
+    [Parameter] public EventCallback<bool> refreshProduct { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         var requestbrand = await brandservice.GetAllBrandsAsync();
@@ -54,6 +56,7 @@
         if (CreateBrand.Name == null)
         {
             Snackbar.Add("Name failed is required", Severity.Error);
+
             return;
         }
         var brand = CreateBrand;
@@ -66,6 +69,7 @@
             brands.Append(brand);
             brands = requestRefresh.Data!;
             Snackbar.Add("Add Brand Done Successfully", Severity.Success);
+            await refreshProduct.InvokeAsync(); //refresh Dashboard table
             CreateBrand = new Brand();
             StateHasChanged();
         }

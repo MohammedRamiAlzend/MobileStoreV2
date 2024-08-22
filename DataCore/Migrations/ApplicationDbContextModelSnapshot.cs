@@ -108,11 +108,11 @@ namespace DataCore.Migrations
                     b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<byte[]>("ImageData")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
                     b.Property<string>("ImageName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImagePath")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -163,6 +163,7 @@ namespace DataCore.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Price")
@@ -234,8 +235,9 @@ namespace DataCore.Migrations
                     b.HasOne("DataCore.Models.DataCore.Models.ImageModel", "Image")
                         .WithMany("Products")
                         .HasForeignKey("ImageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .OnDelete(DeleteBehavior.Cascade);
+                        
 
                     b.Navigation("Brand");
 

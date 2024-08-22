@@ -15,7 +15,7 @@
         <MudItem xs="12" sm="12">
             <MudCard>
                 <MudCardContent>
-                    <MudTextField T="string" Label="Username"  @bind-Value="CreateCategory.Name" For="@(() => CreateCategory.Name)" Required="true" RequiredError="User name is required!" />
+                    <MudTextField T="string" Label="Category Name" @bind-Value="CreateCategory.Name" For="@(() => CreateCategory.Name)" Required="true" RequiredError="User name is required!" />
                 </MudCardContent>
                 <MudCardActions Class="d-xl-inline-flex" Style="display:flex;justify-content:end">
                     <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Add</MudButton>
@@ -43,6 +43,7 @@
 @code {
 
     Category CreateCategory = new Category();
+    [Parameter] public EventCallback<bool> refreshProduct { get; set; }
 
     private bool _readOnly = true;
 
@@ -72,6 +73,8 @@
             category.Append(brand);
             category = requestRefresh.Data!;
             Snackbar.Add("Add Category Done Successfully", Severity.Success);
+            await refreshProduct.InvokeAsync(); //refresh Dashboard table
+
             CreateCategory = new Category();
             StateHasChanged();
         }
