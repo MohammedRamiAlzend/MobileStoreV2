@@ -28,7 +28,7 @@ namespace DataCore.Data
         public DbSet<Brand> Brands { get; set; }
 
         // DbSet for Brands
-        public DbSet<ImageModel> images { get; set; }
+        public DbSet<ImageModel> Images { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

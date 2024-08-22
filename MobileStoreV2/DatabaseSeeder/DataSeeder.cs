@@ -22,7 +22,7 @@ public static class DataSeeder
         }
         //foreach (var seeder in _seeders)
         //{
-        //    seeder.Seed(dbContext);l
+        //    seeder.Seed(dbContext);
         //}
     }
 

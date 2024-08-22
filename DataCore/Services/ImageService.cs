@@ -22,7 +22,7 @@ namespace DataCore.Services
         }
         public async Task<DataBaseRequest<IEnumerable<ImageModel>>> GetAllImageAsync()
         {
-            var request = await _context.images.Where(x=>x.IsDeleted == false).ToListAsync();
+            var request = await _context.Images.Where(x => x.IsDeleted == false).ToListAsync();
             if (request != null)
             {
                 return new DataBaseRequest<IEnumerable<ImageModel>>
@@ -53,7 +53,7 @@ namespace DataCore.Services
                 IsDeleted = CreateImage.IsDeleted,
                 DeletedAt = CreateImage.DeletedAt,
             };
-            _context.images.Add(Image);
+            _context.Images.Add(Image);
             var resutl = await _context.SaveChangesAsync();
             if (resutl > 0)
             {
@@ -74,7 +74,7 @@ namespace DataCore.Services
         }
         public async Task<DataBaseRequest> DeleteImageAsync(int id)
         {
-            var image = await _context.images.FindAsync(id);
+            var image = await _context.Images.FindAsync(id);
 
             if (image == null)
             {
@@ -86,7 +86,7 @@ namespace DataCore.Services
             }
             else
             {
-                _context.images.Remove(image);
+                _context.Images.Remove(image);
                 var result = await _context.SaveChangesAsync();
                 if (result > 0)
                 {
@@ -107,17 +107,17 @@ namespace DataCore.Services
 
         }
 
-        public async Task<DataBaseRequest<ImageModel>> GetImageByNameAsync(string  name)
+        public async Task<DataBaseRequest<ImageModel>> GetImageByNameAsync(string name)
         {
-            
-            var request = await _context.images.Where(x => x.ImageName == name).FirstAsync();
+
+            var request = await _context.Images.Where(x => x.ImageName == name).FirstAsync();
             if (request == null)
             {
                 return new DataBaseRequest<ImageModel>
                 {
                     Message = "image not found",
                     Success = false,
-                    Data = new ImageModel { ImageData= null },
+                    Data = new ImageModel { ImageData = null },
                 };
             }
             else

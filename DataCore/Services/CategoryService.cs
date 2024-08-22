@@ -166,7 +166,6 @@ public class CategoryService : ICategoryService
             };
         }
     }
-
     public async Task<DataBaseRequest> UpdateCategoryAsync(int id, Category category)
     {
         var request = await _context.Categories.FindAsync(id);

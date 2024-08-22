@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataCore.Models
 {
- 
+
 
     namespace DataCore.Models
     {
@@ -16,9 +16,7 @@ namespace DataCore.Models
             public string ImageName { get; set; } // Name of the image
             public byte[] ImageData { get; set; } // Binary data of the image
             public DateTime UploadDate { get; set; } // Date of upload
-
             public ICollection<Product>? Products { get; set; }
-
             public bool IsDeleted { get; set; } = false;
             public DateTime? DeletedAt { get; set; } = null;
 
