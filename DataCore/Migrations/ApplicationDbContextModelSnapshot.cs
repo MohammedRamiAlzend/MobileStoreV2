@@ -163,6 +163,7 @@ namespace DataCore.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Price")
@@ -234,8 +235,9 @@ namespace DataCore.Migrations
                     b.HasOne("DataCore.Models.DataCore.Models.ImageModel", "Image")
                         .WithMany("Products")
                         .HasForeignKey("ImageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .OnDelete(DeleteBehavior.Cascade);
+                        
 
                     b.Navigation("Brand");
 

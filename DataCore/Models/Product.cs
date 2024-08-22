@@ -1,4 +1,5 @@
 ﻿using DataCore.Models.DataCore.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace DataCore.Models
 {
@@ -8,12 +9,15 @@ namespace DataCore.Models
         public int Id { get; set; }
 
         // Name of the product
+        [Required]
         public string? Name { get; set; }
 
         // Description of the product
         public string? Description { get; set; }
 
         // Price of the product
+
+
         public double Price { get; set; }
 
         // Discount on the product
@@ -29,9 +33,13 @@ namespace DataCore.Models
         // Navigation property to the Image entity
         public ImageModel? Image { get; set; }
         // Quantity of the product in stock
+
+
         public int Quantity { get; set; }
 
         // Bar code of the product
+
+
         public int BarCode { get; set; }
 
         // Date when the product was inserted
@@ -39,6 +47,7 @@ namespace DataCore.Models
 
         // Foreign key to the Brand entity
         public int BrandId { get; set; }
+
 
         // Navigation property to the Brand entity
         public Brand? Brand { get; set; }

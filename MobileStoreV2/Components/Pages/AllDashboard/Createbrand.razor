@@ -44,6 +44,8 @@
     public IEnumerable<Brand> brands = new List<Brand>();
     private bool _hidePosition;
     private bool _loading;
+    [Parameter] public EventCallback<bool> refreshProduct { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
         var requestbrand = await brandservice.GetAllBrandsAsync();
@@ -54,6 +56,7 @@
         if (CreateBrand.Name == null)
         {
             Snackbar.Add("Name failed is required", Severity.Error);
+
             return;
         }
         var brand = CreateBrand;
@@ -66,6 +69,7 @@
             brands.Append(brand);
             brands = requestRefresh.Data!;
             Snackbar.Add("Add Brand Done Successfully", Severity.Success);
+            await refreshProduct.InvokeAsync(); //refresh Dashboard table
             CreateBrand = new Brand();
             StateHasChanged();
         }

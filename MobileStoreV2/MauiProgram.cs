@@ -1,4 +1,6 @@
 ﻿
+using MudBlazor;
+
 namespace MobileStoreV2
 {
     public static class MauiProgram
@@ -14,7 +16,7 @@ namespace MobileStoreV2
                 });
 
 
-             var connectionString = $"Server={Environment.MachineName}\\{Environment.UserName};Database=MobileStore;Trusted_Connection=True;TrustServerCertificate=True;";
+            var connectionString = $"Server={Environment.MachineName}\\{Environment.UserName};Database=MobileStore;Trusted_Connection=True;TrustServerCertificate=True;";
             // var connectionString = $"Server={Environment.MachineName};Database=MobileStore;Trusted_Connection=True;TrustServerCertificate=True;";
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -25,7 +27,7 @@ namespace MobileStoreV2
             builder.Services.AddTransient<IBrandService, BrandService>();
             builder.Services.AddTransient<IImageService, ImageService>();
             builder.Services.AddTransient<Createdatabase>();
-            
+
 
             builder.Services.AddMauiBlazorWebView();
             builder.Services.AddMudServices();

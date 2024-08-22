@@ -43,6 +43,7 @@
 @code {
 
     Category CreateCategory = new Category();
+    [Parameter] public EventCallback<bool> refreshProduct { get; set; }
 
     private bool _readOnly = true;
 
@@ -72,6 +73,8 @@
             category.Append(brand);
             category = requestRefresh.Data!;
             Snackbar.Add("Add Category Done Successfully", Severity.Success);
+            await refreshProduct.InvokeAsync(); //refresh Dashboard table
+
             CreateCategory = new Category();
             StateHasChanged();
         }

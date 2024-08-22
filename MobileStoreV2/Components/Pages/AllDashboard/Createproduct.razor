@@ -49,9 +49,8 @@
         <MudItem xs="12" sm="12">
             <MudCard>
                 <MudCardContent>
-                    <MudTextField T="string" Label="Name" @bind-Value="createProduct.Name" Required="true" RequiredError=" Name is required!" />
-                    <MudTextField Label="BarCode" Class="mt-3"
-                                  @bind-Value="createProduct.BarCode" For="@(() => createProduct.BarCode)" InputType="InputType.Number" />
+                    <MudTextField T="string" Label="Name" @bind-Value="createProduct.Name" For="@( () => createProduct.Name )" Required="true" RequiredError=" Name is required!" />
+                    <MudTextField Label="BarCode" Class="mt-3" @bind-Value="createProduct.BarCode" For="@(() => createProduct.BarCode)" Required="true" RequiredError=" Barcode is required!" InputType="InputType.Number" />
                     <MudSelect T="string" Label="Brand" @bind-Value="BrandValue" Required="true" RequiredError=" Brand is required!" AnchorOrigin="Origin.BottomCenter">
                         @foreach (var filter in brands)
                         {
@@ -65,10 +64,12 @@
                             <MudSelectItem Value="filter.Name" />
                         }
                     </MudSelect>
-                    <MudTextField Label="Description" Class="mt-3" @bind-Value="createProduct.Description" InputType="InputType.Text" />
+                    <MudTextField T="string" Label="Description" @bind-Value="createProduct.Description" For="@( () => createProduct.Description )" />
+
                     <MudTextField Label="Discount" HelperText="Repeat the Brand" Class="mt-3" @bind-Value="createProduct.Discount" For="@(() => createProduct.Discount)" InputType="InputType.Number" />
-                    <MudTextField T="double" Label="Price" @bind-Value="createProduct.Price" Required="true" HelperText="Repeat the Description" RequiredError=" Price is required!" />
-                    <MudTextField T="int" Label="Quantity" @bind-Value="createProduct.Quantity" HelperText="Repeat the Quantity" Required="true" RequiredError=" Quantity is required!" />
+                    <MudTextField T="double" Label="Price" @bind-Value="createProduct.Price" For="@( () => createProduct.Price )" Required="true" RequiredError=" Price is required!" InputType="InputType.Number" />
+
+                    <MudTextField T="int" Label="Quantity" @bind-Value="createProduct.Quantity" InputType="InputType.Number" />
                     <MudForm>
                         <MudRadioGroup @bind-Value="SelectedOption">
                             <MudRadio Value="@("Radio 1")" Color="Color.Primary" Dense="true">Chouse from Exsit Images</MudRadio>
@@ -77,14 +78,12 @@
                     </MudForm>
                     @if (SelectedOption == "Radio 1")
                     {
-
                         <MudSelect T="string" Label="images" @bind-Value="ImageValue" AnchorOrigin="Origin.BottomCenter">
                             @foreach (var filter in images)
                             {
                                 <MudSelectItem T="string" Value="filter.ImageName">
                                     <MudImage Src="@filter.ImagePath" Width="32" />
                                     @filter.ImageName
-
                                 </MudSelectItem>
                             }
                         </MudSelect>
@@ -92,7 +91,8 @@
 
                     @if (SelectedOption == "Radio 2")
                     {
-                        <Uploadimage OnButtonClick="HandleButtonClick"   />
+                        <Uploadimage OnButtonClick="HandleButtonClick" />
+
                     }
                     @if (ImageValue != null && SelectedOption == "Radio 2")
                     {
@@ -194,7 +194,7 @@
     private string buttonCssClass => isClicked ? "buttonCssClass" : "";
     public string SelectedOption { get; set; } = "Radio 1";
     private bool ImageLoad = false;
-    [CascadingParameter]private MudDialogInstance MudDialog { get; set; }
+    [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
     private async Task Cancel() => await OnButtonClick.InvokeAsync();
     private void ToggleButtonStyle() => isClicked = !isClicked;
 
@@ -233,51 +233,52 @@
 
 
     }
-
     private async void OnValidSubmit(EditContext context)
     {
-
-        if (createProduct.Name == null || createProduct.BarCode == 0 || CategoryValue == null || BrandValue == null || createProduct.Price == 0 || createProduct.Quantity == 0)
-            Snackbar.Add("You Should for fill input", Severity.Warning);
-        else
+        try
         {
-            success = true;
-
-            var GetCategory = await categoryService.GetCategoryByNameAsync(CategoryValue);
-            if (GetCategory.Success) createProduct.CategoryId = GetCategory.Data!.Id;
-            else Snackbar.Add("change category", Severity.Error);
-
-
-            var GetBrand = await brandservice.GetBrandByNameAsync(BrandValue);
-            if (GetBrand.Success) createProduct.BrandId = GetBrand.Data!.Id;
-            else Snackbar.Add("change brand", Severity.Error);
-
-
-            var GetImage = await imageserivce.GetImageByNameAsync(ImageValue);
-            if (GetImage.Success) createProduct.ImageId = GetImage.Data!.Id;
-            else Snackbar.Add("change image", Severity.Error);
-
-
-            createProduct.InsertDate = DateTime.Now;
-            var product = createProduct;
-            var request = await ProductService.CreateProductAsync(product);
-            var requestRefresh = await ProductService.GetAllProductsAsync();
-
-            if (request.Success)
+            if (context.Validate())
             {
+                success = true;
+                var GetCategory = await categoryService.GetCategoryByNameAsync(CategoryValue);
+                if (GetCategory.Success) createProduct.CategoryId = GetCategory.Data!.Id;
+                else Snackbar.Add("change category", Severity.Error);
 
-                products.Append(product);
-                products = requestRefresh.Data!;
-                filteredProducts = products;
 
-                await refreshProduct.InvokeAsync(); //refresh Dashboard table
-                Snackbar.Add("Add Product Done successfully", Severity.Success);
-                createProduct = new Product();
-                StateHasChanged();
+                var GetBrand = await brandservice.GetBrandByNameAsync(BrandValue);
+                if (GetBrand.Success) createProduct.BrandId = GetBrand.Data!.Id;
+                else Snackbar.Add("change brand", Severity.Error);
+
+
+                var GetImage = await imageserivce.GetImageByNameAsync(ImageValue);
+                if (GetImage.Success) createProduct.ImageId = GetImage.Data!.Id;
+                else Snackbar.Add("change image", Severity.Error);
+
+
+                createProduct.InsertDate = DateTime.Now;
+                var product = createProduct;
+                var request = await ProductService.CreateProductAsync(product);
+                var requestRefresh = await ProductService.GetAllProductsAsync();
+
+                if (request.Success)
+                {
+
+                    products.Append(product);
+                    products = requestRefresh.Data!;
+                    filteredProducts = products;
+
+                    await refreshProduct.InvokeAsync(); //refresh Dashboard table
+                    Snackbar.Add("Add Product Done successfully", Severity.Success);
+                    createProduct = new Product();
+                    StateHasChanged();
+                }
+                else
+                    Snackbar.Add(request.Message, Severity.Error);
             }
-            else
-                Snackbar.Add(request.Message, Severity.Error);
-        
+        }
+        catch
+        {
+            Snackbar.Add("some Problem Happend", Severity.Error);
         }
 
     }

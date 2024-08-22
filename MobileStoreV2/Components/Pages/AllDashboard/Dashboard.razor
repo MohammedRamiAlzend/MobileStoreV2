@@ -27,20 +27,19 @@
         align-items: center;
     }
 
-    
 </style>
 
 <div class="continer">
-    <MudButton Variant="Variant.Filled" @onclick="OpenDialog" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add"> إضافة منتجات </MudButton>
+    <MudButton Variant="Variant.Filled" @onclick="OpenDialog" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Class="mx-2"> إضافة منتجات </MudButton>
     <MudButton Variant="Variant.Filled" @onclick="OpenDialogBrand" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" Class="mx-2"> إضافة علامة تجارية </MudButton>
     <MudButton Variant="Variant.Filled" @onclick="OpenDialogCategory" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add"> إضافة صنف </MudButton>
-</div> 
+</div>
 @* start add product form *@
 
 <MudDialog @bind-IsVisible="showInnerComponent">
     <TitleContent> Add Product</TitleContent>
     <DialogContent>
-        <Createproduct OnButtonClick="HandleButtonClick" refreshProduct="HandleRefresh" />
+        <Createproduct OnButtonClick="HandleButtonClick" refreshProduct="OnInitializedAsync" />
     </DialogContent>
 
 </MudDialog>
@@ -52,15 +51,15 @@
 
     <TitleContent>Add Brand</TitleContent>
     <DialogContent>
-        <Createbrand />
-  
+        <Createbrand refreshProduct="OnInitializedAsync" />
+
     </DialogContent>
 </MudDialog>
 
 <MudDialog @bind-IsVisible="showInnerComponentCategory">
     <TitleContent>Add Category</TitleContent>
     <DialogContent>
-        <Cateorey />
+        <Cateorey refreshProduct="OnInitializedAsync" />
     </DialogContent>
 </MudDialog>
 
@@ -68,7 +67,7 @@
 <MudDialog @bind-IsVisible="showInnerComponentImage">
     <TitleContent>Add Image</TitleContent>
     <DialogContent>
-        <Uploadimage />
+        <Uploadimage refreshProduct="OnInitializedAsync" />
     </DialogContent>
 </MudDialog>
 
@@ -100,8 +99,7 @@ else
             <MudTh>Quantity</MudTh>
             <MudTh>Price </MudTh>
             <MudTh>BarCode</MudTh>
-            <MudTh>imagePath</MudTh>
-            <MudTh>ImageId</MudTh>
+            <MudTh>ImageName</MudTh>
             <MudTh>InsertDate</MudTh>
             <MudTh>Edit</MudTh>
             <MudTh>Delete</MudTh>
@@ -120,9 +118,8 @@ else
                 <MudTd DataLabel="Price">@context.Price</MudTd>
                 <MudTd DataLabel="BarCode">@context.BarCode</MudTd>
                 <MudTd DataLabel="BarCode">@context.Image?.ImageName</MudTd>
-                <MudTd DataLabel="ImageId">@context.ImageId</MudTd>
                 <MudTd DataLabel="InsertDate">@context.InsertDate</MudTd>
-                <MudTd DataLabel="Edit"><MudIconButton Icon="@Icons.Material.Filled.Edit" Class="mx-2" OnClick="@(() => show())" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" /></MudTd>
+                <MudTd DataLabel="Edit"><MudIconButton Icon="@Icons.Material.Filled.Edit" Class="mx-2" OnClick="@(() => show(context.Id))" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" /></MudTd>
                 <MudTd DataLabel="Delete"><MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(() => SureDialog(context.Id))" Variant="Variant.Filled" Color="Color.Error" Size="Size.Medium" /></MudTd>
             }
             else
@@ -151,18 +148,14 @@ else
                 <MudTd><MudTextField T="string" Label="Description" @bind-Value="context.Description" Required="true" RequiredError="Description is required!" /></MudTd>
                 <MudTd><MudTextField T="int" Label="Quantity" @bind-Value="context.Quantity" Required="true" RequiredError="Quantity is required!" /></MudTd>
                 <MudTd><MudTextField T="double" Label="Price" @bind-Value="context.Price" Required="true" RequiredError="Price is required!" /></MudTd>
-                <MudTd><MudTextField T="int" Label="Category" @bind-Value="context.BarCode" Required="true" RequiredError="BarCode is required!" /></MudTd>
+                <MudTd><MudTextField T="int" Label="BarCode" @bind-Value="context.BarCode" Required="true" RequiredError="BarCode is required!" /></MudTd>
                 <MudTd>
-                    <MudSelect T="int" Label="ImageValue" @bind-Value="ImageValue" AnchorOrigin="Origin.BottomCenter">
+                    <MudSelect T="string" Label="ImageValue" @bind-Value="@ImageValue" AnchorOrigin="Origin.BottomCenter">
                         @foreach (var filter in images)
                         {
-                            <MudSelectItem Value= "filter.Id"/>
-                            
-                            
-                            
+                            <MudSelectItem Value="filter.ImageName" />
                         }
                     </MudSelect>
-
                 </MudTd>
                 <MudTd><MudTextField T="DateTime" Label="InsertDate" @bind-Value="context.InsertDate" Required="true" RequiredError="InsertDate is required!" /></MudTd>
                 <MudTd><MudIconButton Icon="@Icons.Material.Filled.Save" OnClick="@(() => EditProduct(context))" Class="mx-2" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" />  </MudTd>
@@ -170,7 +163,7 @@ else
             }
         </RowTemplate>
     </MudTable>
- 
+
 
 }
 @code {
@@ -180,15 +173,29 @@ else
     private bool _readOnly = true;
     private string BrandValue { get; set; }
     private string CategoryValue { get; set; }
-    private int ImageValue { get; set; }
+    private string ImageValue { get; set; }
     public IEnumerable<Product> products = new List<Product>();
     public IEnumerable<Product> filteredProducts = new List<Product>();
     public IEnumerable<Brand> brands = new List<Brand>();
     public IEnumerable<Category> category = new List<Category>();
     public IEnumerable<ImageModel> images = new List<ImageModel>();
-    
+
     public bool checkempty { get; set; }
-    public void show() => _readOnly = false;
+    public async Task show(int id)
+    {
+        await OnInitializedAsync();
+        if (CategoryValue == null || BrandValue == null || ImageValue == null)
+        {
+            var GetCategory = await categoryService.GetCategoryByIdAsync(id);
+            var getBrand = await brandservice.GetBrandByIdAsync(id);
+            var GetImage = await imageserivce.GetImageByIdAsync(id);
+            CategoryValue = GetCategory.Data!.Name;
+            BrandValue = getBrand.Data!.Name;
+            ImageValue = GetImage.Data!.ImageName;
+        }
+
+        _readOnly = false;
+    }
     public void Close() => _readOnly = true;
     [CascadingParameter]
     private MudDialogInstance MudDialog { get; set; }
@@ -207,18 +214,13 @@ else
     private void Cancel() => showInnerComponent = false;
     private void CancelDone() => showInnerComponentDone = false;
     //end modal
-    private async Task HandleButtonClick()=>showInnerComponent = false;
-    private async Task HandleRefresh()
-    {
-        var request = await ProductService.GetAllProductsAsync();
-        if (request.Success) products = request.Data!;
-        filteredProducts = products;
-    }
-    
+    private async Task HandleButtonClick() => showInnerComponent = false;
+
+
     protected override async Task OnInitializedAsync()
     {
         var request = await ProductService.GetAllProductsAsync();
-        if (request.Success)products = request.Data!;
+        if (request.Success) products = request.Data!;
         filteredProducts = products;
 
 
@@ -230,6 +232,7 @@ else
 
         var requestImage = await imageserivce.GetAllImageAsync();
         if (requestImage.Success) images = requestImage.Data!;
+
     }
     private async Task deleteData(int id)
     {
@@ -262,39 +265,10 @@ else
     }
     // start code form
     Product createProduct = new Product();
+    Brand CreateBrand = new Brand();
+    ImageModel createImage = new ImageModel();
+    Category createcategory = new Category();
     bool success;
-    private async void OnValidSubmit(EditContext context)
-    {
-
-        if (createProduct.Name == null || createProduct.BarCode == 0 || createProduct.BrandId == 0 || createProduct.CategoryId == 0 || createProduct.Price == 0 || createProduct.Quantity == 0) checkempty = true;
-        else
-        {
-            success = true;
-            createProduct.InsertDate = DateTime.Now;
-            var product = createProduct;
-            var request = await ProductService.CreateProductAsync(product);
-            var requestRefresh = await ProductService.GetAllProductsAsync();
-
-            if (request.Success)
-            {
-
-                products.Append(product);
-                products = requestRefresh.Data!;
-                filteredProducts = products;
-                Snackbar.Add("Add Product Done successfully", Severity.Success);
-                
-                StateHasChanged();
-            }
-            else
-            {
-                Snackbar.Add(request.Message, Severity.Error);
-
-            }
-            OpenDialogDone();
-        }
-
-    }
-
 
     // end code form
 
@@ -317,44 +291,37 @@ else
 
     private async Task EditProduct(Product product)
     {
-        var GetCategory = await categoryService.GetCategoryByNameAsync(CategoryValue);
-        if (GetCategory.Success)
+        try
         {
-            product.CategoryId = GetCategory.Data!.Id;
-        }
-        else
-        {
-            Snackbar.Add("change category", Severity.Error);
-        }
+         
+            var GetCategory = await categoryService.GetCategoryByNameAsync(CategoryValue);
+            if (GetCategory.Success) product.CategoryId = GetCategory.Data!.Id;
+            else Snackbar.Add("change category", Severity.Error);
+            var GetBrand = await brandservice.GetBrandByNameAsync(BrandValue);
+            if (GetBrand.Success) product.BrandId = GetBrand.Data!.Id;
+            else Snackbar.Add("change brand", Severity.Error);
+            var GetImage = await imageserivce.GetImageByNameAsync(ImageValue);
+            if (GetImage.Success) product.ImageId = GetImage.Data!.Id;
+            else Snackbar.Add("change image", Severity.Error);
+            _readOnly = false;
+            var response = await ProductService.UpdateProductAsync(product.Id, product);
+            var requestRefresh = await ProductService.GetProductByIdAsync(product.Id);
 
-        var GetBrand = await brandservice.GetBrandByNameAsync(BrandValue);
-        if (GetBrand.Success)
-        {
-            product.BrandId = GetBrand.Data!.Id;
+            if (response.Success)
+            {
+                // products = requestRefresh.Data!;
+                filteredProducts = products;
+                Snackbar.Add("Modify Product with Id :" + product.Id + " Done successfully ", Severity.Success);
+                StateHasChanged();
+                FilterProducts();
+                Close();
+            }
+            else Snackbar.Add("Update  Not Done", Severity.Error);
         }
-        else
+        catch
         {
-            Snackbar.Add("change brand", Severity.Error);
-
+            Snackbar.Add("Fill All", Severity.Error);
         }
-        _readOnly = false;
-        var response = await ProductService.UpdateProductAsync(product.Id, product);
-        var requestRefresh = await ProductService.GetProductByIdAsync(product.Id);
-
-        if (response.Success)
-        {
-            // products = requestRefresh.Data!;
-            filteredProducts = products;
-            Snackbar.Add("Modify Product with Id :" + product.Id + " Done successfully ", Severity.Success);
-            StateHasChanged();
-            FilterProducts();
-            Close();
-        }
-        else
-        {
-            Snackbar.Add("Update  Not Done", Severity.Error);
-        }
-
     }
 
 
