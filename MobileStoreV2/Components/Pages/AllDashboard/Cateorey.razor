@@ -1,10 +1,7 @@
 ﻿@page "/categor"
-@using System.Net.Http.Json
-@using System.ComponentModel.DataAnnotations
+
 @inject IDialogService DialogService
-@using DataCore.Services.Interfaces
-@using DataCore.Models
-@inject ICategoryService categoryService
+@inject IGenericService<Category> categoryService
 @inject ISnackbar Snackbar
 
 
@@ -53,7 +50,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var requestbrand = await categoryService.GetAllCategoryAsync();
+        var requestbrand = await categoryService.GetAllAsync();
         if (requestbrand.Success) category = requestbrand.Data!;
     }
     private async void OnValidSubmit(EditContext context)
@@ -64,8 +61,8 @@
         }
 
         var brand = CreateCategory;
-        var request = await categoryService.CreateCategoryAsync(brand);
-        var requestRefresh = await categoryService.GetAllCategoryAsync();
+        var request = await categoryService.CreateAsync(brand);
+        var requestRefresh = await categoryService.GetAllAsync();
 
         if (request.Success)
         {
@@ -91,7 +88,7 @@
 
         var product = CreateCategory;
 
-        var request = await categoryService.DeleteCategoryAsync(id);
+        var request = await categoryService.DeleteAsync(id);
         if (request.Success)
         {
 
@@ -105,7 +102,7 @@
 
         }
 
-        var requestRefresh = await categoryService.GetAllCategoryAsync();
+        var requestRefresh = await categoryService.GetAllAsync();
         if (request.Success)
         {
             category = requestRefresh.Data!;

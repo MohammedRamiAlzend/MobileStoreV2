@@ -1,14 +1,6 @@
-﻿@using System.Text.RegularExpressions
-@using System.ComponentModel.DataAnnotations
-@using System.Threading
-@using DataCore.Services.Interfaces
-@inject IProductService ProductService
-
-@using DataCore.Models
-@using MudBlazor
+﻿
+@inject IGenericService<Product> ProductService
 @inherits LayoutComponentBase
-@using MobileStoreV2.Components.Pages.ProductsCmpnt
-@using MobileStoreV2.Components.Pages
 @inject IDialogService DialogService
 <MudDialog  Class="p-5 ">
     <TitleContent >
@@ -117,7 +109,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var request = await ProductService.GetAllProductsAsync();
+        var request = await ProductService.GetAllAsync();
         if (request.Success)
         {
             ProductsList = request.Data!;

@@ -233,4 +233,40 @@ public class GenericService<T> : IGenericService<T> where T : class, ISoftDelete
             };
         }
     }
+
+
+    public async Task<DataBaseRequest<T>> FindSingleEntityByConditionAsync(Expression<Func<T, bool>> expression, bool ignoreSoftDelete = false, params Expression<Func<T, object>>[] includes)
+    {
+        try
+        {
+            IQueryable<T> query = _dbSet;
+
+            foreach (Expression<Func<T, object>> include in includes)
+            {
+                query = query.Include(include);
+            }
+
+            var entities = ignoreSoftDelete
+                            ? await query.IgnoreQueryFilters().FirstOrDefaultAsync(expression)
+                            : await query.FirstOrDefaultAsync(expression);
+
+            return new DataBaseRequest<T>
+            {
+                Data = entities,
+                Message = entities != null ? "Filtered data retrieved successfully" : "No matching data found",
+                Success = entities == null
+            };
+        }
+        catch (Exception ex)
+        {
+            //implementation log functionality
+            return new DataBaseRequest<T>
+            {
+                Data = null,
+                Message = $"Error: {ex.Message}",
+                Success = false
+            };
+        }
+    }
+
 }

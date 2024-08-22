@@ -1,18 +1,9 @@
 ﻿@page "/Sellproduct"
-@using DataCore.Models
-@using MudBlazor
-@using DataCore.Services.Interfaces
-@inject IProductService ProductService
 
 
 @inherits LayoutComponentBase
-@using MobileStoreV2.Components.Pages.ProductsCmpnt
-@using MobileStoreV2.Components.Pages
+@inject IGenericService<Product> ProductService
 @inject IDialogService DialogService
-
-@using System.Text.RegularExpressions
-@using System.ComponentModel.DataAnnotations
-@using System.Threading
 
 
 

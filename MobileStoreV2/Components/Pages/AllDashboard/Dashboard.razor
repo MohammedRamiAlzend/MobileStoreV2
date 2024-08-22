@@ -3,16 +3,11 @@
 @using System.Net.Http.Json
 @using System.ComponentModel.DataAnnotations
 @inject IDialogService DialogService
-@inject IProductService ProductService
-@inject IBrandService brandservice
-@inject ICategoryService categoryService
-@inject IImageService imageserivce
-@using DataCore.Data
-@using DataCore.Models.DataCore.Models
-@using DataCore.Services.Interfaces
-@using DataCore.Models
-@using Microsoft.AspNetCore.Components
-@using System.Globalization;
+@inject IGenericService<Product> ProductService
+@inject IGenericService<Brand> brandservice
+@inject IGenericService<Category> categoryService
+@inject IGenericService<ImageModel> imageserivce
+
 @inject ISnackbar Snackbar
 @using Microsoft.EntityFrameworkCore;
 
@@ -81,10 +76,10 @@ else
     <MudTable Items="@filteredProducts"
               Hover="true"
               Editable="true"
-              Breakpoint="Breakpoint.Sm" 
+              Breakpoint="Breakpoint.Sm"
               Loading="@_loading"
               LoadingProgressColor="Color.Info"
-              EditTrigger="@TableEditTrigger.EditButton" 
+              EditTrigger="@TableEditTrigger.EditButton"
               Striped="true">
         <ToolBarContent>
             <MudTextField T="string" Label="Search" @bind-Value="searchString" TextChanged="FilterProducts" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
@@ -104,7 +99,7 @@ else
             <MudTh>Edit</MudTh>
             <MudTh>Delete</MudTh>
         </HeaderContent>
-        <RowTemplate >
+        <RowTemplate>
 
             @if (_readOnly == true)
             {
@@ -158,18 +153,19 @@ else
                     </MudSelect>
                 </MudTd>
                 <MudTd><MudTextField T="DateTime" Label="InsertDate" @bind-Value="context.InsertDate" Required="true" RequiredError="InsertDate is required!" /></MudTd>
-                <MudTd><MudIconButton Icon="@Icons.Material.Filled.Save" OnClick="@(() => EditProduct(context))" Class="mx-2" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" />
+                <MudTd>
+                    <MudIconButton Icon="@Icons.Material.Filled.Save" OnClick="@(() => EditProduct(context))" Class="mx-2" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" />
                     @if (_Loadding)
                     {
                         <MudProgressCircular Color="Color.Secondary" Indeterminate="true" Size="Size.Small" />
                     }
-                    </MudTd>
+                </MudTd>
                 <MudTd><MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="@(() => Close())" Variant="Variant.Filled" Color="Color.Error" Size="Size.Medium" />    </MudTd>
             }
         </RowTemplate>
     </MudTable>
- 
-    
+
+
 }
 @code {
     private bool _hidePosition;
@@ -193,9 +189,9 @@ else
         await OnInitializedAsync();
         if (CategoryValue == null || BrandValue == null || ImageValue == null)
         {
-            var GetCategory = await categoryService.GetCategoryByIdAsync(id);
-            var getBrand = await brandservice.GetBrandByIdAsync(id);
-            var GetImage = await imageserivce.GetImageByIdAsync(id);
+            var GetCategory = await categoryService.GetByIdAsync(id);
+            var getBrand = await brandservice.GetByIdAsync(id);
+            var GetImage = await imageserivce.GetByIdAsync(id);
             CategoryValue = GetCategory.Data!.Name;
             BrandValue = getBrand.Data!.Name;
             ImageValue = GetImage.Data!.ImageName;
@@ -226,18 +222,18 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var request = await ProductService.GetAllProductsAsync();
+        var request = await ProductService.GetAllAsync();
         if (request.Success) products = request.Data!;
         filteredProducts = products;
 
 
-        var requestbrand = await brandservice.GetAllBrandsAsync();
+        var requestbrand = await brandservice.GetAllAsync();
         if (requestbrand.Success) brands = requestbrand.Data!;
 
-        var requestGategory = await categoryService.GetAllCategoryAsync();
+        var requestGategory = await categoryService.GetAllAsync();
         if (requestGategory.Success) category = requestGategory.Data!;
 
-        var requestImage = await imageserivce.GetAllImageAsync();
+        var requestImage = await imageserivce.GetAllAsync();
         if (requestImage.Success) images = requestImage.Data!;
 
     }
@@ -246,7 +242,7 @@ else
         success = true;
         var product = createProduct;
 
-        var request = await ProductService.DeleteProductAsync(id);
+        var request = await ProductService.DeleteAsync(id);
         if (request.Success)
         {
 
@@ -260,7 +256,7 @@ else
 
         }
 
-        var requestRefresh = await ProductService.GetAllProductsAsync();
+        var requestRefresh = await ProductService.GetAllAsync();
         if (request.Success)
         {
             products = requestRefresh.Data!;
@@ -301,18 +297,21 @@ else
         try
         {
             _Loadding = true;
-            var GetCategory = await categoryService.GetCategoryByNameAsync(CategoryValue);
+            var GetCategory = await categoryService.FindSingleEntityByConditionAsync(x => x.Name == CategoryValue);
             if (GetCategory.Success) product.CategoryId = GetCategory.Data!.Id;
             else Snackbar.Add("change category", Severity.Error);
-            var GetBrand = await brandservice.GetBrandByNameAsync(BrandValue);
-            if (GetBrand.Success) product.BrandId = GetBrand.Data!.Id;
+            var GetBrand = await brandservice.FindSingleEntityByConditionAsync(x => x.Name == BrandValue);
+
+            if (GetBrand.Success)
+                product.BrandId = GetBrand.Data!.Id;
+
             else Snackbar.Add("change brand", Severity.Error);
-            var GetImage = await imageserivce.GetImageByNameAsync(ImageValue);
+            var GetImage = await imageserivce.FindSingleEntityByConditionAsync(x => x.ImageName == ImageValue);
             if (GetImage.Success) product.ImageId = GetImage.Data!.Id;
             else Snackbar.Add("change image", Severity.Error);
             _readOnly = false;
-            var response = await ProductService.UpdateProductAsync(product.Id, product);
-            var requestRefresh = await ProductService.GetProductByIdAsync(product.Id);
+            var response = await ProductService.UpdateAsync(product.Id, product);
+            var requestRefresh = await ProductService.GetByIdAsync(product.Id);
 
             if (response.Success)
             {

@@ -1,19 +1,8 @@
 ﻿@page "/upload"
 
-@using System.Net.Http.Json
-@using System.ComponentModel.DataAnnotations
 @inject IDialogService DialogService
-@inject IImageService imageservice
-@using DataCore.Data
-@using DataCore.Models.DataCore.Models
-@using DataCore.Services.Interfaces
-@using DataCore.Models
-@using Microsoft.AspNetCore.Components
-@using System.Globalization;
+@inject IGenericService<ImageModel> imageservice
 @inject ISnackbar Snackbar
-@using Microsoft.EntityFrameworkCore;
-
-@using Microsoft.AspNetCore.Components.Forms
 
 
 
@@ -97,8 +86,8 @@
             CreateImage.IsDeleted = false;
             CreateImage.DeletedAt = null;
             var image = CreateImage;
-            var request = await imageservice.CreateImageAsync(image);
-            var requestRefresh = await imageservice.GetAllImageAsync();
+            var request = await imageservice.CreateAsync(image);
+            var requestRefresh = await imageservice.GetAllAsync();
             if (request.Success)
             {
                 images.Append(image);
@@ -113,8 +102,8 @@
     private async Task deleteData(int id)
     {
         Snackbar.Add(id.ToString(), Severity.Success);
-        var request = await imageservice.DeleteImageAsync(id);
-        var GetImageById = await imageservice.GetImageByIdAsync(id);
+        var request = await imageservice.DeleteAsync(id);
+        var GetImageById = await imageservice.GetByIdAsync(id);
         if (request.Success)
         {
             //Strat Delete from file
@@ -127,7 +116,7 @@
             Snackbar.Add(request.Message, Severity.Success);
         }
         else Snackbar.Add(request.Message, Severity.Error);
-        var requestRefresh = await imageservice.GetAllImageAsync();
+        var requestRefresh = await imageservice.GetAllAsync();
         if (request.Success) images = requestRefresh.Data!;
         StateHasChanged();
     }
@@ -135,7 +124,7 @@
     protected override async Task OnInitializedAsync()
     {
 
-        var request = await imageservice.GetAllImageAsync();
+        var request = await imageservice.GetAllAsync();
         if (request.Success)
         {
             images = request.Data!;

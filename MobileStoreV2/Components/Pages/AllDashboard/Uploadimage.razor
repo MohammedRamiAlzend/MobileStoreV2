@@ -1,17 +1,9 @@
 ﻿@page "/upload-image"
 
-@using System.Net.Http.Json
-@using System.ComponentModel.DataAnnotations
+
 @inject IDialogService DialogService
-@inject IImageService imageservice
-@using DataCore.Data
-@using DataCore.Models.DataCore.Models
-@using DataCore.Services.Interfaces
-@using DataCore.Models
-@using Microsoft.AspNetCore.Components
-@using System.Globalization;
+@inject IGenericService<ImageModel> imageservice
 @inject ISnackbar Snackbar
-@using Microsoft.EntityFrameworkCore;
 
 
 <InputFile OnChange="HandleFileSelected" accept="image/jpeg,image/png" />
@@ -65,8 +57,8 @@
             CreateImage.IsDeleted = false;
             CreateImage.DeletedAt = null;
             var image = CreateImage;
-            var request = await imageservice.CreateImageAsync(image);
-            var requestRefresh = await imageservice.GetAllImageAsync();
+            var request = await imageservice.CreateAsync(image);
+            var requestRefresh = await imageservice.GetAllAsync();
             if (request.Success)
             {
                 images.Append(image);

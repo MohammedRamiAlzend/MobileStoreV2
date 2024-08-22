@@ -1,15 +1,9 @@
-﻿@using System.Net.Http.Json
-@using System.ComponentModel.DataAnnotations
-@inject IDialogService DialogService
-@using DataCore.Models.DataCore.Models
-@using DataCore.Services.Interfaces
-@using DataCore.Models
-@inject IProductService ProductService
-@inject IBrandService brandservice
-@inject ICategoryService categoryService
-@inject IImageService imageserivce
+﻿@inject IDialogService DialogService
+@inject IGenericService<Product> ProductService
+@inject IGenericService<Brand> brandservice
+@inject IGenericService<Category> categoryService
+@inject IGenericService<ImageModel> imageserivce
 @inject ISnackbar Snackbar
-@using System.IO
 @inject ApplicationDbContext Context
 
 
@@ -152,10 +146,11 @@
                 </MudCardContent>
                 <MudCardActions Class="d-xl-inline-flex" Style="display:flex;justify-content:end">
                     <MudButton OnClick="Cancel" Variant="Variant.Filled" Style="margin-right:15px">Cancel</MudButton>
-                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Add
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
+                        Add
                         @if (_Loadding)
                         {
-                            <MudProgressCircular Color="Color.Secondary" Indeterminate="true" Size="Size.Small"/>
+                            <MudProgressCircular Color="Color.Secondary" Indeterminate="true" Size="Size.Small" />
                         }
 
                     </MudButton>
@@ -206,16 +201,16 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var request = await ProductService.GetAllProductsAsync();
+        var request = await ProductService.GetAllAsync();
         if (request.Success) products = request.Data!;
         filteredProducts = products;
-        var requestbrand = await brandservice.GetAllBrandsAsync();
+        var requestbrand = await brandservice.GetAllAsync();
         if (requestbrand.Success) brands = requestbrand.Data!;
 
-        var requestGategory = await categoryService.GetAllCategoryAsync();
+        var requestGategory = await categoryService.GetAllAsync();
         if (requestGategory.Success) category = requestGategory.Data!;
 
-        var requestImage = await imageserivce.GetAllImageAsync();
+        var requestImage = await imageserivce.GetAllAsync();
         if (requestImage.Success) images = requestImage.Data!;
     }
 
@@ -247,25 +242,25 @@
             {
                 success = true;
                 _Loadding = true;
-                var GetCategory = await categoryService.GetCategoryByNameAsync(CategoryValue);
+                var GetCategory = await categoryService.FindSingleEntityByConditionAsync(x => x.Name == CategoryValue);
                 if (GetCategory.Success) createProduct.CategoryId = GetCategory.Data!.Id;
                 else Snackbar.Add("change category", Severity.Error);
 
 
-                var GetBrand = await brandservice.GetBrandByNameAsync(BrandValue);
+                var GetBrand = await brandservice.FindSingleEntityByConditionAsync(x => x.Name == BrandValue);
                 if (GetBrand.Success) createProduct.BrandId = GetBrand.Data!.Id;
                 else Snackbar.Add("change brand", Severity.Error);
 
 
-                var GetImage = await imageserivce.GetImageByNameAsync(ImageValue);
+                var GetImage = await imageserivce.FindSingleEntityByConditionAsync(x => x.ImageName == ImageValue);
                 if (GetImage.Success) createProduct.ImageId = GetImage.Data!.Id;
                 else Snackbar.Add("change image", Severity.Error);
 
 
                 createProduct.InsertDate = DateTime.Now;
                 var product = createProduct;
-                var request = await ProductService.CreateProductAsync(product);
-                var requestRefresh = await ProductService.GetAllProductsAsync();
+                var request = await ProductService.CreateAsync(product);
+                var requestRefresh = await ProductService.GetAllAsync();
 
                 if (request.Success)
                 {
@@ -294,7 +289,7 @@
     private async Task HandleButtonClick(string GetValue)
     {
         ImageValue = GetValue;
-        var requestImage = await imageserivce.GetAllImageAsync();
+        var requestImage = await imageserivce.GetAllAsync();
         if (requestImage.Success) images = requestImage.Data!;
 
 
@@ -332,7 +327,8 @@
             uploadedImageName = DateTime.Now.Microsecond.ToString() + "_" + selectedFile.Name;
 
             //  var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
-            var filePath = Path.Combine("C:\\Users\\Dell\\Desktop\\MobileStore\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+            //C:\Users\Rami\source\repos\MobileStoreV2\MobileStoreV2\MobileStoreV2.csproj
+            var filePath = Path.Combine($"C:\\Users\\Rami\\source\\repos\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
             using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
                 await selectedFile.OpenReadStream().CopyToAsync(fileStream);
@@ -347,8 +343,8 @@
             CreateImage.IsDeleted = false;
             CreateImage.DeletedAt = null;
             var image = CreateImage;
-            var request = await imageserivce.CreateImageAsync(image);
-            var requestRefresh = await imageserivce.GetAllImageAsync();
+            var request = await imageserivce.CreateAsync(image);
+            var requestRefresh = await imageserivce.GetAllAsync();
             if (request.Success)
             {
                 images.Append(image);

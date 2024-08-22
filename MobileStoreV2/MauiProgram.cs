@@ -1,4 +1,5 @@
 ﻿
+using DataCore.Models.DataCore.Models;
 using MudBlazor;
 
 namespace MobileStoreV2
@@ -23,9 +24,9 @@ namespace MobileStoreV2
                 options.UseSqlServer(connectionString));
 
             builder.Services.AddTransient<IGenericService<Product>, ProductService>();
-            builder.Services.AddTransient<ICategoryService, CategoryService>();
-            builder.Services.AddTransient<IBrandService, BrandService>();
-            builder.Services.AddTransient<IImageService, ImageService>();
+            builder.Services.AddTransient<IGenericService<Category>, CategoryService>();
+            builder.Services.AddTransient<IGenericService<Brand>, BrandService>();
+            builder.Services.AddTransient<IGenericService<ImageModel>, ImageService>();
             builder.Services.AddTransient<Createdatabase>();
 
 

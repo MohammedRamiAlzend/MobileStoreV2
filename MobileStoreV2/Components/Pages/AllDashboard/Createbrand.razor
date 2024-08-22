@@ -1,10 +1,7 @@
 ﻿@page "/Createbrand"
-@using System.Net.Http.Json
-@using System.ComponentModel.DataAnnotations
+
 @inject IDialogService DialogService
-@using DataCore.Services.Interfaces
-@using DataCore.Models
-@inject IBrandService brandservice
+@inject IGenericService<Brand> brandservice
 @inject ISnackbar Snackbar
 
 
@@ -48,7 +45,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var requestbrand = await brandservice.GetAllBrandsAsync();
+        var requestbrand = await brandservice.GetAllAsync();
         if (requestbrand.Success)brands = requestbrand.Data!;
     }
     private async void OnValidSubmit(EditContext context)
@@ -60,8 +57,8 @@
             return;
         }
         var brand = CreateBrand;
-        var request = await brandservice.CreateBrandAsync(brand);
-        var requestRefresh = await brandservice.GetAllBrandsAsync();
+        var request = await brandservice.CreateAsync(brand);
+        var requestRefresh = await brandservice.GetAllAsync();
 
         if (request.Success)
         {
@@ -86,7 +83,7 @@
     
         var product = CreateBrand;
 
-        var request = await brandservice.DeleteBrandAsync(id);
+        var request = await brandservice.DeleteAsync(id);
         if (request.Success)
         {
 
@@ -100,7 +97,7 @@
 
         }
 
-        var requestRefresh = await brandservice.GetAllBrandsAsync();
+        var requestRefresh = await brandservice.GetAllAsync();
         if (request.Success)
         {
             brands = requestRefresh.Data!;
