@@ -13,22 +13,11 @@
 @inject ISnackbar Snackbar
 @using Microsoft.EntityFrameworkCore;
 
-@using MudBlazor
 @using Microsoft.AspNetCore.Components.Forms
 
 
+
 <InputFile OnChange="HandleFileSelected" accept="image/jpeg,image/png" />
-
-<MudFileUpload T="IBrowserFile" FilesChanged="UploadFiles">
-    <ActivatorContent>
-
-        <MudButton Variant="Variant.Filled"
-                   Color="Color.Primary"
-                   StartIcon="@Icons.Material.Filled.CloudUpload">
-            Upload Files
-        </MudButton>
-    </ActivatorContent>
-</MudFileUpload>
 
 
 
@@ -88,8 +77,8 @@
         {
             uploadedImageName = DateTime.Now.Microsecond.ToString() + "_" + selectedFile.Name;
 
-            var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
-            // var filePath = Path.Combine("C:\\Users\\Dell\\Desktop\\MobileStore\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+          //   var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+            var filePath = Path.Combine("C:\\Users\\Dell\\Desktop\\MobileStore\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
             //var filePath = Path.Combine(Env.webrootpath, "uploads", uploadedFileName);
 
             using (var fileStream = new FileStream(filePath, FileMode.Create))
@@ -185,3 +174,4 @@
 
     }
 }
+

@@ -81,10 +81,10 @@ else
     <MudTable Items="@filteredProducts"
               Hover="true"
               Editable="true"
-              Breakpoint="Breakpoint.Sm"
+              Breakpoint="Breakpoint.Sm" 
               Loading="@_loading"
               LoadingProgressColor="Color.Info"
-              EditTrigger="@TableEditTrigger.EditButton"
+              EditTrigger="@TableEditTrigger.EditButton" 
               Striped="true">
         <ToolBarContent>
             <MudTextField T="string" Label="Search" @bind-Value="searchString" TextChanged="FilterProducts" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
@@ -104,7 +104,7 @@ else
             <MudTh>Edit</MudTh>
             <MudTh>Delete</MudTh>
         </HeaderContent>
-        <RowTemplate>
+        <RowTemplate >
 
             @if (_readOnly == true)
             {
@@ -158,16 +158,23 @@ else
                     </MudSelect>
                 </MudTd>
                 <MudTd><MudTextField T="DateTime" Label="InsertDate" @bind-Value="context.InsertDate" Required="true" RequiredError="InsertDate is required!" /></MudTd>
-                <MudTd><MudIconButton Icon="@Icons.Material.Filled.Save" OnClick="@(() => EditProduct(context))" Class="mx-2" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" />  </MudTd>
+                <MudTd><MudIconButton Icon="@Icons.Material.Filled.Save" OnClick="@(() => EditProduct(context))" Class="mx-2" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" />
+                    @if (_Loadding)
+                    {
+                        <MudProgressCircular Color="Color.Secondary" Indeterminate="true" Size="Size.Small" />
+                    }
+                    </MudTd>
                 <MudTd><MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="@(() => Close())" Variant="Variant.Filled" Color="Color.Error" Size="Size.Medium" />    </MudTd>
             }
         </RowTemplate>
     </MudTable>
-
-
+ 
+    
 }
 @code {
     private bool _hidePosition;
+    bool _Loadding = false;
+
     private bool _loading;
     private string searchString = "";
     private bool _readOnly = true;
@@ -293,7 +300,7 @@ else
     {
         try
         {
-         
+            _Loadding = true;
             var GetCategory = await categoryService.GetCategoryByNameAsync(CategoryValue);
             if (GetCategory.Success) product.CategoryId = GetCategory.Data!.Id;
             else Snackbar.Add("change category", Severity.Error);
@@ -312,6 +319,7 @@ else
                 // products = requestRefresh.Data!;
                 filteredProducts = products;
                 Snackbar.Add("Modify Product with Id :" + product.Id + " Done successfully ", Severity.Success);
+                _Loadding = false;
                 StateHasChanged();
                 FilterProducts();
                 Close();
@@ -341,8 +349,6 @@ else
         if (state == "Deleted!") await deleteData(id);
         StateHasChanged();
     }
-
-
     //End Delete Dialog
 
 

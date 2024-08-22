@@ -91,8 +91,7 @@
 
                     @if (SelectedOption == "Radio 2")
                     {
-                        <Uploadimage OnButtonClick="HandleButtonClick" />
-
+                        <InputFile OnChange="HandleFileSelected" accept="image/jpeg,image/png" />
                     }
                     @if (ImageValue != null && SelectedOption == "Radio 2")
                     {
@@ -153,7 +152,13 @@
                 </MudCardContent>
                 <MudCardActions Class="d-xl-inline-flex" Style="display:flex;justify-content:end">
                     <MudButton OnClick="Cancel" Variant="Variant.Filled" Style="margin-right:15px">Cancel</MudButton>
-                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Add</MudButton>
+                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Add
+                        @if (_Loadding)
+                        {
+                            <MudProgressCircular Color="Color.Secondary" Indeterminate="true" Size="Size.Small"/>
+                        }
+
+                    </MudButton>
                 </MudCardActions>
 
             </MudCard>
@@ -175,6 +180,7 @@
 
 @code {
     bool success;
+    bool _Loadding = false;
     Product createProduct = new Product();
     ImageModel GetImage = new ImageModel();
     public IEnumerable<Product> products = new List<Product>();
@@ -240,6 +246,7 @@
             if (context.Validate())
             {
                 success = true;
+                _Loadding = true;
                 var GetCategory = await categoryService.GetCategoryByNameAsync(CategoryValue);
                 if (GetCategory.Success) createProduct.CategoryId = GetCategory.Data!.Id;
                 else Snackbar.Add("change category", Severity.Error);
@@ -270,6 +277,7 @@
                     await refreshProduct.InvokeAsync(); //refresh Dashboard table
                     Snackbar.Add("Add Product Done successfully", Severity.Success);
                     createProduct = new Product();
+                    _Loadding = false;
                     StateHasChanged();
                 }
                 else
@@ -297,5 +305,60 @@
 
 
     }
+    //__________________________img_______________________________
+    private IBrowserFile selectedFile;
+    private string uploadedImageName;
+    ImageModel CreateImage = new ImageModel();
 
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+
+        selectedFile = e.File;
+        var GetiamgeName = images.Where(x => x.ImageName == selectedFile.Name).FirstOrDefault();
+        if (GetiamgeName != null)
+        {
+            Snackbar.Add("image Name Allready Exsits ", Severity.Warning);
+            return;
+        }
+        var ContentType = selectedFile.ContentType;
+        if (ContentType != "image/png".ToString() && ContentType != "image/jpeg".ToString() && ContentType != "image/jpg".ToString())
+        {
+            Snackbar.Add($"file type (({ContentType})) not accpetd ", Severity.Warning);
+            return;
+        }
+
+        if (selectedFile != null)
+        {
+            uploadedImageName = DateTime.Now.Microsecond.ToString() + "_" + selectedFile.Name;
+
+            //  var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+            var filePath = Path.Combine("C:\\Users\\Dell\\Desktop\\MobileStore\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await selectedFile.OpenReadStream().CopyToAsync(fileStream);
+            }
+
+            var fileBytes = new byte[selectedFile.Size];
+            await selectedFile.OpenReadStream().ReadAsync(fileBytes);
+            // Save the image using the service
+            CreateImage.ImageName = uploadedImageName;
+            CreateImage.ImagePath = $"uploads/{Path.GetFileName(uploadedImageName)}";
+            CreateImage.DeletedAt = DateTime.Now;
+            CreateImage.IsDeleted = false;
+            CreateImage.DeletedAt = null;
+            var image = CreateImage;
+            var request = await imageserivce.CreateImageAsync(image);
+            var requestRefresh = await imageserivce.GetAllImageAsync();
+            if (request.Success)
+            {
+                images.Append(image);
+                images = requestRefresh.Data!;
+                Snackbar.Add(request.Message, Severity.Success);
+                CreateImage = new ImageModel();
+
+                StateHasChanged();
+            }
+            else Snackbar.Add(request.Message, Severity.Error);
+        }
+    }
 }

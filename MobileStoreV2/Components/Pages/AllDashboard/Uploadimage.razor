@@ -24,8 +24,6 @@
     [Parameter] public EventCallback<string> OnButtonClick { get; set; }
     [Parameter] public EventCallback<bool> refreshProduct { get; set; }
 
-
-
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
 
@@ -51,8 +49,8 @@
         {
             uploadedImageName = DateTime.Now.Microsecond.ToString() + "_" + selectedFile.Name;
 
-           var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
-            //var filePath = Path.Combine("C:\\Users\\Dell\\Desktop\\MobileStore\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+            //  var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+            var filePath = Path.Combine("C:\\Users\\Dell\\Desktop\\MobileStore\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
             using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
                 await selectedFile.OpenReadStream().CopyToAsync(fileStream);
@@ -85,50 +83,7 @@
             else Snackbar.Add(request.Message, Severity.Error);
         }
     }
-    private async Task deleteData(int id)
-    {
-        await OnButtonClick.InvokeAsync(selectedFile.Name);
-        Snackbar.Add(id.ToString(), Severity.Success);
 
 
-        var request = await imageservice.DeleteImageAsync(id);
-
-        if (request.Success)
-        {
-
-            StateHasChanged();
-            Snackbar.Add(request.Message, Severity.Success);
-
-        }
-        else Snackbar.Add(request.Message, Severity.Error);
-
-
-        var requestRefresh = await imageservice.GetAllImageAsync();
-
-        if (request.Success) images = requestRefresh.Data!;
-        StateHasChanged();
-
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-
-        var request = await imageservice.GetAllImageAsync();
-        if (request.Success)images = request.Data!;        
-
-    }
-    string state = "Message box hasn't been opened yet";
-
-    private async void SureDialog(int id)
-    {
-        bool? result = await DialogService.ShowMessageBox(
-            "Warning",
-            "Are You Sure You Want To Delete This Prodcut !",
-            yesText: "Delete!", cancelText: "Cancel");
-
-        state = result == null ? "Canceled" : "Deleted!";
-        if (state == "Deleted!") deleteData(id);
-        StateHasChanged();
-    }
 
 }
