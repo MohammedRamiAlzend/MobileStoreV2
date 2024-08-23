@@ -4,7 +4,6 @@
 @inject IGenericService<Category> categoryService
 @inject IGenericService<ImageModel> imageserivce
 @inject ISnackbar Snackbar
-@inject ApplicationDbContext Context
 
 
 <style>
@@ -65,6 +64,7 @@
 
                     <MudTextField T="int" Label="Quantity" @bind-Value="createProduct.Quantity" InputType="InputType.Number" />
                     <MudForm>
+
                         <MudRadioGroup @bind-Value="SelectedOption">
                             <MudRadio Value="@("Radio 1")" Color="Color.Primary" Dense="true">Chouse from Exsit Images</MudRadio>
                             <MudRadio Value="@("Radio 2")" Color="Color.Dark">upload image</MudRadio>
@@ -86,38 +86,14 @@
                     @if (SelectedOption == "Radio 2")
                     {
                         <InputFile OnChange="HandleFileSelected" accept="image/jpeg,image/png" />
-                    }
-                    @if (ImageValue != null && SelectedOption == "Radio 2")
-                    {
-
-                        @foreach (var filter in images)
+                        @if (uploadedImageData != null)
                         {
-                            if (filter.ImageName == ImageValue)
-                            {
-                                @if (!ImageLoad)
-                                {
-                                    <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="200px" />
-                                    <MudCardContent>
-                                        <MudSkeleton Width="30%" Height="42px;" />
-                                        <MudSkeleton Width="80%" />
-                                        <MudSkeleton Width="100%" />
-                                    </MudCardContent>
-                                    <MudCardActions>
-                                        <MudSkeleton Width="64px" Height="40px" Class="ml-2" />
-                                        <MudSkeleton Width="105px" Height="40px" Class="ml-3" />
-                                    </MudCardActions>
-                                }
-                                else
-                                {
-                                    <div class="continer">
-                                        @* <img src="data:image;base64,@Convert.ToBase64String(filter.ImageData)" class="ImageSize @buttonCssClass" onclick="@ToggleButtonStyle" /> *@
-                                        <img src="@filter.ImagePath" class="ImageSize  @buttonCssClass" alt="@filter.ImagePath" onclick="@ToggleButtonStyle" />
-                                    </div>
-                                }
-                            }
+                            <div class="continer">
+                                <img src="@uploadedImageData" alt="Uploaded Image" class="ImageSize  @buttonCssClass" onclick="@ToggleButtonStyle" />
+                            </div>
                         }
-                    }
-                    else if (ImageValue != null && SelectedOption == "Radio 1")
+                
+                    @if (ImageValue != null && SelectedOption == "Radio 1")
                     {
                         GetImageFunc();
                         @if (!ImageLoad)
@@ -214,10 +190,9 @@
         if (requestImage.Success) images = requestImage.Data!;
     }
 
+
     private async Task GetImageFunc()
     {
-
-
         if (ImageValue != null)
         {
             try
@@ -231,8 +206,6 @@
                 Snackbar.Add("image not add ", Severity.Error);
             }
         }
-
-
     }
     private async void OnValidSubmit(EditContext context)
     {
@@ -240,22 +213,46 @@
         {
             if (context.Validate())
             {
+                if(ImageValue != null && SelectedOption == "Radio 2" || uploadedImageData != null)
+                {
+                    await SaveImage();
+                }
+
+
                 success = true;
                 _Loadding = true;
-                var GetCategory = await categoryService.FindSingleEntityByConditionAsync(x => x.Name == CategoryValue);
-                if (GetCategory.Success) createProduct.CategoryId = GetCategory.Data!.Id;
-                else Snackbar.Add("change category", Severity.Error);
+                var GetCategory = await categoryService.GetAllAsync();
+                var GetBrand = await brandservice.GetAllAsync();
+                var GetImage = await imageserivce.GetAllAsync();
+                if (GetCategory.Success)
+                {
+                    var resultCategory = GetCategory.Data!.Where(x => x.Name == CategoryValue).FirstOrDefault();
+                    createProduct.CategoryId = resultCategory.Id;
+
+                    var resultBrand = GetBrand.Data!.Where(x => x.Name == BrandValue).FirstOrDefault();
+                    createProduct.BrandId = resultBrand.Id;
+                    var resultImage = GetImage.Data!.Where(x => x.ImageName == ImageValue).FirstOrDefault();
+                    createProduct.ImageId = resultImage.Id;
+
+                }
+                else
+                {
+                    Snackbar.Add("change Not done", Severity.Error);
+                    _Loadding = false;
+                }
+
+                // var GetCategory = await categoryService.FindSingleEntityByConditionAsync(x => x.Name == CategoryValue);
+                // if (GetCategory.Success) createProduct.CategoryId = GetCategory.Data!.Id;
+                // else Snackbar.Add(GetCategory.Message, Severity.Error);
+
+                // var GetBrand = await brandservice.FindSingleEntityByConditionAsync(x => x.Name == BrandValue);
+                // if (GetBrand.Success) createProduct.BrandId = GetBrand.Data!.Id;
+                // else Snackbar.Add(GetBrand.Message, Severity.Error);
 
 
-                var GetBrand = await brandservice.FindSingleEntityByConditionAsync(x => x.Name == BrandValue);
-                if (GetBrand.Success) createProduct.BrandId = GetBrand.Data!.Id;
-                else Snackbar.Add("change brand", Severity.Error);
-
-
-                var GetImage = await imageserivce.FindSingleEntityByConditionAsync(x => x.ImageName == ImageValue);
-                if (GetImage.Success) createProduct.ImageId = GetImage.Data!.Id;
-                else Snackbar.Add("change image", Severity.Error);
-
+                // var GetImage = await imageserivce.FindSingleEntityByConditionAsync(x => x.ImageName == ImageValue);
+                // if (GetImage.Success) createProduct.ImageId = GetImage.Data!.Id;
+                // else Snackbar.Add(GetBrand.Message, Severity.Error);
 
                 createProduct.InsertDate = DateTime.Now;
                 var product = createProduct;
@@ -266,40 +263,34 @@
                 {
 
                     products.Append(product);
+
+
                     products = requestRefresh.Data!;
                     filteredProducts = products;
 
-                    await refreshProduct.InvokeAsync(); //refresh Dashboard table
                     Snackbar.Add("Add Product Done successfully", Severity.Success);
                     createProduct = new Product();
                     _Loadding = false;
+
                     StateHasChanged();
                 }
                 else
+                {
                     Snackbar.Add(request.Message, Severity.Error);
+                }
+                _Loadding = false;
+
             }
         }
         catch
         {
+            _Loadding = false;
             Snackbar.Add("some Problem Happend", Severity.Error);
         }
 
     }
 
-    private async Task HandleButtonClick(string GetValue)
-    {
-        ImageValue = GetValue;
-        var requestImage = await imageserivce.GetAllAsync();
-        if (requestImage.Success) images = requestImage.Data!;
 
-
-        ImageLoad = true;
-        await Context.SaveChangesAsync();
-        StateHasChanged();
-
-
-
-    }
     //__________________________img_______________________________
     private IBrowserFile selectedFile;
     private string uploadedImageName;
@@ -327,15 +318,52 @@
             uploadedImageName = DateTime.Now.Microsecond.ToString() + "_" + selectedFile.Name;
 
             //  var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
-            //C:\Users\Rami\source\repos\MobileStoreV2\MobileStoreV2\MobileStoreV2.csproj
-            var filePath = Path.Combine($"C:\\Users\\Rami\\source\\repos\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+            // var filePath = Path.Combine($"C:\\Users\\Dell\\Desktop\\MobileStore\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+            // var filePath = Path.Combine($"C:\\Users\\Rami\\source\\repos\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+
+            // Read the image as a 
+            var fileBytes = new byte[selectedFile.Size];
+            using (var stream = selectedFile.OpenReadStream())
+            {
+                await stream.ReadAsync(fileBytes);
+            }
+
+            // await selectedFile.OpenReadStream().ReadAsync(fileBytes);
+
+            // Convert to base64
+            uploadedImageData = $"data:{selectedFile.ContentType};base64,{Convert.ToBase64String(fileBytes)}";
+
+
+        }
+    }
+
+    private List<IBrowserFile> uploadedFiles = new List<IBrowserFile>();
+    private string uploadedImageData;
+
+    private async Task SaveImage()
+    {
+        if (selectedFile != null)
+        {
+            uploadedImageName = DateTime.Now.Microsecond.ToString() + "_" + selectedFile.Name;
+
+            //  var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+            var filePath = Path.Combine($"C:\\Users\\Dell\\Desktop\\MobileStore\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+            // var filePath = Path.Combine($"C:\\Users\\Rami\\source\\repos\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+
+            var fileBytes = new byte[selectedFile.Size];
+            // await selectedFile.OpenReadStream().ReadAsync(fileBytes);
             using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
                 await selectedFile.OpenReadStream().CopyToAsync(fileStream);
             }
+            // using (var fileStream = new FileStream(filePath, FileMode.Create))
+            // {
+            //     await selectedFile.OpenReadStream().CopyToAsync(fileStream);
+            // }
 
-            var fileBytes = new byte[selectedFile.Size];
-            await selectedFile.OpenReadStream().ReadAsync(fileBytes);
+            // Convert to base64
+            // uploadedImageData = $"data:{selectedFile.ContentType};base64,{Convert.ToBase64String(fileBytes)}";
+
             // Save the image using the service
             CreateImage.ImageName = uploadedImageName;
             CreateImage.ImagePath = $"uploads/{Path.GetFileName(uploadedImageName)}";
@@ -351,10 +379,15 @@
                 images = requestRefresh.Data!;
                 Snackbar.Add(request.Message, Severity.Success);
                 CreateImage = new ImageModel();
-
+                ImageValue = uploadedImageName;
                 StateHasChanged();
             }
             else Snackbar.Add(request.Message, Severity.Error);
         }
+    }
+
+    private async Task HandleSelectedFile(InputFileChangeEventArgs e)
+    {
+
     }
 }
