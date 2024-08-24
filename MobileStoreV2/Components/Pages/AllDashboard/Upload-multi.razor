@@ -2,7 +2,7 @@
 
 <h3>Multiple File Upload</h3>
 
-@* <InputFile OnChange="HandleFilesSelected" Multiple="true" /> 
+@* <InputFile OnChange="HandleFilesSelected" Multiple="true" />
 
 @if (uploadedFiles != null && uploadedFiles.Any())
 {
@@ -43,7 +43,7 @@
             {
                 await file.OpenReadStream().CopyToAsync(fileStream);
             }
- 
+
 
             // The file is now saved to the server in the "wwwroot/uploads" folder.
         }

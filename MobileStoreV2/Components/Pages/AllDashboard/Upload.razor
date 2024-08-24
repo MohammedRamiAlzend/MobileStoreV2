@@ -4,12 +4,7 @@
 @inject IGenericService<ImageModel> imageservice
 @inject ISnackbar Snackbar
 
-
-
 <InputFile OnChange="HandleFileSelected" accept="image/jpeg,image/png" />
-
-
-
 <MudTable Items="@images" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
     <HeaderContent>
         <MudTh>id</MudTh>
@@ -108,7 +103,8 @@
         {
             //Strat Delete from file
 
-            var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", GetImageById.Data!.ImageName);
+            // var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", GetImageById.Data!.ImageName);
+            var filePath = Path.Combine("C:\\Users\\Dell\\Desktop\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", GetImageById.Data!.ImageName);
             try
             {
 

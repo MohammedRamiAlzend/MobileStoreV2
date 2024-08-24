@@ -179,8 +179,6 @@ else
     public IEnumerable<Brand> brands = new List<Brand>();
     public IEnumerable<Category> category = new List<Category>();
     public IEnumerable<ImageModel> images = new List<ImageModel>();
-
-    public bool checkempty { get; set; }
     public async Task show(int id)
     {
         await OnInitializedAsync();

@@ -32,9 +32,6 @@
     }
 </style>
 
-
-
-
 <EditForm Model="@createProduct" OnValidSubmit="OnValidSubmit">
 
     <DataAnnotationsValidator />
@@ -82,7 +79,6 @@
                             }
                         </MudSelect>
                     }
-
                     @if (SelectedOption == "Radio 2")
                     {
                         <InputFile OnChange="HandleFileSelected" accept="image/jpeg,image/png" />
@@ -92,7 +88,7 @@
                                 <img src="@uploadedImageData" alt="Uploaded Image" class="ImageSize  @buttonCssClass" onclick="@ToggleButtonStyle" />
                             </div>
                         }
-                
+                    }
                     @if (ImageValue != null && SelectedOption == "Radio 1")
                     {
                         GetImageFunc();
@@ -128,15 +124,11 @@
                         {
                             <MudProgressCircular Color="Color.Secondary" Indeterminate="true" Size="Size.Small" />
                         }
-
                     </MudButton>
                 </MudCardActions>
 
             </MudCard>
         </MudItem>
-        @* start Validation Summary *@
-
-        @* End Validation Summary *@
         <MudItem xs="12">
             <MudText Typo="Typo.body2" Align="Align.Center">
                 add product for your collcation
@@ -144,9 +136,6 @@
         </MudItem>
     </MudGrid>
 </EditForm>
-
-
-
 
 
 @code {
@@ -190,7 +179,6 @@
         if (requestImage.Success) images = requestImage.Data!;
     }
 
-
     private async Task GetImageFunc()
     {
         if (ImageValue != null)
@@ -213,12 +201,7 @@
         {
             if (context.Validate())
             {
-                if(ImageValue != null && SelectedOption == "Radio 2" || uploadedImageData != null)
-                {
-                    await SaveImage();
-                }
-
-
+                if (ImageValue != null && SelectedOption == "Radio 2" || uploadedImageData != null) await SaveImage();
                 success = true;
                 _Loadding = true;
                 var GetCategory = await categoryService.GetAllAsync();
@@ -269,6 +252,7 @@
                     filteredProducts = products;
 
                     Snackbar.Add("Add Product Done successfully", Severity.Success);
+                    await refreshProduct.InvokeAsync(); //refresh Dashboard table
                     createProduct = new Product();
                     _Loadding = false;
 
@@ -298,7 +282,7 @@
 
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
-        //try
+
         selectedFile = e.File;
         var GetiamgeName = images.Where(x => x.ImageName == selectedFile.Name).FirstOrDefault();
         if (GetiamgeName != null)
@@ -317,22 +301,14 @@
         {
             uploadedImageName = DateTime.Now.Microsecond.ToString() + "_" + selectedFile.Name;
 
-            //  var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
-            // var filePath = Path.Combine($"C:\\Users\\Dell\\Desktop\\MobileStore\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
-            // var filePath = Path.Combine($"C:\\Users\\Rami\\source\\repos\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
-
-            // Read the image as a 
+            // Read the image as a byte
             var fileBytes = new byte[selectedFile.Size];
             using (var stream = selectedFile.OpenReadStream())
             {
                 await stream.ReadAsync(fileBytes);
             }
-
-            // await selectedFile.OpenReadStream().ReadAsync(fileBytes);
-
             // Convert to base64
             uploadedImageData = $"data:{selectedFile.ContentType};base64,{Convert.ToBase64String(fileBytes)}";
-
 
         }
     }
@@ -351,18 +327,11 @@
             // var filePath = Path.Combine($"C:\\Users\\Rami\\source\\repos\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
 
             var fileBytes = new byte[selectedFile.Size];
-            // await selectedFile.OpenReadStream().ReadAsync(fileBytes);
+
             using (var fileStream = new FileStream(filePath, FileMode.Create))
             {
                 await selectedFile.OpenReadStream().CopyToAsync(fileStream);
             }
-            // using (var fileStream = new FileStream(filePath, FileMode.Create))
-            // {
-            //     await selectedFile.OpenReadStream().CopyToAsync(fileStream);
-            // }
-
-            // Convert to base64
-            // uploadedImageData = $"data:{selectedFile.ContentType};base64,{Convert.ToBase64String(fileBytes)}";
 
             // Save the image using the service
             CreateImage.ImageName = uploadedImageName;
@@ -377,7 +346,7 @@
             {
                 images.Append(image);
                 images = requestRefresh.Data!;
-                Snackbar.Add(request.Message, Severity.Success);
+                // Snackbar.Add(request.Message, Severity.Success);
                 CreateImage = new ImageModel();
                 ImageValue = uploadedImageName;
                 StateHasChanged();
@@ -386,8 +355,4 @@
         }
     }
 
-    private async Task HandleSelectedFile(InputFileChangeEventArgs e)
-    {
-
-    }
 }
