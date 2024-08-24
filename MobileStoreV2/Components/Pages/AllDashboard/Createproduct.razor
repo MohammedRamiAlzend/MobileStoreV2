@@ -298,7 +298,7 @@
 
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
-
+        //try
         selectedFile = e.File;
         var GetiamgeName = images.Where(x => x.ImageName == selectedFile.Name).FirstOrDefault();
         if (GetiamgeName != null)
