@@ -22,13 +22,16 @@ else
     <MudGrid Spacing="@Spacing" Justify="Justify.Center">
             @foreach (var filter in products)
             {
-               <Card ProductName="@filter.Name" ImagePath="@filter.Image?.ImagePath" Description="@filter.Description" />
+               @* <Card ProductName="@filter.Name" ImagePath="@filter.Image?.ImagePath" Description="@filter.Description" /> *@
+               <Card1/>
+
             }
     </MudGrid>
 }
+
 @* end card continer  *@
 @code {
-    public int Spacing { get; set; } = 6;
+    public int Spacing { get; set; } = 8;
 
     private bool _loading;
 
