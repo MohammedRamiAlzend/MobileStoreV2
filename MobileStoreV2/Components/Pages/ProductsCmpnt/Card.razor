@@ -2,20 +2,22 @@
 
 
  <MudItem >
-    <MudCardMedia Image="/mobile.jpg" Height="350" />
+    <MudCardMedia Image="@ImagePath" Height="200" />
     <MudCardContent>
-        <MudText Typo="Typo.h5">Old Paint</MudText>
+        <MudText Typo="Typo.h5">@ProductName</MudText>
         <MudText Typo="Typo.body2">Old paint found on a stone house door.</MudText>
-        <MudText Typo="Typo.body2">This photo was taken in a small village in Istra Croatia.</MudText>
-        <MudText Typo="Typo.body2">This photo was taken in a small village in Istra Croatia.</MudText>
-        <MudText Typo="Typo.body2">This photo was taken in a small village in Istra Croatia.</MudText>
-        <MudText Typo="Typo.body2">This photo was taken in a small village in Istra Croatia.</MudText>
+        <MudText Typo="Typo.body2">@Description</MudText>
+
     </MudCardContent>
     <MudCardActions>
         <MudButton Variant="Variant.Text" Color="Color.Primary">Share</MudButton>
         <MudButton Variant="Variant.Text" Color="Color.Primary">Learn More</MudButton>
     </MudCardActions>
 </MudItem> 
-@code {
 
+
+@code {
+    [Parameter]public string ImagePath { get; set; }
+    [Parameter]public string ProductName { get; set; }
+    [Parameter]public string Description { get; set; }
 }

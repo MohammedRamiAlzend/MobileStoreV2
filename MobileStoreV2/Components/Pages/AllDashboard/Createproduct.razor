@@ -40,26 +40,30 @@
             <MudCard>
                 <MudCardContent>
                     <MudTextField T="string" Label="Name" @bind-Value="createProduct.Name" For="@( () => createProduct.Name )" Required="true" RequiredError=" Name is required!" />
-                    <MudTextField Label="BarCode" Class="mt-3" @bind-Value="createProduct.BarCode" For="@(() => createProduct.BarCode)" Required="true" RequiredError=" Barcode is required!" InputType="InputType.Number" />
-                    <MudSelect T="string" Label="Brand" @bind-Value="BrandValue" Required="true" RequiredError=" Brand is required!" AnchorOrigin="Origin.BottomCenter">
-                        @foreach (var filter in brands)
-                        {
-                            <MudSelectItem Value="filter.Name" />
-                        }
-                    </MudSelect>
-
+                    @* <MudTextField Label="BarCode" Class="mt-3" @bind-Value="createProduct.BarCode" For="@(() => createProduct.BarCode)" Required="true" RequiredError=" Barcode is required!" InputType="InputType.Number" /> *@
+                    <MudTd DataLabel="BarCode" ><MudNumericField Label="Enter BarCode" @bind-Value="createProduct.BarCode" /></MudTd>
+                    @* <MudTextField Label="Discount" HelperText="Repeat the Brand" Class="mt-3" @bind-Value="createProduct.Discount" For="@(() => createProduct.Discount)" InputType="InputType.Number" /> *@
+                    <MudTd DataLabel="Discount"><MudNumericField Label="Enter Discount" @bind-Value="createProduct.Discount" /></MudTd>
+                    <br/>
+                    @* <MudTextField T="double" Label="Price" @bind-Value="createProduct.Price" For="@( () => createProduct.Price )" Required="true" RequiredError=" Price is required!" InputType="InputType.Number" /> *@
+                    @* <MudTextField T="double" Label="Price" @bind-Value="createProduct.Price" For="@( () => createProduct.Price )" Required="true" RequiredError=" Price is required!" InputType="InputType.Number" /> *@
+                    <MudTd DataLabel="Price"><MudNumericField Label="Enter Price" @bind-Value="createProduct.Price" /></MudTd>
+                    @* <MudTextField T="int" Label="Quantity" @bind-Value="createProduct.Quantity" InputType="InputType.Number" /> *@
+                    @* <MudTextField T="int" Label="Quantity" @bind-Value="createProduct.Quantity" InputType="InputType.Number" /> *@
+                    <MudTd DataLabel="Quantity"><MudNumericField Label="Enter Quantity"@bind-Value="createProduct.Quantity" /></MudTd>
+                    <MudTextField T="string" Label="Description" @bind-Value="createProduct.Description" For="@( () => createProduct.Description )" />
                     <MudSelect T="string" Label="category" @bind-Value="CategoryValue" AnchorOrigin="Origin.BottomCenter">
                         @foreach (var filter in category)
                         {
                             <MudSelectItem Value="filter.Name" />
                         }
                     </MudSelect>
-                    <MudTextField T="string" Label="Description" @bind-Value="createProduct.Description" For="@( () => createProduct.Description )" />
-
-                    <MudTextField Label="Discount" HelperText="Repeat the Brand" Class="mt-3" @bind-Value="createProduct.Discount" For="@(() => createProduct.Discount)" InputType="InputType.Number" />
-                    <MudTextField T="double" Label="Price" @bind-Value="createProduct.Price" For="@( () => createProduct.Price )" Required="true" RequiredError=" Price is required!" InputType="InputType.Number" />
-
-                    <MudTextField T="int" Label="Quantity" @bind-Value="createProduct.Quantity" InputType="InputType.Number" />
+                    <MudSelect T="string" Label="Brand" @bind-Value="BrandValue" Required="true" RequiredError=" Brand is required!" AnchorOrigin="Origin.BottomCenter">
+                        @foreach (var filter in brands)
+                        {
+                            <MudSelectItem Value="filter.Name" />
+                        }
+                    </MudSelect>
                     <MudForm>
 
                         <MudRadioGroup @bind-Value="SelectedOption">
@@ -138,6 +142,7 @@
 </EditForm>
 
 
+
 @code {
     bool success;
     bool _Loadding = false;
@@ -152,6 +157,7 @@
     [Parameter] public EventCallback<bool> refreshProduct { get; set; }
     private bool showInnerComponent = false;
 
+
     // private void Cancel() => showInnerComponent = false;
     private string BrandValue { get; set; }
     private string CategoryValue { get; set; }
@@ -163,6 +169,7 @@
     [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
     private async Task Cancel() => await OnButtonClick.InvokeAsync();
     private void ToggleButtonStyle() => isClicked = !isClicked;
+    private List<ImageSource> imageSources;
 
     protected override async Task OnInitializedAsync()
     {
@@ -177,6 +184,8 @@
 
         var requestImage = await imageserivce.GetAllAsync();
         if (requestImage.Success) images = requestImage.Data!;
+
+
     }
 
     private async Task GetImageFunc()
@@ -282,7 +291,6 @@
 
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
-
         selectedFile = e.File;
         var GetiamgeName = images.Where(x => x.ImageName == selectedFile.Name).FirstOrDefault();
         if (GetiamgeName != null)
@@ -313,6 +321,7 @@
         }
     }
 
+
     private List<IBrowserFile> uploadedFiles = new List<IBrowserFile>();
     private string uploadedImageData;
 
@@ -321,9 +330,9 @@
         if (selectedFile != null)
         {
             uploadedImageName = DateTime.Now.Microsecond.ToString() + "_" + selectedFile.Name;
-
-            //  var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
-            var filePath = Path.Combine($"C:\\Users\\Dell\\Desktop\\MobileStore\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+            var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+             // var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\Resources\\Images\\", "uploads", uploadedImageName);
+            //var filePath = Path.Combine($"C:\\Users\\Dell\\Desktop\\MobileStore\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
             // var filePath = Path.Combine($"C:\\Users\\Rami\\source\\repos\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
 
             var fileBytes = new byte[selectedFile.Size];
@@ -345,6 +354,7 @@
             if (request.Success)
             {
                 images.Append(image);
+            
                 images = requestRefresh.Data!;
                 // Snackbar.Add(request.Message, Severity.Success);
                 CreateImage = new ImageModel();
@@ -352,7 +362,11 @@
                 StateHasChanged();
             }
             else Snackbar.Add(request.Message, Severity.Error);
+      
         }
     }
+  
+
+
 
 }

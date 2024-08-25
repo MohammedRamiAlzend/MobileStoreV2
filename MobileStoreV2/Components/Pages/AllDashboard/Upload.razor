@@ -3,8 +3,14 @@
 @inject IDialogService DialogService
 @inject IGenericService<ImageModel> imageservice
 @inject ISnackbar Snackbar
+@using System.IO
 
 <InputFile OnChange="HandleFileSelected" accept="image/jpeg,image/png" />
+
+@if (uploadedImageData != null)
+{
+    <img src="@uploadedImageData" alt="Uploaded Image" style="max-width: 100%; height: auto;" />
+}
 <MudTable Items="@images" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
     <HeaderContent>
         <MudTh>id</MudTh>
@@ -32,6 +38,7 @@
     private string uploadedImageName;
     public IEnumerable<ImageModel> images = new List<ImageModel>();
     ImageModel CreateImage = new ImageModel();
+    private string uploadedImageData;
 
     private byte[] tempCoverImage = Array.Empty<byte>();
 
@@ -42,8 +49,6 @@
     {
 
         selectedFile = e.File;
-
-        UploadFiles(selectedFile);
         var GetiamgeName = images.Where(x => x.ImageName == selectedFile.Name).FirstOrDefault();
         if (GetiamgeName != null)
         {
@@ -61,38 +66,18 @@
         {
             uploadedImageName = DateTime.Now.Microsecond.ToString() + "_" + selectedFile.Name;
 
-            //   var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
-            var filePath = Path.Combine("C:\\Users\\Dell\\Desktop\\MobileStore\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
-            //var filePath = Path.Combine(Env.webrootpath, "uploads", uploadedFileName);
-
-            using (var fileStream = new FileStream(filePath, FileMode.Create))
-            {
-                await selectedFile.OpenReadStream().CopyToAsync(fileStream);
-            }
-            StateHasChanged();
+            // Read the image as a byte
             var fileBytes = new byte[selectedFile.Size];
-            await selectedFile.OpenReadStream().ReadAsync(fileBytes);
-
-
-            // Save the image using the service
-            CreateImage.ImageName = uploadedImageName;
-            CreateImage.ImagePath = $"uploads/{Path.GetFileName(uploadedImageName)}";
-            CreateImage.DeletedAt = DateTime.Now;
-            CreateImage.IsDeleted = false;
-            CreateImage.DeletedAt = null;
-            var image = CreateImage;
-            var request = await imageservice.CreateAsync(image);
-            var requestRefresh = await imageservice.GetAllAsync();
-            if (request.Success)
+            using (var stream = selectedFile.OpenReadStream())
             {
-                images.Append(image);
-                images = requestRefresh.Data!;
-                Snackbar.Add(request.Message, Severity.Success);
-                CreateImage = new ImageModel();
-                StateHasChanged();
+                await stream.ReadAsync(fileBytes);
             }
-            else Snackbar.Add(request.Message, Severity.Error);
+            // Convert to base64
+            uploadedImageData = $"data:{selectedFile.ContentType};base64,{Convert.ToBase64String(fileBytes)}";
+
         }
+       await SaveImage();
+
     }
     private async Task deleteData(int id)
     {
@@ -103,16 +88,23 @@
         {
             //Strat Delete from file
 
-            // var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", GetImageById.Data!.ImageName);
-            var filePath = Path.Combine("C:\\Users\\Dell\\Desktop\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", GetImageById.Data!.ImageName);
+            var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", GetImageById.Data!.ImageName);
+            //  var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\Resources\\Images\\", "uploads", GetImageById.Data!.ImageName);
+            
+
+            // var filePath = Path.Combine(FileSystem.AppDataDirectory, "wwwroot", "uploads", GetImageById.Data!.ImageName);
+            //  var filePath = Path.Combine("C:\\Users\\Dell\\Desktop\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", GetImageById.Data!.ImageName);
             try
             {
 
+                Snackbar.Add(filePath, Severity.Success);
                 System.IO.File.Delete(filePath);
+                Snackbar.Add("Delete Done From File", Severity.Success);
             }
             catch
             {
-                ;
+                Snackbar.Add("Wrong While Deleteing From File", Severity.Error);
+
             }
             //end Delete from file
 
@@ -149,22 +141,47 @@
         StateHasChanged();
     }
     // ================================== for image ==============================================
-
-    private string GetImageSrc(byte[]? coverImage)
+    private async Task SaveImage()
     {
-        if (coverImage == null || coverImage.Length == 0)
-            return "https://cdn.iconscout.com/icon/free/png-256/free-photo-camera-1780425-1517754.png";
-        //return null;
-        var base64Image = Convert.ToBase64String(coverImage);
-        return $"data:image/png;base64,{base64Image}";
-    }
-    private async Task UploadFiles(IBrowserFile file)
-    {
-        selectedFile = file;
-        var buffer = new byte[selectedFile.Size];
-        await selectedFile.OpenReadStream().ReadAsync(buffer);
-        tempCoverImage = buffer;
+        if (selectedFile != null)
+        {
+            uploadedImageName = DateTime.Now.Microsecond.ToString() + "_" + selectedFile.Name;
 
+            // var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+   
+            // var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\Resources\\Images\\", "uploads", uploadedImageName);
+             var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\Resources\\Images\\", "uploads", uploadedImageName);
+          
+            //var filePath = Path.Combine($"C:\\Users\\Dell\\Desktop\\MobileStore\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+            // var filePath = Path.Combine($"C:\\Users\\Rami\\source\\repos\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+
+            var fileBytes = new byte[selectedFile.Size];
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await selectedFile.OpenReadStream().CopyToAsync(fileStream);
+            }
+
+            // Save the image using the service
+            CreateImage.ImageName = uploadedImageName;
+            CreateImage.ImagePath = $"uploads/{Path.GetFileName(uploadedImageName)}";
+            CreateImage.DeletedAt = DateTime.Now;
+            CreateImage.IsDeleted = false;
+            CreateImage.DeletedAt = null;
+            var image = CreateImage;
+            var request = await imageservice.CreateAsync(image);
+            var requestRefresh = await imageservice.GetAllAsync();
+            if (request.Success)
+            {
+                images.Append(image);
+                images = requestRefresh.Data!;
+                // Snackbar.Add(request.Message, Severity.Success);
+                CreateImage = new ImageModel();
+                StateHasChanged();
+            }
+            else Snackbar.Add(request.Message, Severity.Error);
+        }
     }
+   
 }
 
