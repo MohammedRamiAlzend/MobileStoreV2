@@ -330,9 +330,9 @@
         if (selectedFile != null)
         {
             uploadedImageName = DateTime.Now.Microsecond.ToString() + "_" + selectedFile.Name;
-            var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+            //var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
              // var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\Resources\\Images\\", "uploads", uploadedImageName);
-            //var filePath = Path.Combine($"C:\\Users\\Dell\\Desktop\\MobileStore\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+            var filePath = Path.Combine($"C:\\Users\\Dell\\Desktop\\MobileStoreV2\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
             // var filePath = Path.Combine($"C:\\Users\\Rami\\source\\repos\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
 
             var fileBytes = new byte[selectedFile.Size];
