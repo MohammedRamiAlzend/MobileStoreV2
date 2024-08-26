@@ -1,0 +1,107 @@
+﻿@page "/create-bill"
+@using MudBlazor
+
+<MudPaper Elevation="4" Class="pa-4">
+    <MudText Typo="Typo.h4">Create Bill</MudText>
+
+    <MudTextField Label="Product Name" @bind-Value="filterName" Placeholder="Enter product name" />
+
+    <MudTable Items="billItems" Dense="true" Hover="true" Class="mt-4">
+        <HeaderContent>
+            <MudTh>Product Name</MudTh>
+            <MudTh>Price</MudTh>
+            <MudTh>Quantity</MudTh>
+            <MudTh>Total</MudTh>
+            <MudTh>Remove</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>@context.Product.Name</MudTd>
+            <MudTd>@context.Product.Price.ToString("C")</MudTd>
+            <MudTd>
+                <MudNumericField @bind-Value="context.Quantity" Min="1" />
+            </MudTd>
+            <MudTd>@(context.Product.Price * context.Quantity).ToString("C")</MudTd>
+            <MudTd>
+                <MudButton Variant="Variant.Text" Color="Color.Error" OnClick="@(() => RemoveFromBill(context))">
+                    Remove
+                </MudButton>
+            </MudTd>
+        </RowTemplate>
+    </MudTable>
+
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveBill" Class="mt-4">
+        Save Bill
+    </MudButton>
+</MudPaper>
+
+@code {
+    private string filterName;
+    private List<Product> products = new List<Product>();
+    private List<BillItem> billItems = new List<BillItem>();
+
+    private IEnumerable<Product> filteredProducts => products.Where(p => p.Name.Contains(filterName, StringComparison.OrdinalIgnoreCase));
+
+    protected override void OnInitialized()
+    {
+        // Initialize the products list. In a real application, this might be loaded from a database.
+        products = new List<Product>
+        {
+            new Product { Name = "Product 1", Price = 10.99M },
+            new Product { Name = "Product 2", Price = 20.99M },
+            new Product { Name = "Product 3", Price = 15.99M }
+        };
+    }
+
+    private void AddToBill(Product product)
+    {
+        var existingItem = billItems.FirstOrDefault(item => item.Product.Name == product.Name);
+        if (existingItem != null)
+        {
+            existingItem.Quantity++;
+        }
+        else
+        {
+            billItems.Add(new BillItem { Product = product, Quantity = 1 });
+        }
+    }
+
+    private void RemoveFromBill(BillItem item)
+    {
+        billItems.Remove(item);
+    }
+
+    private void SaveBill()
+    {
+        // Logic to save the bill, e.g., save to a database
+        Console.WriteLine("Bill saved!");
+    }
+
+    private void OnFilterChanged(string value)
+    {
+        filterName = value;
+        var matchedProduct = products.FirstOrDefault(p => p.Name.Equals(filterName, StringComparison.OrdinalIgnoreCase));
+        if (matchedProduct != null)
+        {
+            AddToBill(matchedProduct);
+            filterName = string.Empty; // Clear the filter input after adding the product to the bill
+        }
+    }
+
+    private string FilterName
+    {
+        get => filterName;
+        set => OnFilterChanged(value);
+    }
+
+    public class Product
+    {
+        public string Name { get; set; }
+        public decimal Price { get; set; }
+    }
+
+    public class BillItem
+    {
+        public Product Product { get; set; }
+        public int Quantity { get; set; }
+    }
+}

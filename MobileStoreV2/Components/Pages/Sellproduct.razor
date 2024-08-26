@@ -117,7 +117,7 @@
     // private List  products;
     private List<string> products;
 
-    protected override void OnInitialized() => products = new List<string> { };
+    // protected override void OnInitialized() => products = new List<string> { };
 
 
     private string searchString = "";
@@ -125,7 +125,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-
+        products = new List<string> { };
     }
     private void EditProduct(int id)
     {

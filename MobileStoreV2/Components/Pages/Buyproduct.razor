@@ -8,132 +8,81 @@
 @inject ISnackbar Snackbar
 
 
-<style>
-    .continer {
-        width: 100%;
-        position: relative;
-        display: flex;
-        justify-content: end;
-        align-items: center;
-    }
-</style>
+<MudPaper Elevation="4" Class="pa-4">
+    <MudText Typo="Typo.h4">Create Bill</MudText>
 
-    <MudContainer Class="my-4 continer">
-        <MudButton Variant="Variant.Filled" @onclick="OpenDialogAsync" Color="Color.Info" StartIcon="@Icons.Material.Filled.Add">إضافة منتج للشراء</MudButton>
-    </MudContainer>
 
-<MudContainer>
-    <MudTable Items="filteredProducts" Striped="true" Hover="true">
+
+    <MudTable Items="filteredProducts" Dense="true" Hover="true">
         <ToolBarContent>
-            <MudTextField T="string" Label="Search" @bind-Value="searchString" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            <MudTextField T="string" Label="Search" @bind-Value="searchString" TextChanged="FilterProducts" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Select</MudTh>
+            <MudTh>Product Name</MudTh>
+            <MudTh>Price</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd>
+                <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => AddToBill(context))">
+                    Add
+                </MudButton>
+            </MudTd>
+            <MudTd>@context.Name</MudTd>
+            <MudTd>@context.Price.ToString("C")</MudTd>
+        </RowTemplate>
+    </MudTable>
+
+    <MudText Typo="Typo.h6" Class="mt-4">Bill</MudText>
+
+    <MudTable Items="billItems" Dense="true" Hover="true">
         <HeaderContent>
             <MudTh>Product Name</MudTh>
             <MudTh>Price</MudTh>
-            <MudTh>Category</MudTh>
-            <MudTh>Actions</MudTh>
+            <MudTh>Quantity</MudTh>
+            <MudTh>Total</MudTh>
+            <MudTh>Remove</MudTh>
         </HeaderContent>
         <RowTemplate>
-            <MudTd DataLabel="Product Name">ProductsList.Name</MudTd>
-            <MudTd DataLabel="Price">ProductsList.Price</MudTd>
-            <MudTd DataLabel="Category">ProductsList.Category</MudTd>
-            <MudTd DataLabel="Actions">
-                @* <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => EditProduct(context.Id))">Edit</MudButton> *@
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" >Edit</MudButton>
-                @* <MudButton Variant="Variant.Outlined" OnClick="Delete" Color="Color.Error">Delete</MudButton> *@
+            <MudTd>@context.Product.Name</MudTd>
+            <MudTd>@context.Product.Price.ToString("C")</MudTd>
+            <MudTd>
+                <MudNumericField @bind-Value="context.Quantity" Min="1" />
+            </MudTd>
+            <MudTd>@((context.Product.Price * context.Quantity).ToString("C"))</MudTd>
+            <MudTd>
+                <MudButton Variant="Variant.Text" Color="Color.Error" OnClick="@(() => RemoveFromBill(context))">
+                    Remove
+                </MudButton>
             </MudTd>
         </RowTemplate>
     </MudTable>
-    <MudContainer Class="my-4 continer">
-        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Save" Color="Color.Primary"  Size="Size.Small">حفظ الفاتورة</MudButton>
-    </MudContainer>
-</MudContainer>
 
-@* start show dialog  *@
-
-
-<MudDialog Class="p-5" @bind-IsVisible="showInnerComponent"  >
-    <TitleContent>
-        <h1>شراء منتج</h1>
-    </TitleContent>
-    <DialogContent>
-        <MudStack Row>
-            <MudCard>
-                <MudCardContent>
-           
-                </MudCardContent>
-            </MudCard>
-        </MudStack>
-    </DialogContent>
-    <DialogActions>
-       
-    </DialogActions>
-</MudDialog>
-@* End show dialog  *@
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveBill" Class="mt-4">
+        Save Bill
+    </MudButton>
+</MudPaper>
 
 
-@* display prodcut start*@
-@* <MudTable Items="@products" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info"> *@
-<MudTable Items="@filteredProducts" MultiSelection="true" SelectionChangeable="_selectionChangeable" Hover="true"
-              @bind-SelectedItems="selectedItems"  SelectOnRowClick="@_selectOnRowClick">
-    <ToolBarContent>
-        <MudTextField T="string" Label="Search" @bind-Value="searchString" TextChanged="FilterProducts" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-    </ToolBarContent>
-    <HeaderContent>
-        <MudTh>ID</MudTh>
-        <MudTh>Brand</MudTh>
-        <MudTh>Category</MudTh>
-        <MudTh>Name</MudTh>
-        <MudTh>Discount</MudTh>
-        <MudTh>Description</MudTh>
-        <MudTh>Quantity</MudTh>
-        <MudTh>Price </MudTh>
-        <MudTh>BarCode</MudTh>
-        <MudTh>ImageName</MudTh>
-        <MudTh>InsertDate</MudTh>
 
-    </HeaderContent>
-    <RowTemplate>
-            <MudTd DataLabel="Id">@context.Id</MudTd>
-            <MudTd DataLabel="Brand">@context.Brand?.Name</MudTd>
-            <MudTd DataLabel="Categor">@context.Category?.Name</MudTd>
-            <MudTd DataLabel="Name">@context.Name</MudTd>
-            <MudTd DataLabel="Discount">@context.Discount</MudTd>
-            <MudTd DataLabel="Description">@context.Description</MudTd>
-            <MudTd DataLabel="Quantity">@context.Quantity</MudTd>
-            <MudTd DataLabel="Price">@context.Price</MudTd>
-            <MudTd DataLabel="BarCode">@context.BarCode</MudTd>
-            <MudTd DataLabel="BarCode">@context.Image?.ImageName</MudTd>
-            <MudTd DataLabel="InsertDate">@context.InsertDate</MudTd>
-    </RowTemplate>
-</MudTable>
-@* display prodcut end *@
 @code {
-    bool success;
-
-    MudTextField<string> pwField1;
-    MudForm form;
+    private bool _hidePosition;
+    bool _Loadding = false;
     private bool _loading;
-    private List<string> productsList;
-
-
-    //start Dialog Show
-    [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
     private string searchString = "";
-    private bool showInnerComponent = false;
-    private void OpenDialogAsync() => showInnerComponent = true;
-    private void Cancel() => showInnerComponent = false;
-    //start product list 
+    private bool _readOnly = true;
+    private string BrandValue { get; set; }
+    private string CategoryValue { get; set; }
+    private string ImageValue { get; set; }
     public IEnumerable<Product> products = new List<Product>();
     public IEnumerable<Product> filteredProducts = new List<Product>();
-    Product createProduct = new Product();
-    
-    private HashSet<Product> selectedItems = new HashSet<Product>();
-    private bool _selectOnRowClick = true;
-    private bool _selectionChangeable = true;
-    private MudTable<Product> _table;
-    private string _selectedItemText = "No row clicked";
+    public IEnumerable<Brand> brands = new List<Brand>();
+    public IEnumerable<Category> category = new List<Category>();
+    public IEnumerable<ImageModel> images = new List<ImageModel>();
 
+
+    Product newProduct = new Product();
+    private List<Product> productsAdd = new List<Product>();
 
 
     protected override async Task OnInitializedAsync()
@@ -142,30 +91,53 @@
         if (request.Success) products = request.Data!;
         filteredProducts = products;
     }
-    private void EditProduct(int id)
-    {
-
-    }
-
-    private async Task DeleteProduct(int id)
-    {
-
-    }
-    private async void OnValidSubmit(EditContext context)
-    {
-        
-    }
-
     private void FilterProducts()
     {
-        if (string.IsNullOrWhiteSpace(searchString)) filteredProducts = products;
-        else filteredProducts = products.Where(p => p.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase) || p.BarCode.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+        if (string.IsNullOrWhiteSpace(searchString))
+        {
+            filteredProducts = products;
+        }
+        else
+        {
+            filteredProducts = products.Where(p => p.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase) || p.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+
+        }
     }
-    
+    private void Submit(EditContext context)
+    {
+        productsAdd.Add(newProduct);
 
- 
+        // Reset the form after adding the product
+        newProduct = new Product();
 
+        // Optionally, notify the user that the product was added
+        Console.WriteLine("Product added successfully");
+    }
+    private List<BillItem> billItems = new List<BillItem>();
 
-
-
+    private void AddToBill(Product product)
+    {
+        var existingItem = billItems.FirstOrDefault(item => item.Product.Name == product.Name);
+        if (existingItem != null)
+        {
+            existingItem.Quantity++;
+        }
+        else
+        {
+            billItems.Add(new BillItem { Product = product, Quantity = 1 });
+        }
+    }
+    public class BillItem
+    {
+        public Product Product { get; set; }
+        public int Quantity { get; set; }
+    }
+    private void SaveBill()
+    {
+        Snackbar.Add("Done Save", Severity.Success);
+    }
+    private void RemoveFromBill(BillItem item)
+    {
+        billItems.Remove(item);
+    }
 }
