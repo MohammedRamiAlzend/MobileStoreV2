@@ -21,6 +21,8 @@
         align-items: center;
     }
 
+
+ 
 </style>
 
 <div class="continer">
@@ -30,7 +32,7 @@
 </div>
 @* start add product form *@
 
-<MudDialog @bind-IsVisible="showInnerComponent">
+<MudDialog @bind-IsVisible="showInnerComponent" >
     <TitleContent> Add Product</TitleContent>
     <DialogContent>
         <Createproduct OnButtonClick="HandleButtonClick" refreshProduct="OnInitializedAsync" />
@@ -56,12 +58,6 @@
 </MudDialog>
 
 
-<MudDialog @bind-IsVisible="showInnerComponentImage">
-    <TitleContent>Add Image</TitleContent>
-    <DialogContent>
-        <Uploadimage refreshProduct="OnInitializedAsync" />
-    </DialogContent>
-</MudDialog>
 
 @* End add product form *@
 @if (filteredProducts == null)
@@ -200,14 +196,12 @@ else
     private bool showInnerComponent = false;
     private bool showInnerComponentBrands = false;
     private bool showInnerComponentCategory = false;
-    private bool showInnerComponentImage = false;
     private bool showInnerComponentDone = false;
     private readonly DialogOptions _dialogOptions = new() { FullWidth = true };
     private void OpenDialog() => showInnerComponent = true;
     private void OpenDialogBrand() => showInnerComponentBrands = true;
     private void OpenDialogCategory() => showInnerComponentCategory = true;
     private void OpenDialogDone() => showInnerComponentDone = true;
-    private void OpenDialogImage() => showInnerComponentImage = true;
     private void Cancel() => showInnerComponent = false;
     private void CancelDone() => showInnerComponentDone = false;
     //end modal

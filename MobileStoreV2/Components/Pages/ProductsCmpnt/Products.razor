@@ -1,8 +1,6 @@
 ﻿@page "/ProductsList"
 @using MobileStoreV2.Components.Pages.AllDashboard
 @using MobileStoreV2.Components.Pages.ProductsCmpnt
-
-
 @using System.Net.Http.Json
 @using System.ComponentModel.DataAnnotations
 @inject IDialogService DialogService
@@ -11,7 +9,9 @@
 @inject IGenericService<Category> categoryService
 @inject IGenericService<ImageModel> imageserivce
 @inject ISnackbar Snackbar
-
+<style>
+ 
+</style>
 @if (_loading == null)
 {
     <h5>_Loadding...</h5>
@@ -19,15 +19,15 @@
 else
 {
     @* start card continer  *@
-    <MudGrid Spacing="@Spacing" Justify="Justify.Center">
-            @foreach (var filter in products)
+    <MudGrid Spacing="@Spacing">
+            @foreach (var filter in products )
             {
                @* <Card ProductName="@filter.Name" ImagePath="@filter.Image?.ImagePath" Description="@filter.Description" /> *@
-               <Card1/>
-
+            <Card1 ProductName="@filter.Name" Description="@filter.Description" Quanatity="@filter.Quantity" Brand="@filter.Brand?.Name" Category="@filter.Category?.Name"/>
             }
     </MudGrid>
 }
+
 
 @* end card continer  *@
 @code {
@@ -47,6 +47,15 @@ else
         var request = await ProductService.GetAllAsync();
         if (request.Success) products = request.Data!;
         filteredProducts = products;
+
+        var requestbrand = await brandservice.GetAllAsync();
+        if (requestbrand.Success) brands = requestbrand.Data!;
+
+        var requestGategory = await categoryService.GetAllAsync();
+        if (requestGategory.Success) category = requestGategory.Data!;
+
+        var requestImage = await imageserivce.GetAllAsync();
+        if (requestImage.Success) images = requestImage.Data!;
 
     }
 }

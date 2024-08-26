@@ -1,8 +1,12 @@
 ﻿@page "/Buyproduct"
 
-
-@inherits LayoutComponentBase
 @inject IDialogService DialogService
+@inject IGenericService<Product> ProductService
+@inject IGenericService<Brand> brandservice
+@inject IGenericService<Category> categoryService
+@inject IGenericService<ImageModel> imageserivce
+@inject ISnackbar Snackbar
+
 
 <style>
     .continer {
@@ -19,7 +23,7 @@
     </MudContainer>
 
 <MudContainer>
-    <MudTable Items="products" Striped="true" Hover="true">
+    <MudTable Items="filteredProducts" Striped="true" Hover="true">
         <ToolBarContent>
             <MudTextField T="string" Label="Search" @bind-Value="searchString" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
@@ -30,14 +34,13 @@
             <MudTh>Actions</MudTh>
         </HeaderContent>
         <RowTemplate>
-            <MudTd DataLabel="Product Name">context.Name</MudTd>
-            <MudTd DataLabel="Price">context.Price</MudTd>
-            <MudTd DataLabel="Category">context.Category</MudTd>
+            <MudTd DataLabel="Product Name">ProductsList.Name</MudTd>
+            <MudTd DataLabel="Price">ProductsList.Price</MudTd>
+            <MudTd DataLabel="Category">ProductsList.Category</MudTd>
             <MudTd DataLabel="Actions">
                 @* <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => EditProduct(context.Id))">Edit</MudButton> *@
                 <MudButton Variant="Variant.Filled" Color="Color.Primary" >Edit</MudButton>
-                <MudButton Variant="Variant.Outlined" OnClick="Delete" Color="Color.Error"
-                >Delete</MudButton>
+                @* <MudButton Variant="Variant.Outlined" OnClick="Delete" Color="Color.Error">Delete</MudButton> *@
             </MudTd>
         </RowTemplate>
     </MudTable>
@@ -49,7 +52,7 @@
 @* start show dialog  *@
 
 
-<MudDialog Class="p-5" @bind-IsVisible="showInnerComponent">
+<MudDialog Class="p-5" @bind-IsVisible="showInnerComponent"  >
     <TitleContent>
         <h1>شراء منتج</h1>
     </TitleContent>
@@ -57,154 +60,112 @@
         <MudStack Row>
             <MudCard>
                 <MudCardContent>
-
-                    <MudForm>
-                        <MudGrid>
-                            <MudItem xs="12" sm="21" md="12">
-                                <MudAutocomplete T="string" Label="US States" @bind-Value="value1" SearchFunc="@Search1"
-                                                 ResetValueOnEmptyText="@resetValueOnEmptyText"
-                                                 CoerceText="@coerceText" CoerceValue="@coerceValue" />
-                            </MudItem>
-                            <MudItem xs="12" md="12">
-                                <MudText Class="mb-n3" Typo="Typo.body2">
-                                    <MudChip T="string">@(value1 ?? "Not selected")</MudChip>
-                                </MudText>
-                            </MudItem>
-                        </MudGrid>
-                        <MudTextField T="string" Label="نوع المنتج" />
-                        <MudNumericField T="int" Label="عدد المنتجات" />
-
-                        <MudNumericField T="int" Label="الباركود " />
-                        <MudDatePicker Label="Editable with Placeholder" Editable="true" @bind-Date="_date" Placeholder="Select Date" />
-                        <MudSwitch T="bool" Label="Switch" />
-                        <MudCheckBox T="bool" Label="CheckBox" UnCheckedColor="Color.Primary" />
-                        <MudRadioGroup T="string">
-                            <MudRadio Value="@("1")">مستعمل</MudRadio>
-                            <MudRadio Value="@("2")">جديد</MudRadio>
-                        </MudRadioGroup>
-                        <MudForm ReadOnly="NestedReadOnly">
-                            <MudText Align="Align.Center" Class="mb-n4 mt-2">Nested Form</MudText>
-                            <MudTextField T="string" Label="Nested Text" />
-                            <MudNumericField T="int" Label="Nested Number" />
-                        </MudForm>
-                    </MudForm>
+           
                 </MudCardContent>
-        
             </MudCard>
         </MudStack>
     </DialogContent>
-
-
-
     <DialogActions>
-        <MudButton OnClick="Cancel">إغلاق</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Submit" StartIcon="@Icons.Material.Filled.Add">إضافة</MudButton>
-
-
-
+       
     </DialogActions>
 </MudDialog>
 @* End show dialog  *@
+
+
+@* display prodcut start*@
+@* <MudTable Items="@products" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info"> *@
+<MudTable Items="@filteredProducts" MultiSelection="true" SelectionChangeable="_selectionChangeable" Hover="true"
+              @bind-SelectedItems="selectedItems"  SelectOnRowClick="@_selectOnRowClick">
+    <ToolBarContent>
+        <MudTextField T="string" Label="Search" @bind-Value="searchString" TextChanged="FilterProducts" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>ID</MudTh>
+        <MudTh>Brand</MudTh>
+        <MudTh>Category</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>Discount</MudTh>
+        <MudTh>Description</MudTh>
+        <MudTh>Quantity</MudTh>
+        <MudTh>Price </MudTh>
+        <MudTh>BarCode</MudTh>
+        <MudTh>ImageName</MudTh>
+        <MudTh>InsertDate</MudTh>
+
+    </HeaderContent>
+    <RowTemplate>
+            <MudTd DataLabel="Id">@context.Id</MudTd>
+            <MudTd DataLabel="Brand">@context.Brand?.Name</MudTd>
+            <MudTd DataLabel="Categor">@context.Category?.Name</MudTd>
+            <MudTd DataLabel="Name">@context.Name</MudTd>
+            <MudTd DataLabel="Discount">@context.Discount</MudTd>
+            <MudTd DataLabel="Description">@context.Description</MudTd>
+            <MudTd DataLabel="Quantity">@context.Quantity</MudTd>
+            <MudTd DataLabel="Price">@context.Price</MudTd>
+            <MudTd DataLabel="BarCode">@context.BarCode</MudTd>
+            <MudTd DataLabel="BarCode">@context.Image?.ImageName</MudTd>
+            <MudTd DataLabel="InsertDate">@context.InsertDate</MudTd>
+    </RowTemplate>
+</MudTable>
+@* display prodcut end *@
 @code {
+    bool success;
 
-    //start product list 
-    public IEnumerable<Product> ProductsList = new List<Product>();
-
-    //End product list 
-    // private List  products;
-    private List<string> products;
-
-    protected override void OnInitialized() => products = new List<string> { };
+    MudTextField<string> pwField1;
+    MudForm form;
+    private bool _loading;
+    private List<string> productsList;
 
 
+    //start Dialog Show
+    [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
     private string searchString = "";
+    private bool showInnerComponent = false;
+    private void OpenDialogAsync() => showInnerComponent = true;
+    private void Cancel() => showInnerComponent = false;
+    //start product list 
+    public IEnumerable<Product> products = new List<Product>();
+    public IEnumerable<Product> filteredProducts = new List<Product>();
+    Product createProduct = new Product();
+    
+    private HashSet<Product> selectedItems = new HashSet<Product>();
+    private bool _selectOnRowClick = true;
+    private bool _selectionChangeable = true;
+    private MudTable<Product> _table;
+    private string _selectedItemText = "No row clicked";
+
 
 
     protected override async Task OnInitializedAsync()
     {
-   
+        var request = await ProductService.GetAllAsync();
+        if (request.Success) products = request.Data!;
+        filteredProducts = products;
     }
     private void EditProduct(int id)
     {
-        // Navigate to edit product page
-        // NavigationManager.NavigateTo($"/Component1/edit/{id}");
+
     }
 
     private async Task DeleteProduct(int id)
     {
-        // var response = await Http.DeleteAsync($"api/Component1/{id}");
-        // if (response.IsSuccessStatusCode)
-        // {
-        //     products = await Http.GetFromJsonAsync<List<Product>>("api/Component1");
-        // }
-        // else
-        // {
-        //     // Handle error
-        // }
+
     }
-
-
-    private bool showInnerComponent = false;
-
-    private void OpenDialogAsync() => showInnerComponent = true;
-    private void Cancel() => showInnerComponent = false;
-
-
-    //start Dialog Show
-    [CascadingParameter]
-    private MudDialogInstance MudDialog { get; set; }
-    private DateTime? _date = DateTime.Today;
-    private void Submit() => products.Add("product 1");
-    private void Delete() => products.Remove("product 1");
-    // private void Cancel() => MudDialog.Cancel();
-    //End Dialog Show
-
-    //Start Add Buy Form
-    bool ReadOnly = true;
-    bool NestedReadOnly;
-    bool Disabled = true;
-    bool NestedDisabled;
-
-    //End Add Buy Form
-    //start select list 
-    private bool resetValueOnEmptyText;
-    private bool coerceText;
-    private bool coerceValue;
-    private string value1, value2;
-    public IEnumerable<Product> ProductsList2;
-
-    private string[] states = 
+    private async void OnValidSubmit(EditContext context)
     {
-        "Alabama", "Alaska", "American Samoa", "Arizona",
-        "Arkansas", "California", "Colorado", "Connecticut",
-        "Delaware", "District of Columbia", "Federated States of Micronesia",
-        "Florida", "Georgia", "Guam", "Hawaii", "Idaho",
-        "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky",
-        "Louisiana", "Maine", "Marshall Islands", "Maryland",
-        "Massachusetts", "Michigan", "Minnesota", "Mississippi",
-        "Missouri", "Montana", "Nebraska", "Nevada",
-        "New Hampshire", "New Jersey", "New Mexico", "New York",
-        "North Carolina", "North Dakota", "Northern Mariana Islands", "Ohio",
-        "Oklahoma", "Oregon", "Palau", "Pennsylvania", "Puerto Rico",
-        "Rhode Island", "South Carolina", "South Dakota", "Tennessee",
-        "Texas", "Utah", "Vermont", "Virgin Island", "Virginia",
-        "Washington", "West Virginia", "Wisconsin", "Wyoming",
-    };
-
-    private async Task<IEnumerable<string>> Search1(string value)
-    {
-        // In real life use an asynchronous function for fetching data from an api.
-        await Task.Delay(5);
-
-        // if text is null or empty, show complete list
-        if (string.IsNullOrEmpty(value))
-            return states;
-        return states.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
         
     }
 
-  
-    //End select list 
+    private void FilterProducts()
+    {
+        if (string.IsNullOrWhiteSpace(searchString)) filteredProducts = products;
+        else filteredProducts = products.Where(p => p.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase) || p.BarCode.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+    }
+    
+
+ 
+
+
 
 
 }
