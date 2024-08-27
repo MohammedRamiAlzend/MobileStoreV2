@@ -1,0 +1,80 @@
+﻿@page "/display-bills"
+@inject IGenericService<Product> ProductService
+
+<style>
+    .border {
+        border-radius: 20px;
+        border: 4mm ridge rgba(67, 82, 233, 1);
+        border-style: outset;
+    }
+    .btn {
+        border-bottom-right-radius:20px;
+    }
+</style>
+
+<MudDialog Class="border">
+    <TitleContent>
+        <h3>Dispaly Bills </h3>
+    </TitleContent>
+    <DialogContent>
+        <MudTable Items="@products" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
+            <HeaderContent>
+                <MudTh>Name</MudTh>
+                <MudTh>Price</MudTh>
+                <MudTh>Brand</MudTh>
+                <MudTh>Category</MudTh>
+                <MudTh>Description </MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Nr">@context.Name</MudTd>
+                <MudTd DataLabel="Sign">@context.Price</MudTd>
+                <MudTd DataLabel="Name">@context.Brand?.Name</MudTd>
+                <MudTd DataLabel="Position">@context.Category?.Name</MudTd>
+                <MudTd DataLabel="Molar mass">@context.Description</MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager PageSizeOptions="new int[] {2,4, 10, 25, 50, 100, int.MaxValue }"
+                               RowsPerPageString="@rowsPerPageString"
+                               InfoFormat="@infoFormat"
+                               AllItemsText="@allItemsText"
+                               HorizontalAlignment="@horizontalAlignment"
+                               HideRowsPerPage="@hideRowsPerPage"
+                               HidePageNumber="@hidePageNumber"
+                               HidePagination="@hidePagination" />
+            </PagerContent>
+        </MudTable>
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Outlined" Color="Color.Primary" OnClick="Cancel" Class="btn">Cancel</MudButton>
+
+
+    </DialogActions>
+</MudDialog>
+@code {
+
+    private HorizontalAlignment horizontalAlignment = HorizontalAlignment.Right;
+    private bool hidePageNumber;
+    private bool hidePagination;
+    private bool hideRowsPerPage;
+    private string rowsPerPageString = "Rows per page:";
+    private string infoFormat = "{first_item}-{last_item} of {all_items}";
+    private string allItemsText = "All";
+
+    private bool _loading;
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; }
+    private IEnumerable<Product> products = new List<Product>();
+
+    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
+
+    private void Cancel() => MudDialog.Cancel();
+    protected override async Task OnInitializedAsync()
+    {
+        var request = await ProductService.GetAllAsync();
+        if (request.Success) products = request.Data!;
+
+    }
+
+
+}

@@ -7,18 +7,14 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-
 <MudLayout>
 
     <MudRTLProvider RightToLeft="@_rightToLeft">
-
-
-
         <MudAppBar Elevation="1" Dense="true">
             <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@ToggleDrawer" />
             <MudSpacer />
             <MudToggleIconButton @bind-Toggled="darkMode" Icon="@Icons.Material.Filled.LightMode" Color="Color.Inherit" ToggledIcon="@Icons.Material.Filled.DarkMode" ToggledColor="@Color.Inherit" />
-            <MudSwitch @bind-Value="_rightToLeft" Label="@Localizer("En")" Color="Color.Warning" />
+            <MudSwitch @bind-Value="_rightToLeft" Label="@Localizer("Ar")" Color="Color.Warning" />
 
         </MudAppBar>
         <MudDrawer @bind-Open="@_open" ClipMode="_clipMode" Breakpoint="@_breakpoint" Elevation="1" Variant="@DrawerVariant.Mini">
@@ -42,26 +38,16 @@
     bool darkMode = false;
     private bool _rightToLeft = false;
     private string RightToLeftText { get; set; }
-
-    void DrawerToggle()
-    {
-        _drawerOpen = !_drawerOpen;
-    }
-
     private bool _open = false;
     private bool _dense = true;
+    private void ToggleDrawer() => _open = !_open;
+    void DrawerToggle() => _drawerOpen = !_drawerOpen;
     private Breakpoint _breakpoint = Breakpoint.Xl;
     private DrawerClipMode _clipMode = DrawerClipMode.Always;
 
-    private void ToggleDrawer()
-    {
-        _open = !_open;
-    }
-
     private string Localizer(string key)
     {
-         if (key.Equals("En"))
-            return _rightToLeft ? "Ar" : "En";
+         if (key.Equals("Ar"))return _rightToLeft ? "En" : "Ar";
         return "";
     }
 }

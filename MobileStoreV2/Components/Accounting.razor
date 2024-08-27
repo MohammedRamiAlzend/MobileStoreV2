@@ -3,38 +3,18 @@
 
 @inject IDialogService DialogService
 
-@* start navbar for calc *@
-@* <MudPaper Width="250px" Class="d-inline-flex py-3" Elevation="0">
-    <MudNavMenu Class="mud-width-full">
-        <MudText Typo="Typo.h6" Class="px-4">My Application</MudText>
-        <MudText Typo="Typo.body2" Class="px-4 mud-text-secondary">Secondary Text</MudText>
-        <MudDivider Class="my-2" />
-        <MudNavLink Href="/dashboard" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
-        <MudNavGroup Title="Level 0"  Icon="@Icons.Material.Filled.Settings" Expanded="true">
-            <MudNavGroup Title="Level 1" Icon="@Icons.Material.Filled.AdminPanelSettings" Expanded="true">
-                <MudNavGroup Title="Level 2" Icon="@Icons.Material.Filled.People" Expanded="true">
-                    <MudNavGroup Title="Level 3" Icon="@Icons.Material.Filled.Lock" Expanded="true">
-                        <MudNavLink Href="/Products" Icon="@Icons.Material.Filled.DeleteForever">Delete Password</MudNavLink>
-                    </MudNavGroup>
-                </MudNavGroup>
-            </MudNavGroup>
-        </MudNavGroup>
-        <MudNavLink Href="/billing" Icon="@Icons.Material.Filled.Receipt">Billing</MudNavLink>
-    </MudNavMenu>
-</MudPaper> *@
-@* end navbar for calc *@
+
 
 @* Start squr componet  *@
 <MudGrid >
     <MudItem xs="4">
-        @* <MudButton Variant="Variant.Filled" @onclick="OpenDialog" Class="d-flex align-center justify-center mud-width-full py-8 px-10"><h4>بيع منتج</h4></MudButton> *@
         <MudButton Variant="Variant.Filled" @onclick="OpenDialogAsync" Class="d-flex align-center justify-center mud-width-full py-8 px-10"><h4>بيع منتج</h4></MudButton>
     </MudItem>
     <MudItem xs="4">
-        <MudButton Variant="Variant.Filled" Class="d-flex align-center justify-center mud-width-full py-8 px-10 "><h4>عرض منتجات</h4></MudButton>
+        <MudButton Variant="Variant.Filled" @onclick="OpenFilterDateDialog" Class="d-flex align-center justify-center mud-width-full py-8 px-10 "><h4>عرض فواتير تاريخ محدد</h4></MudButton>
     </MudItem>
     <MudItem xs="4">
-        <MudButton Variant="Variant.Filled" Class="d-flex align-center justify-center mud-width-full py-8 px-10"><h4>عرض حسابات المنتجات</h4></MudButton>
+        <MudButton Variant="Variant.Filled" @onclick="OpenDisplayBills" Class="d-flex align-center justify-center mud-width-full py-8 px-10"><h4>عرض حسابات المنتجات</h4></MudButton>
     </MudItem>
     <MudItem xs="4">
         <MudButton Variant="Variant.Filled" Class="d-flex align-center justify-center mud-width-full py-8 px-10"><h4>الكميات</h4></MudButton>
@@ -56,21 +36,6 @@
     </MudItem>
 </MudGrid>
 @* End squr componet  *@
-@*
-<MudDialog @bind-IsVisible="showInnerComponent" OnBackdropClick="@HandleBackdropClick">
- <TitleContent>
-        <h1>إضافة منتج مدري عرض</h1>
-    </TitleContent>
-    <DialogContent>
-        <h1>منتجااااااااااااات</h1>
-        <p>Times backdrop clicked: @timesBackDropClicked</p>
-
-    </DialogContent>
-    <DialogActions>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Cancel" Class="px-10">Close</MudButton>
-
-    </DialogActions>
-    </MudDialog>*@
 
 @code {
     [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
@@ -93,5 +58,18 @@
         var options = new DialogOptions { CloseOnEscapeKey = true };
 
         return DialogService.ShowAsync<Buydialog>("Buy Dialog", options);
+    }
+    private Task OpenDisplayBills()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        return DialogService.ShowAsync<DisplayBills>("Simple Dialog", options);
+    }
+    
+    private Task OpenFilterDateDialog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        return DialogService.ShowAsync<FilterDateDialog>("Simple Dialog", options);
     }
 }

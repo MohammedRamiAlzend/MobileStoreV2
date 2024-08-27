@@ -1,4 +1,4 @@
-﻿@page "/categor"
+﻿@page "/Category"
 
 @inject IDialogService DialogService
 @inject IGenericService<Category> categoryService
@@ -6,7 +6,7 @@
 
 
 
-<EditForm Model="@CreateCategory" OnValidSubmit="OnValidSubmit">
+<EditForm Model="@CreateCategory" OnValidSubmit="OnValidSubmit" >
     <DataAnnotationsValidator />
     <MudGrid>
         <MudItem xs="12" sm="12">
@@ -21,10 +21,6 @@
         </MudItem>
     </MudGrid>
 </EditForm>
-
-
-
-
 
 <MudTable Items="@category" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
     <HeaderContent>

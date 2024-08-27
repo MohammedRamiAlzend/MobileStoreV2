@@ -3,14 +3,23 @@
 @inject ISnackbar Snackbar
 @inject IDialogService DialogService
 
-
+<style>
+    .continer {
+        width: 100%;
+        position: relative;
+        display: flex;
+        justify-content: end;
+        align-items: center;
+    }
+</style>
 
 <MudPaper Elevation="4" Class="pa-4">
-    <MudText Typo="Typo.h4">Create Bill</MudText>
+    <MudText Typo="Typo.h4">Buy product </MudText>
     <MudTable Items="billItems" Dense="true" Hover="true" Class="mt-4">
-        <ToolBarContent>
-            <MudTextField T="string" @ref="textField" Label="Search" @bind-Value="filterName" TextChanged="OnFilterChanged" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        <ToolBarContent >
+            <MudTextField T="string" @ref="textField" HelperText="Name or Barcode" Label="Search" @bind-Value="filterName" TextChanged="OnFilterChanged" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
+                
         <HeaderContent>
             <MudTh>Product Name</MudTh>
             <MudTh>Price</MudTh>
@@ -21,9 +30,7 @@
         <RowTemplate>
             <MudTd>@context.Product.Name</MudTd>
             <MudTd>@context.Product.Price.ToString("C")</MudTd>
-            <MudTd>
-                <MudNumericField @bind-Value="context.Quantity" Min="1" />
-            </MudTd>
+            <MudTd><MudNumericField @bind-Value="context.Quantity" Min="1" /></MudTd>
             <MudTd>@((context.Product.Price * context.Quantity).ToString("C"))</MudTd>
             <MudTd>
                 <MudButton Variant="Variant.Text" Color="Color.Error" OnClick="@(() => RemoveFromBill(context))">
@@ -32,7 +39,9 @@
             </MudTd>
         </RowTemplate>
     </MudTable>
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save" OnClick="SaveBill" Class="mt-4">Save Bill</MudButton>
+    <MudContainer Class="my-4 continer">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save" OnClick="SaveBill" Class="mt-4">Save Bill</MudButton>
+    </MudContainer>
 </MudPaper>
 
 
@@ -88,24 +97,20 @@
     private void AddToBill(Product product)
     {
         var existingItem = billItems.FirstOrDefault(item => item.Product.Name == product.Name);
-        if (existingItem != null)
-        {
-            existingItem.Quantity++;
-        }
-        else
-        {
-            billItems.Add(new BillItem { Product = product, Quantity = 1 });
-        }
+        if (existingItem != null)existingItem.Quantity++;        
+        else billItems.Add(new BillItem { Product = product, Quantity = 1 });
+ 
     }
 
-    private void RemoveFromBill(BillItem item)
-    {
-        billItems.Remove(item);
-    }
+    private void RemoveFromBill(BillItem item) =>  billItems.Remove(item);
 
+ 
     private void SaveBill()
     {
-        Snackbar.Add("save done", Severity.Warning);
+        if(billItems.Count() !=  0)
+        Snackbar.Add("save done", Severity.Success);
+        else
+        Snackbar.Add("add one product at lest", Severity.Warning);
     }
 
     private void OnFilterChanged(string value)
@@ -117,30 +122,22 @@
             AddToBill(matchedProduct);
             filterName = string.Empty; // Clear the filter input after adding the product to the bill
         }
-        else if (filterName != null && matchedProduct == null) {
-            SureDialog();
-
-        }
+        else if (filterName != null && matchedProduct == null) SureDialog();
     }
     private void FilterProducts()
     {
-        if (string.IsNullOrWhiteSpace(searchString))
-        {
-            filteredProducts = products;
-        }
+        if (string.IsNullOrWhiteSpace(searchString))filteredProducts = products;
         else
-        {
             filteredProducts = products.Where(p => p.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase) || p.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
 
-        }
     }
     string state = "Message box hasn't been opened yet";
 
     private async void SureDialog()
     {
         bool? result = await DialogService.ShowMessageBox(
-            "Warning",
-            "The product wanted not exsit do you want to display all products  !",
+            "info",
+            "product Name or Barcode not exist , display products ?",
             yesText: "show", cancelText: "Cancel");
 
         state = result == null ? "Canceled" : "Deleted!";
