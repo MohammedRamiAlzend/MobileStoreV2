@@ -1,41 +1,16 @@
 ﻿@page "/Buyproduct"
-
-@inject IDialogService DialogService
 @inject IGenericService<Product> ProductService
-@inject IGenericService<Brand> brandservice
-@inject IGenericService<Category> categoryService
-@inject IGenericService<ImageModel> imageserivce
 @inject ISnackbar Snackbar
+@inject IDialogService DialogService
+
 
 
 <MudPaper Elevation="4" Class="pa-4">
     <MudText Typo="Typo.h4">Create Bill</MudText>
-
-
-
-    <MudTable Items="filteredProducts" Dense="true" Hover="true">
+    <MudTable Items="billItems" Dense="true" Hover="true" Class="mt-4">
         <ToolBarContent>
-            <MudTextField T="string" Label="Search" @bind-Value="searchString" TextChanged="FilterProducts" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            <MudTextField T="string" @ref="textField" Label="Search" @bind-Value="filterName" TextChanged="OnFilterChanged" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
-        <HeaderContent>
-            <MudTh>Select</MudTh>
-            <MudTh>Product Name</MudTh>
-            <MudTh>Price</MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd>
-                <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => AddToBill(context))">
-                    Add
-                </MudButton>
-            </MudTd>
-            <MudTd>@context.Name</MudTd>
-            <MudTd>@context.Price.ToString("C")</MudTd>
-        </RowTemplate>
-    </MudTable>
-
-    <MudText Typo="Typo.h6" Class="mt-4">Bill</MudText>
-
-    <MudTable Items="billItems" Dense="true" Hover="true">
         <HeaderContent>
             <MudTh>Product Name</MudTh>
             <MudTh>Price</MudTh>
@@ -57,63 +32,58 @@
             </MudTd>
         </RowTemplate>
     </MudTable>
-
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="SaveBill" Class="mt-4">
-        Save Bill
-    </MudButton>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save" OnClick="SaveBill" Class="mt-4">Save Bill</MudButton>
 </MudPaper>
 
 
-
+<MudDialog @bind-IsVisible="_visible" Class="card-show">
+    <TitleContent><h3>product list </h3></TitleContent>
+    <DialogContent>
+        <MudTable Items="filteredProducts" Hover="true" Dense=true>
+            <ToolBarContent>
+                <MudTextField T="string" Label="Search" @bind-Value="searchString" TextChanged="FilterProducts" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh>Select</MudTh>
+                <MudTh>Product Name</MudTh>
+                <MudTh>Price</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd>
+                    <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => AddToBill(context))">
+                        Add
+                    </MudButton>
+                </MudTd>
+                <MudTd>@context.Name</MudTd>
+                <MudTd>@context.Price.ToString("C")</MudTd>
+            </RowTemplate>
+        </MudTable>
+    </DialogContent>
+    <DialogActions>
+        <MudTd><MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Close" OnClick="Close" Class="mt-4">Close</MudButton></MudTd>
+    </DialogActions>
+</MudDialog>
 @code {
-    private bool _hidePosition;
-    bool _Loadding = false;
-    private bool _loading;
-    private string searchString = "";
-    private bool _readOnly = true;
-    private string BrandValue { get; set; }
-    private string CategoryValue { get; set; }
-    private string ImageValue { get; set; }
+    private string filterName;
+    private string searchString;
+    private List<BillItem> billItems = new List<BillItem>();
     public IEnumerable<Product> products = new List<Product>();
     public IEnumerable<Product> filteredProducts = new List<Product>();
-    public IEnumerable<Brand> brands = new List<Brand>();
-    public IEnumerable<Category> category = new List<Category>();
-    public IEnumerable<ImageModel> images = new List<ImageModel>();
 
-
-    Product newProduct = new Product();
-    private List<Product> productsAdd = new List<Product>();
-
+    private MudTextField<string> textField;
+    public void Close() => _visible = false;
 
     protected override async Task OnInitializedAsync()
     {
+        // Initialize the products list. In a real application, this might be loaded from a database.
+
         var request = await ProductService.GetAllAsync();
         if (request.Success) products = request.Data!;
         filteredProducts = products;
-    }
-    private void FilterProducts()
-    {
-        if (string.IsNullOrWhiteSpace(searchString))
-        {
-            filteredProducts = products;
-        }
-        else
-        {
-            filteredProducts = products.Where(p => p.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase) || p.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
 
-        }
-    }
-    private void Submit(EditContext context)
-    {
-        productsAdd.Add(newProduct);
+        await textField.FocusAsync();
 
-        // Reset the form after adding the product
-        newProduct = new Product();
-
-        // Optionally, notify the user that the product was added
-        Console.WriteLine("Product added successfully");
     }
-    private List<BillItem> billItems = new List<BillItem>();
 
     private void AddToBill(Product product)
     {
@@ -127,17 +97,68 @@
             billItems.Add(new BillItem { Product = product, Quantity = 1 });
         }
     }
+
+    private void RemoveFromBill(BillItem item)
+    {
+        billItems.Remove(item);
+    }
+
+    private void SaveBill()
+    {
+        Snackbar.Add("save done", Severity.Warning);
+    }
+
+    private void OnFilterChanged(string value)
+    {
+        filterName = value;
+        var matchedProduct = products.Where(p => p.Name.Contains(filterName, StringComparison.OrdinalIgnoreCase) || p.BarCode.ToString().Contains(filterName, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+        if (matchedProduct != null)
+        {
+            AddToBill(matchedProduct);
+            filterName = string.Empty; // Clear the filter input after adding the product to the bill
+        }
+        else if (filterName != null && matchedProduct == null) {
+            SureDialog();
+
+        }
+    }
+    private void FilterProducts()
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+        {
+            filteredProducts = products;
+        }
+        else
+        {
+            filteredProducts = products.Where(p => p.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase) || p.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+
+        }
+    }
+    string state = "Message box hasn't been opened yet";
+
+    private async void SureDialog()
+    {
+        bool? result = await DialogService.ShowMessageBox(
+            "Warning",
+            "The product wanted not exsit do you want to display all products  !",
+            yesText: "show", cancelText: "Cancel");
+
+        state = result == null ? "Canceled" : "Deleted!";
+        if (state == "Deleted!")  OpenDialog();
+        StateHasChanged();
+    }
     public class BillItem
     {
         public Product Product { get; set; }
         public int Quantity { get; set; }
     }
-    private void SaveBill()
-    {
-        Snackbar.Add("Done Save", Severity.Success);
-    }
-    private void RemoveFromBill(BillItem item)
-    {
-        billItems.Remove(item);
-    }
+
+    //dialog show
+    private bool _visible;
+    private readonly DialogOptions _dialogOptions = new() { FullWidth = true };
+
+    private void OpenDialog() => _visible = true;
+
+    private void Submit() => _visible = false;
+
 }
