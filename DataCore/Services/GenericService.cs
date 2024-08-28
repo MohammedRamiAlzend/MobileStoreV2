@@ -219,7 +219,8 @@ public class GenericService<T> : IGenericService<T> where T : class, ISoftDelete
             return new DataBaseRequest<IEnumerable<T>>
             {
                 Data = entities,
-                Message = entities.Any() ? "Filtered data retrieved successfully" : "No matching data found",
+                Message = entities.Any() ? "Filtered data retrieved successfully"
+                                         : "No matching data found",
                 Success = entities.Any()
             };
         }
@@ -233,7 +234,6 @@ public class GenericService<T> : IGenericService<T> where T : class, ISoftDelete
             };
         }
     }
-
 
     public async Task<DataBaseRequest<T>> FindSingleEntityByConditionAsync(Expression<Func<T, bool>> expression, bool ignoreSoftDelete = false, params Expression<Func<T, object>>[] includes)
     {
@@ -253,8 +253,9 @@ public class GenericService<T> : IGenericService<T> where T : class, ISoftDelete
             return new DataBaseRequest<T>
             {
                 Data = entities,
-                Message = entities != null ? "Filtered data retrieved successfully" : "No matching data found",
-                Success = entities == null
+                Message = entities != null ? "Filtered data retrieved successfully"
+                                           : "No matching data found",
+                Success = entities != null
             };
         }
         catch (Exception ex)
