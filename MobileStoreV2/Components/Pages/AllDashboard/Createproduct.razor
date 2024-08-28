@@ -6,6 +6,7 @@
 @inject ISnackbar Snackbar
 
 
+
 <style>
 
     .continer {
@@ -184,6 +185,7 @@
         if (requestImage.Success) images = requestImage.Data!;
 
 
+
     }
 
     private async Task GetImageFunc()
@@ -311,11 +313,13 @@
         if (selectedFile != null)
         {
             uploadedImageName = DateTime.Now.Microsecond.ToString() + "_" + selectedFile.Name;
-            var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+            // var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
             // var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\Resources\\Images\\", "uploads", uploadedImageName);
-            // var filePath = Path.Combine($"C:\\Users\\Dell\\Desktop\\MobileStoreV2\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
-            // var filePath = Path.Combine($"C:\\Users\\Rami\\source\\repos\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+            var filePath = Path.Combine($"C:\\Users\\Dell\\Desktop\\MobileStoreV2\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+            //  var filePath = Path.Combine("C:\\Users\\Rami\\source\\repos\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
 
+
+           
             var fileBytes = new byte[selectedFile.Size];
 
             using (var fileStream = new FileStream(filePath, FileMode.Create))
@@ -335,9 +339,7 @@
             if (request.Success)
             {
                 images.Append(image);
-
                 images = requestRefresh.Data!;
-                // Snackbar.Add(request.Message, Severity.Success);
                 CreateImage = new ImageModel();
                 ImageValue = uploadedImageName;
                 StateHasChanged();
@@ -345,6 +347,7 @@
             else Snackbar.Add(request.Message, Severity.Error);
 
         }
+
     }
 
 

@@ -14,7 +14,6 @@
 </style>
 
 <MudPaper Elevation="4" Class="pa-4">
-    <MudText Typo="Typo.h4">Buy product </MudText>
     <MudTable Items="billItems" Dense="true" Hover="true" Class="mt-4">
         <ToolBarContent >
             <MudTextField T="string" @ref="textField" HelperText="Name or Barcode" Label="Search" @bind-Value="filterName" TextChanged="OnFilterChanged" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
@@ -23,6 +22,7 @@
         <HeaderContent>
             <MudTh>Product Name</MudTh>
             <MudTh>Price</MudTh>
+            <MudTh>BarCode</MudTh>
             <MudTh>Quantity</MudTh>
             <MudTh>Total</MudTh>
             <MudTh>Remove</MudTh>
@@ -30,6 +30,7 @@
         <RowTemplate>
             <MudTd>@context.Product.Name</MudTd>
             <MudTd>@context.Product.Price.ToString("C")</MudTd>
+            <MudTd>@context.Product.BarCode</MudTd>
             <MudTd><MudNumericField @bind-Value="context.Quantity" Min="1" /></MudTd>
             <MudTd>@((context.Product.Price * context.Quantity).ToString("C"))</MudTd>
             <MudTd>
@@ -107,22 +108,20 @@
  
     private void SaveBill()
     {
-        if(billItems.Count() !=  0)
-        Snackbar.Add("save done", Severity.Success);
-        else
-        Snackbar.Add("add one product at lest", Severity.Warning);
+        if(billItems.Count() !=  0)Snackbar.Add("save done", Severity.Success);
+        else Snackbar.Add("add one product at lest", Severity.Warning);
     }
 
     private void OnFilterChanged(string value)
     {
         filterName = value;
-        var matchedProduct = products.Where(p => p.Name.Contains(filterName, StringComparison.OrdinalIgnoreCase) || p.BarCode.ToString().Contains(filterName, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+        var matchedProduct = products.Where(p => p.Name.Equals(filterName, StringComparison.OrdinalIgnoreCase) || p.BarCode.ToString().Equals(filterName, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
         if (matchedProduct != null)
         {
             AddToBill(matchedProduct);
             filterName = string.Empty; // Clear the filter input after adding the product to the bill
         }
-        else if (filterName != null && matchedProduct == null) SureDialog();
+        else if (!(string.IsNullOrEmpty(filterName)) && matchedProduct == null) SureDialog();
     }
     private void FilterProducts()
     {
@@ -153,9 +152,7 @@
     //dialog show
     private bool _visible;
     private readonly DialogOptions _dialogOptions = new() { FullWidth = true };
-
     private void OpenDialog() => _visible = true;
-
     private void Submit() => _visible = false;
 
 }

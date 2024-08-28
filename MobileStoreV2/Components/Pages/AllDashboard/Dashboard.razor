@@ -9,8 +9,6 @@
 @inject IGenericService<ImageModel> imageserivce
 @inject ISnackbar Snackbar
 @using Microsoft.EntityFrameworkCore;
-
-
 <style>
     .continer {
         width: 100%;
@@ -154,10 +152,7 @@ else
         </RowTemplate>
     </MudTable>
 
-    <div class="visme_d" data-title="Untitled Project" data-url="31nj6pg4-untitled-project" data-domain="forms" data-full-page="false" data-min-height="500px" data-form-id="90140">
-    </div>
-
-    <script src="https://static-bundles.visme.co/forms/vismeforms-embed.js"></script>
+  
 
 }
 @code {
@@ -210,8 +205,6 @@ else
         var request = await ProductService.GetAllAsync();
         if (request.Success) products = request.Data!;
         filteredProducts = products;
-
-
         var requestbrand = await brandservice.GetAllAsync();
         if (requestbrand.Success) brands = requestbrand.Data!;
 
@@ -230,16 +223,11 @@ else
         var request = await ProductService.DeleteAsync(id);
         if (request.Success)
         {
-
             StateHasChanged();
-            Snackbar.Add("Remove Done", Severity.Success);
-
+            Snackbar.Add(request.Message, Severity.Success);
         }
-        else
-        {
-            Snackbar.Add(request.Message, Severity.Error);
+        else Snackbar.Add(request.Message, Severity.Error);
 
-        }
 
         var requestRefresh = await ProductService.GetAllAsync();
         if (request.Success)
@@ -260,20 +248,13 @@ else
 
     // end code form
 
-    //Start Filtring
-    private void FilterProducts()
-    {
-        if (string.IsNullOrWhiteSpace(searchString))
-        {
-            filteredProducts = products;
-        }
-        else
-        {
-            filteredProducts = products.Where(p => p.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase) || p.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
 
-        }
+    private void FilterProducts() //Filtering Func
+    {
+        if (string.IsNullOrWhiteSpace(searchString))filteredProducts = products;
+        else filteredProducts = products.Where(p => p.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase) || p.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
     }
-    //End Filtring
+
 
     //start Edit Func
 
@@ -284,23 +265,19 @@ else
             _Loadding = true;
             var GetCategory = await categoryService.FindSingleEntityByConditionAsync(x => x.Name == CategoryValue);
             if (GetCategory.Success) product.CategoryId = GetCategory.Data!.Id;
-            else Snackbar.Add("change category", Severity.Error);
+            else Snackbar.Add(GetCategory.Message, Severity.Error);
             var GetBrand = await brandservice.FindSingleEntityByConditionAsync(x => x.Name == BrandValue);
-
-            if (GetBrand.Success)
-                product.BrandId = GetBrand.Data!.Id;
-
-            else Snackbar.Add("change brand", Severity.Error);
+            if (GetBrand.Success)product.BrandId = GetBrand.Data!.Id;
+            else Snackbar.Add(GetBrand.Message, Severity.Error);
             var GetImage = await imageserivce.FindSingleEntityByConditionAsync(x => x.ImageName == ImageValue);
             if (GetImage.Success) product.ImageId = GetImage.Data!.Id;
-            else Snackbar.Add("change image", Severity.Error);
+            else Snackbar.Add(GetImage.Message, Severity.Error);
             _readOnly = false;
             var response = await ProductService.UpdateAsync(product.Id, product);
             var requestRefresh = await ProductService.GetByIdAsync(product.Id);
 
             if (response.Success)
             {
-                // products = requestRefresh.Data!;
                 filteredProducts = products;
                 Snackbar.Add("Modify Product with Id :" + product.Id + " Done successfully ", Severity.Success);
                 _Loadding = false;
@@ -308,15 +285,13 @@ else
                 FilterProducts();
                 Close();
             }
-            else Snackbar.Add("Update  Not Done", Severity.Error);
+            else Snackbar.Add(response.Message, Severity.Error);
         }
         catch
         {
             Snackbar.Add("Fill All", Severity.Error);
         }
     }
-
-
     //End Edit Func
     //start Delete Dialog
 
@@ -334,6 +309,4 @@ else
         StateHasChanged();
     }
     //End Delete Dialog
-
-
 }

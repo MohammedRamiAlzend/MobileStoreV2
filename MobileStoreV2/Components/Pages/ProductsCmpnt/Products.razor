@@ -1,35 +1,32 @@
 ﻿@page "/ProductsList"
-@using MobileStoreV2.Components.Pages.AllDashboard
-@using MobileStoreV2.Components.Pages.ProductsCmpnt
-@using System.Net.Http.Json
-@using System.ComponentModel.DataAnnotations
+
 @inject IDialogService DialogService
 @inject IGenericService<Product> ProductService
 @inject IGenericService<Brand> brandservice
 @inject IGenericService<Category> categoryService
 @inject IGenericService<ImageModel> imageserivce
 @inject ISnackbar Snackbar
-<style>
- 
-</style>
+
 @if (_loading == null)
 {
     <h5>_Loadding...</h5>
 }
 else
 {
-    @* start card continer  *@
-    <MudGrid Spacing="@Spacing">
-            @foreach (var filter in products )
-            {
-               @* <Card ProductName="@filter.Name" ImagePath="@filter.Image?.ImagePath" Description="@filter.Description" /> *@
-            <Card1 ProductName="@filter.Name" Description="@filter.Description" Quanatity="@filter.Quantity" Brand="@filter.Brand?.Name" Category="@filter.Category?.Name"/>
-            }
-    </MudGrid>
+    <MudPaper Height="90%" Width="100%">
+        <MudContainer MaxWidth="MaxWidth.Small" Fixed="true">
+            <MudPaper Height="90%" Width="100%" Square="true">
+                <MudGrid Spacing="@Spacing">
+                    @foreach (var filter in products)
+                    {
+                        <Card ProductName="@filter.Name" Description="@filter.Description" Quanatity="@filter.Quantity" Brand="@filter.Brand?.Name" Category="@filter.Category?.Name" />
+                    }
+                </MudGrid>
+            </MudPaper>
+        </MudContainer>
+    </MudPaper>
 }
 
-
-@* end card continer  *@
 @code {
     public int Spacing { get; set; } = 8;
 

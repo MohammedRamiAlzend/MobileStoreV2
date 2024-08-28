@@ -1,10 +1,4 @@
-﻿@using MobileStoreV2.Components.Pages
-@using MobileStoreV2.Components.Pages.AllDashboard
-@using MobileStoreV2.Components.Pages.ProductsCmpnt
-
-
-
-
+﻿
 @if (_rightToLeft == false)
 {
     <MudNavMenu>
@@ -27,7 +21,6 @@ else
         <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.KeyboardOptionKey" Href="Options"><h5>إعدادات</h5></MudNavLink>
     </MudNavMenu>
 }
-
 @code {
     [Parameter]public bool _rightToLeft { get; set; }
 
