@@ -28,7 +28,7 @@
 </div>
 @* start add product form *@
 
-<MudDialog @bind-IsVisible="showInnerComponent" >
+<MudDialog @bind-IsVisible="showInnerComponent">
     <TitleContent> Add Product</TitleContent>
     <DialogContent>
         <Createproduct OnButtonClick="HandleButtonClick" refreshProduct="OnInitializedAsync" />
@@ -154,6 +154,10 @@ else
         </RowTemplate>
     </MudTable>
 
+    <div class="visme_d" data-title="Untitled Project" data-url="31nj6pg4-untitled-project" data-domain="forms" data-full-page="false" data-min-height="500px" data-form-id="90140">
+    </div>
+
+    <script src="https://static-bundles.visme.co/forms/vismeforms-embed.js"></script>
 
 }
 @code {
@@ -175,12 +179,9 @@ else
         await OnInitializedAsync();
         if (CategoryValue == null || BrandValue == null || ImageValue == null)
         {
-            var GetCategory = await categoryService.GetByIdAsync(id);
-            var getBrand = await brandservice.GetByIdAsync(id);
-            var GetImage = await imageserivce.GetByIdAsync(id);
-            CategoryValue = GetCategory.Data!.Name;
-            BrandValue = getBrand.Data!.Name;
-            ImageValue = GetImage.Data!.ImageName;
+            CategoryValue = products.Where(x => x.Id == id).Select(x => x.Category?.Name).FirstOrDefault();
+            BrandValue = products.Where(x => x.Id == id).Select(x => x.Brand?.Name).FirstOrDefault();
+            ImageValue = products.Where(x => x.Id == id).Select(x => x.Image?.ImageName).FirstOrDefault();
         }
 
         _readOnly = false;

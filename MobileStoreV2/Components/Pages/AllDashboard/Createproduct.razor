@@ -31,7 +31,6 @@
         transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
     }
 
-   
 </style>
 
 <EditForm Model="@createProduct" OnValidSubmit="OnValidSubmit">
@@ -42,17 +41,15 @@
             <MudCard>
                 <MudCardContent>
                     <MudTextField T="string" Label="Name" @bind-Value="createProduct.Name" For="@( () => createProduct.Name )" Required="true" RequiredError=" Name is required!" />
-                    @* <MudTextField Label="BarCode" Class="mt-3" @bind-Value="createProduct.BarCode" For="@(() => createProduct.BarCode)" Required="true" RequiredError=" Barcode is required!" InputType="InputType.Number" /> *@
-                    <MudTd DataLabel="BarCode" ><MudNumericField Label="Enter BarCode" @bind-Value="createProduct.BarCode" /></MudTd>
-                    @* <MudTextField Label="Discount" HelperText="Repeat the Brand" Class="mt-3" @bind-Value="createProduct.Discount" For="@(() => createProduct.Discount)" InputType="InputType.Number" /> *@
+                    
+                    <MudTd DataLabel="BarCode"><MudNumericField Label="Enter BarCode" @bind-Value="createProduct.BarCode" /></MudTd>
+                   
                     <MudTd DataLabel="Discount"><MudNumericField Label="Enter Discount" @bind-Value="createProduct.Discount" /></MudTd>
-                    <br/>
-                    @* <MudTextField T="double" Label="Price" @bind-Value="createProduct.Price" For="@( () => createProduct.Price )" Required="true" RequiredError=" Price is required!" InputType="InputType.Number" /> *@
-                    @* <MudTextField T="double" Label="Price" @bind-Value="createProduct.Price" For="@( () => createProduct.Price )" Required="true" RequiredError=" Price is required!" InputType="InputType.Number" /> *@
+                    <br />
+                   
                     <MudTd DataLabel="Price"><MudNumericField Label="Enter Price" @bind-Value="createProduct.Price" /></MudTd>
-                    @* <MudTextField T="int" Label="Quantity" @bind-Value="createProduct.Quantity" InputType="InputType.Number" /> *@
-                    @* <MudTextField T="int" Label="Quantity" @bind-Value="createProduct.Quantity" InputType="InputType.Number" /> *@
-                    <MudTd DataLabel="Quantity"><MudNumericField Label="Enter Quantity"@bind-Value="createProduct.Quantity" /></MudTd>
+                   
+                    <MudTd DataLabel="Quantity"><MudNumericField Label="Enter Quantity" @bind-Value="createProduct.Quantity" /></MudTd>
                     <MudTextField T="string" Label="Description" @bind-Value="createProduct.Description" For="@( () => createProduct.Description )" />
                     <MudSelect T="string" Label="category" @bind-Value="CategoryValue" AnchorOrigin="Origin.BottomCenter">
                         @foreach (var filter in category)
@@ -144,7 +141,6 @@
 </EditForm>
 
 
-
 @code {
     bool success;
     bool _Loadding = false;
@@ -215,39 +211,22 @@
                 if (ImageValue != null && SelectedOption == "Radio 2" || uploadedImageData != null) await SaveImage();
                 success = true;
                 _Loadding = true;
-                var GetCategory = await categoryService.GetAllAsync();
-                var GetBrand = await brandservice.GetAllAsync();
-                var GetImage = await imageserivce.GetAllAsync();
-                if (GetCategory.Success)
+                try
                 {
-                    var resultCategory = GetCategory.Data!.Where(x => x.Name == CategoryValue).FirstOrDefault();
-                    createProduct.CategoryId = resultCategory.Id;
-
-                    var resultBrand = GetBrand.Data!.Where(x => x.Name == BrandValue).FirstOrDefault();
-                    createProduct.BrandId = resultBrand.Id;
-                    var resultImage = GetImage.Data!.Where(x => x.ImageName == ImageValue).FirstOrDefault();
-                    createProduct.ImageId = resultImage.Id;
-
+                    var GetCategory = await categoryService.FindSingleEntityByConditionAsync(x => x.Name == CategoryValue);
+                    var GetBrand = await brandservice.FindSingleEntityByConditionAsync(x => x.Name == BrandValue);
+                    var GetImage = await imageserivce.FindSingleEntityByConditionAsync(x => x.ImageName == ImageValue);
+                    if (GetCategory.Success) createProduct.CategoryId = GetCategory.Data!.Id;
+                    else Snackbar.Add(GetCategory.Message, Severity.Error);
+                    if (GetBrand.Success) createProduct.BrandId = GetBrand.Data!.Id;
+                    else Snackbar.Add(GetBrand.Message, Severity.Error);
+                    if (GetImage.Success) createProduct.ImageId = GetImage.Data!.Id;
+                    else Snackbar.Add(GetBrand.Message, Severity.Error);
                 }
-                else
+                catch
                 {
-                    Snackbar.Add("change Not done", Severity.Error);
-                    _Loadding = false;
+                    Snackbar.Add("problem with getting date", Severity.Error);
                 }
-
-                // var GetCategory = await categoryService.FindSingleEntityByConditionAsync(x => x.Name == CategoryValue);
-                // if (GetCategory.Success) createProduct.CategoryId = GetCategory.Data!.Id;
-                // else Snackbar.Add(GetCategory.Message, Severity.Error);
-
-                // var GetBrand = await brandservice.FindSingleEntityByConditionAsync(x => x.Name == BrandValue);
-                // if (GetBrand.Success) createProduct.BrandId = GetBrand.Data!.Id;
-                // else Snackbar.Add(GetBrand.Message, Severity.Error);
-
-
-                // var GetImage = await imageserivce.FindSingleEntityByConditionAsync(x => x.ImageName == ImageValue);
-                // if (GetImage.Success) createProduct.ImageId = GetImage.Data!.Id;
-                // else Snackbar.Add(GetBrand.Message, Severity.Error);
-
                 createProduct.InsertDate = DateTime.Now;
                 var product = createProduct;
                 var request = await ProductService.CreateAsync(product);
@@ -333,7 +312,7 @@
         {
             uploadedImageName = DateTime.Now.Microsecond.ToString() + "_" + selectedFile.Name;
             var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
-             // var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\Resources\\Images\\", "uploads", uploadedImageName);
+            // var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\Resources\\Images\\", "uploads", uploadedImageName);
             // var filePath = Path.Combine($"C:\\Users\\Dell\\Desktop\\MobileStoreV2\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
             // var filePath = Path.Combine($"C:\\Users\\Rami\\source\\repos\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
 
@@ -356,7 +335,7 @@
             if (request.Success)
             {
                 images.Append(image);
-            
+
                 images = requestRefresh.Data!;
                 // Snackbar.Add(request.Message, Severity.Success);
                 CreateImage = new ImageModel();
@@ -364,10 +343,10 @@
                 StateHasChanged();
             }
             else Snackbar.Add(request.Message, Severity.Error);
-      
+
         }
     }
-  
+
 
 
 
