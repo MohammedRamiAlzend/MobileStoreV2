@@ -251,6 +251,8 @@ else
             var GetImage = await imageserivce.FindSingleEntityByConditionAsync(x => x.ImageName == ImageValue);
             if (GetImage.Success) product.ImageId = GetImage.Data!.Id;
             else Snackbar.Add(GetImage.Message, Severity.Error);
+            product.InsertDate = DateTime.Now;
+
             _readOnly = false;
             var response = await ProductService.UpdateAsync(product.Id, product);
             var requestRefresh = await ProductService.GetByIdAsync(product.Id);

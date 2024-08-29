@@ -22,7 +22,8 @@
 
         <HeaderContent>
             <MudTh>Product Name</MudTh>
-            <MudTh>Price</MudTh>
+            <MudTh>Buy Price</MudTh>
+            <MudTh>Sell Price</MudTh>
             <MudTh>BarCode</MudTh>
             <MudTh>Quantity Nummber</MudTh>
             <MudTh>Quantity</MudTh>
@@ -32,6 +33,7 @@
         <RowTemplate>
             <MudTd>@context.Product.Name</MudTd>
             <MudTd>@context.Product.BuyPrice.ToString("C")</MudTd>
+            <MudTd>@context.Product.SellPrice.ToString("C")</MudTd>
             <MudTd>@context.Product.BarCode</MudTd>
             <MudTd>@context.Product.Quantity</MudTd>
             <MudTd>
@@ -61,7 +63,8 @@
             <HeaderContent>
                 <MudTh>Select</MudTh>
                 <MudTh>Product Name</MudTh>
-                <MudTh>Price</MudTh>
+                <MudTh>Buy Price</MudTh>
+                <MudTh>Sell Price</MudTh>
             </HeaderContent>
             <RowTemplate>
                 <MudTd>
@@ -71,6 +74,7 @@
                 </MudTd>
                 <MudTd>@context.Name</MudTd>
                 <MudTd>@context.BuyPrice.ToString("C")</MudTd>
+                <MudTd>@context.SellPrice.ToString("C")</MudTd>
             </RowTemplate>
         </MudTable>
     </DialogContent>
