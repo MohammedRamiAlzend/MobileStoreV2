@@ -6,20 +6,6 @@
 @inject IGenericService<Category> categoryService
 @inject IGenericService<ImageModel> imageserivce
 @inject ISnackbar Snackbar
-@* Start card container *@
-<MudGrid Justify="Justify.Center" Style="margin-top: 10px;">
-    @for (int i = 1; i <= 12; i++)
-    {
-        <MudItem >
-            <Card />
-        </MudItem>
-    }
-</MudGrid>
-@* End card container *@
-
-@code {
-    public int Spacing { get; set; } = 2;
-}
 
 
 
@@ -70,4 +56,4 @@ else
 
     }
 }
- *@ 
+  
