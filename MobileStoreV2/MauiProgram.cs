@@ -17,7 +17,7 @@ namespace MobileStoreV2
                 });
 
 
-            var connectionString = $"Server={Environment.MachineName}\\{Environment.UserName};Database=MobileStore;Trusted_Connection=True;TrustServerCertificate=True;";
+            var connectionString = $"Server=DESKTOP-JSF2AL8\\MOBILESTORE;Database=MobileStore;Trusted_Connection=True;TrustServerCertificate=True;";
             // var connectionString = $"Server={Environment.MachineName};Database=MobileStore;Trusted_Connection=True;TrustServerCertificate=True;";
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>

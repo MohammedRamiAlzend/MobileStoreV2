@@ -2,16 +2,40 @@
 @using MobileStoreV2.Components.Pages.AllDashboard
 @using MobileStoreV2.Components.Pages.ProductsCmpnt
 
+@* Start card container *@
+<MudGrid Justify="Justify.Center" Style="margin-top: 10px;">
+    @for (int i = 1; i <= 12; i++)
+    {
+        <MudItem >
+            <Card />
+        </MudItem>
+    }
+</MudGrid>
+@* End card container *@
+
+@code {
+    public int Spacing { get; set; } = 2;
+}
+
+
+
+
+@* @page "/ProductsList"
+@using MobileStoreV2.Components.Pages.AllDashboard
+@using MobileStoreV2.Components.Pages.ProductsCmpnt
+
 
 
 @* start card continer  *@
-<MudGrid Spacing="@Spacing" Justify="Justify.Center">
+@* <MudGrid Spacing="@Spacing" Justify="Justify.Center" >
     @for (int i = 1;i <= 12;i++)
     {
       <Card/>
     }
-</MudGrid>
-@* end card continer  *@
-@code {
+ 
+ </mudgrid> *@
+@* end card continer *@
+@* @code {
     public int Spacing { get; set; } = 6;
 }
+ *@ 
