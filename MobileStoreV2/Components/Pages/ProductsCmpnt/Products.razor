@@ -13,18 +13,16 @@
 }
 else
 {
-    <MudPaper Height="90%" Width="100%">
-        <MudContainer MaxWidth="MaxWidth.Small" Fixed="true">
-            <MudPaper Height="90%" Width="100%" Square="true">
-                <MudGrid Spacing="@Spacing">
-                    @foreach (var filter in products)
-                    {
-                        <Card ProductName="@filter.Name" Description="@filter.Description" Quanatity="@filter.Quantity" Brand="@filter.Brand?.Name" Category="@filter.Category?.Name" />
-                    }
-                </MudGrid>
-            </MudPaper>
-        </MudContainer>
+
+    <MudPaper Height="90%" Width="100%" Square="true">
+        <MudGrid Spacing="@Spacing">
+            @foreach (var filter in products)
+            {
+                <Card ProductName="@filter.Name" Description="@filter.Description" Quanatity="@filter.Quantity" Brand="@filter.Brand?.Name" Category="@filter.Category?.Name" />
+            }
+        </MudGrid>
     </MudPaper>
+
 }
 
 @code {
