@@ -30,10 +30,10 @@
         </HeaderContent>
         <RowTemplate>
             <MudTd>@context.Product.Name</MudTd>
-            <MudTd>@context.Product.Price.ToString("C")</MudTd>
+            <MudTd>@context.Product.BuyPrice.ToString("C")</MudTd>
             <MudTd>@context.Product.BarCode</MudTd>
             <MudTd><MudNumericField @bind-Value="context.Quantity" Min="1" /></MudTd>
-            <MudTd>@((context.Product.Price * context.Quantity).ToString("C"))</MudTd>
+            <MudTd>@((context.Product.BuyPrice * context.Quantity).ToString("C"))</MudTd>
             <MudTd>
                 <MudButton Variant="Variant.Text" Color="Color.Error" OnClick="@(() => RemoveFromBill(context))">
                     Remove
@@ -66,7 +66,7 @@
                     </MudButton>
                 </MudTd>
                 <MudTd>@context.Name</MudTd>
-                <MudTd>@context.Price.ToString("C")</MudTd>
+                <MudTd>@context.BuyPrice.ToString("C")</MudTd>
             </RowTemplate>
         </MudTable>
     </DialogContent>

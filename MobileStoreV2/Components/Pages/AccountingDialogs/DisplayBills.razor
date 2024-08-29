@@ -20,14 +20,16 @@
         <MudTable Items="@products" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
             <HeaderContent>
                 <MudTh>Name</MudTh>
-                <MudTh>Price</MudTh>
+                <MudTh>Buy Price</MudTh>
+                <MudTh>Sell Price</MudTh>
                 <MudTh>Brand</MudTh>
                 <MudTh>Category</MudTh>
                 <MudTh>Description </MudTh>
             </HeaderContent>
             <RowTemplate>
                 <MudTd DataLabel="Nr">@context.Name</MudTd>
-                <MudTd DataLabel="Sign">@context.Price</MudTd>
+                <MudTd DataLabel="Sign">@context.BuyPrice</MudTd>
+                <MudTd DataLabel="Sign">@context.SellPrice</MudTd>
                 <MudTd DataLabel="Name">@context.Brand?.Name</MudTd>
                 <MudTd DataLabel="Position">@context.Category?.Name</MudTd>
                 <MudTd DataLabel="Molar mass">@context.Description</MudTd>

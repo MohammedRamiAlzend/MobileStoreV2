@@ -15,10 +15,15 @@ namespace DataCore.Models
         // Description of the product
         public string? Description { get; set; }
 
-        // Price of the product
+        // Buy of the product
 
 
-        public double Price { get; set; }
+        public double BuyPrice { get; set; }
+
+        // Sell of the product
+
+
+        public double SellPrice { get; set; }
 
         // Discount on the product
         public double Discount { get; set; }
