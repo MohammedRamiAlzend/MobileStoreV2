@@ -39,6 +39,7 @@
     <DialogContent>
         <div class="d-flex flex-column py-1">
             <EditForm Model="@createProduct" OnValidSubmit="OnValidSubmit">
+
                 <DataAnnotationsValidator />
                 <MudGrid>
                     <MudItem xs="12" sm="12">
@@ -49,13 +50,14 @@
                                 <MudTd DataLabel="BarCode"><MudNumericField Label="Enter BarCode" @bind-Value="createProduct.BarCode" /></MudTd>
 
                                 <MudTd DataLabel="Discount"><MudNumericField Label="Enter Discount" @bind-Value="createProduct.Discount" /></MudTd>
+        
                                 <br />
-
-                                <MudTd DataLabel="Price"><MudNumericField Label="Enter Price" @bind-Value="createProduct.Price" /></MudTd>
+                                <MudTd DataLabel="Buy Price"><MudNumericField Label="Enter Buy Price" @bind-Value="createProduct.BuyPrice" /></MudTd>
+                                <MudTd DataLabel="Sell Price"><MudNumericField Label="Enter Sell Price" @bind-Value="createProduct.SellPrice" /></MudTd>
 
                                 <MudTd DataLabel="Quantity"><MudNumericField Label="Enter Quantity" @bind-Value="createProduct.Quantity" /></MudTd>
                                 <MudTextField T="string" Label="Description" @bind-Value="createProduct.Description" For="@( () => createProduct.Description )" />
-                                <MudSelect T="string" Label="category"  @onclick="OnInitializedAsync"  @bind-Value="CategoryValue" AnchorOrigin="Origin.BottomCenter">
+                                <MudSelect T="string" Label="category" @onclick="OnInitializedAsync" @bind-Value="CategoryValue" AnchorOrigin="Origin.BottomCenter">
                                     @foreach (var filter in category)
                                     {
                                         <MudSelectItem Value="filter.Name" />
@@ -92,7 +94,8 @@
                                     @if (uploadedImageData != null)
                                     {
                                         <div class="continer">
-                                            <img src="@uploadedImageData" alt="Uploaded Image" class="ImageSize  @buttonCssClass" onclick="@ToggleButtonStyle" />
+                                            @* <img src="@uploadedImageData" alt="Uploaded Image" class="ImageSize  @buttonCssClass" onclick="@ToggleButtonStyle" /> *@
+                                            <img src="@uploadedImageData" alt="Uploaded Image" class="ImageSize  @buttonCssClass" />
                                         </div>
                                     }
                                 }
@@ -132,7 +135,7 @@
                                         <MudProgressCircular Color="Color.Secondary" Indeterminate="true" Size="Size.Small" />
                                     }
                                 </MudButton>
-                                <MudButton OnClick="OpenDialogCategory" Variant="Variant.Outlined"Class=" mx-4">Add category</MudButton>
+                                <MudButton OnClick="OpenDialogCategory" Variant="Variant.Outlined" Class=" mx-4">Add category</MudButton>
                                 <MudButton OnClick="OpenDialogBrand" Variant="Variant.Outlined">Add Brand</MudButton>
                             </MudCardActions>
 
@@ -164,11 +167,11 @@
     private bool showInnerComponent = false;
 
     // private Task OpenDialogBrand()
-     private  Task OpenDialogBrand()
+    private Task OpenDialogBrand()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
-         return DialogService.ShowAsync<Createbrand>("Add Brand", options);
-    }  
+        return DialogService.ShowAsync<Createbrand>("Add Brand", options);
+    }
     private Task OpenDialogCategory()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
@@ -185,9 +188,9 @@
     private bool ImageLoad = false;
     [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
     private void Cancel() => MudDialog.Cancel();
-    
 
-    
+
+
     private void ToggleButtonStyle() => isClicked = !isClicked;
     private List<ImageSource> imageSources;
 

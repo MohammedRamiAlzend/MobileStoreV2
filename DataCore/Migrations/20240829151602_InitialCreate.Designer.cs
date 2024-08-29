@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataCore.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240822103117_InitialCreate")]
+    [Migration("20240829151602_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -127,7 +127,7 @@ namespace DataCore.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("images");
+                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("DataCore.Models.Product", b =>
@@ -143,6 +143,9 @@ namespace DataCore.Migrations
 
                     b.Property<int>("BrandId")
                         .HasColumnType("int");
+
+                    b.Property<double>("BuyPrice")
+                        .HasColumnType("float");
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
@@ -169,11 +172,11 @@ namespace DataCore.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
+
+                    b.Property<double>("SellPrice")
+                        .HasColumnType("float");
 
                     b.HasKey("Id");
 
