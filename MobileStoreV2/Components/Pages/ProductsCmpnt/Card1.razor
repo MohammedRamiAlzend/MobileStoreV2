@@ -1,0 +1,30 @@
+﻿<MudCard Style="width:250px; box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); border-radius: 12px; overflow-x:hidden;">
+    <MudCardMedia Image="/mobile.jpg" Height="300" Style="border-top-left-radius: 12px; border-top-right-radius: 12px;" />
+    <MudCardContent Style="padding:6px;">
+        <MudText Typo="Typo.h6" Align="Align.Center" Color="Color.Primary" Class="mud-text-bold">Product Name</MudText>
+        <MudText Typo="Typo.body2" Align="Align.Center" Color="Color.Secondary" Class="mud-text-caption">This photo was taken in a small village in Istra Croatia.</MudText>
+    </MudCardContent>
+    <MudCardActions Style="justify-content: center; padding-bottom: 12px;">
+        <MudButton Color="Color.Info" Variant="Variant.Filled" OnClick="@ToggleSpecs" Class="mud-width-full">
+            Read More
+        </MudButton>
+    </MudCardActions>
+    <MudPopover Open="@isSpecsVisible" CloseOnOutsideClick="true" Style="padding: 8px; border-radius: 8px;">
+        <MudPaper Class="mud-elevation-8">
+            <MudList Dense>
+                <MudListItem>Brand: Brand</MudListItem>
+                <MudListItem>Type: Type</MudListItem>
+                <MudListItem>Price: $999</MudListItem>
+            </MudList>
+        </MudPaper>
+    </MudPopover>
+</MudCard>
+
+@code {
+    private bool isSpecsVisible = false;
+
+    private void ToggleSpecs()
+    {
+        isSpecsVisible = !isSpecsVisible;
+    }
+}
