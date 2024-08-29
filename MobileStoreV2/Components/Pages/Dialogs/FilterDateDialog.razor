@@ -1,0 +1,45 @@
+﻿
+<MudDialog>
+    <TitleContent>
+        Display Bill on specfic date
+    </TitleContent>
+    <DialogContent>
+        <MudCard>
+            <MudForm>
+                <MudCardContent>
+                    <MudDatePicker For="@(() => model.Date)" Label="From Date" />
+                    <MudDatePicker For="@(() => model.Date)" Label="To Date" />
+                    <MudSwitch For="@(() => model.Boolean)" />
+                    <MudSwitch For="@(() => model.Boolean)" Label="Boolean  LabelAttribute" />
+                    <MudTextField For="@(() => model.String)" />
+                    <MudTextField For="@(() => model.String)" Label="Parameter Label" />
+                    <MudSelect T="string" Label="Buy/Sell" AnchorOrigin="Origin.BottomCenter">
+                        <MudSelectItem Value="@("Buy")" />
+                        <MudSelectItem Value="@("Sell")" />
+                        <MudSelectItem Value="@("All")" />
+                    </MudSelect>
+                </MudCardContent>
+            </MudForm>
+        </MudCard>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary">Go</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+
+@code {
+    DisplayNameLabelClass model = new();
+
+    public class DisplayNameLabelClass
+    {
+        [Label("Date LabelAttribute")]
+        public DateTime? Date { get; set; }
+        [Label("Boolean LabelAttribute")]
+        public bool Boolean { get; set; }
+        [Label("String LabelAttribute")]
+        public string String { get; set; }
+    }
+  
+}

@@ -4,39 +4,68 @@
 @inject IGenericService<Brand> brandservice
 @inject ISnackbar Snackbar
 
+<MudDialog>
+    <DialogContent>
+        <div class="d-flex flex-column py-1">
+            <EditForm Model="@CreateBrand" OnValidSubmit="OnValidSubmit">
+                <DataAnnotationsValidator />
+                <MudGrid>
+                    <MudItem xs="12" sm="12">
+                        <MudCard>
+                            <MudCardContent>
+                                <MudTextField T="string" Label="Brand Name " @bind-Value="CreateBrand.Name" For="@(() => CreateBrand.Name)" Required="true" RequiredError="User name is required!" />
+                            </MudCardContent>
+                            <MudCardActions Class="d-xl-inline-flex" Style="display:flex;justify-content:end">
+                                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled"Class="mx-2" Color="Color.Primary">Add</MudButton>
+                                <MudButton OnClick="Cancel" Variant="Variant.Filled" Style="margin-right:15px">Close</MudButton>
 
-<EditForm Model="@CreateBrand" OnValidSubmit="OnValidSubmit">
-    <DataAnnotationsValidator />
-    <MudGrid>
-        <MudItem xs="12" sm="12">
-            <MudCard>
-                <MudCardContent>
-                        <MudTextField T="string" Label="Brand Name " @bind-Value="CreateBrand.Name" For="@(() => CreateBrand.Name)" Required="true" RequiredError="User name is required!" />
-                </MudCardContent> 
-                <MudCardActions Class="d-xl-inline-flex" Style="display:flex;justify-content:end">
-                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Add</MudButton>
-                </MudCardActions>
-            </MudCard>
-        </MudItem>
+                            </MudCardActions>
+                        </MudCard>
+                    </MudItem>
+                </MudGrid>
+            </EditForm>
 
-    </MudGrid>
-</EditForm>
-
-<MudTable Items="@brands" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
-    <HeaderContent>
-        <MudTh>Name</MudTh>
-        <MudTh>Delete</MudTh>
-    </HeaderContent>
-    <RowTemplate>
-        <MudTd DataLabel="Nr">@context.Name</MudTd>
-        <MudTd DataLabel="Delete"><MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(() => SureDialog(context.Id))" Variant="Variant.Filled" Color="Color.Error" Size="Size.Medium" /></MudTd>
-    </RowTemplate>
-</MudTable>
+            <MudTable Items="@brands" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
+                <HeaderContent>
+                    <MudTh>Name</MudTh>
+                    <MudTh>Delete</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Nr">@context.Name</MudTd>
+                    <MudTd DataLabel="Delete"><MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(() => SureDialog(context.Id))" Variant="Variant.Filled" Color="Color.Error" Size="Size.Medium" /></MudTd>
+                </RowTemplate>
+                <PagerContent>
+                    <MudTablePager PageSizeOptions="new int[] {5, 10, 25, 50, 100, int.MaxValue }"
+                                   RowsPerPageString="@rowsPerPageString"
+                                   InfoFormat="@infoFormat"
+                                   AllItemsText="@allItemsText"
+                                   HorizontalAlignment="@horizontalAlignment"
+                                   HideRowsPerPage="@hideRowsPerPage"
+                                   HidePageNumber="@hidePageNumber"
+                                   HidePagination="@hidePagination" />
+                </PagerContent>
+            </MudTable>
+        </div>
+    </DialogContent>
+</MudDialog>
 
 
 @code {
-    Brand CreateBrand = new Brand();
 
+    private HorizontalAlignment horizontalAlignment = HorizontalAlignment.Right;
+    private bool hidePageNumber;
+    private bool hidePagination;
+    private bool hideRowsPerPage;
+    private string rowsPerPageString = "Rows per page:";
+    private string infoFormat = "{first_item}-{last_item} of {all_items}";
+    private string allItemsText = "All";
+    [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
+
+    private void Cancel() { MudDialog.Cancel();
+  
+    }
+
+    Brand CreateBrand = new Brand();
     private bool _readOnly = true;
     public IEnumerable<Brand> brands = new List<Brand>();
     private bool _hidePosition;
@@ -46,7 +75,7 @@
     protected override async Task OnInitializedAsync()
     {
         var requestbrand = await brandservice.GetAllAsync();
-        if (requestbrand.Success)brands = requestbrand.Data!;
+        if (requestbrand.Success) brands = requestbrand.Data!;
     }
     private async void OnValidSubmit(EditContext context)
     {
@@ -80,7 +109,7 @@
     }
     private async Task deleteData(int id)
     {
-    
+
         var product = CreateBrand;
 
         var request = await brandservice.DeleteAsync(id);

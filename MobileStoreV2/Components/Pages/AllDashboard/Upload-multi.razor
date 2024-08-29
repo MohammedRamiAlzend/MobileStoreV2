@@ -2,7 +2,7 @@
 
 <h3>Multiple File Upload</h3>
 
-@* <InputFile OnChange="HandleFilesSelected" Multiple="true" />
+<InputFile OnChange="HandleFilesSelected" Multiple="true" />
 
 @if (uploadedFiles != null && uploadedFiles.Any())
 {
@@ -16,15 +16,7 @@
 
         }
     </ul>
-} *@
-
-<InputFile OnChange="HandleSelectedFile" accept="image/jpeg,image/png" />
-
-@if (uploadedImageData != null)
-{
-    <img src="@uploadedImageData" alt="Uploaded Image" style="max-width: 100%; height: auto;" />
 }
-
 
 @code {
     private List<IBrowserFile> uploadedFiles = new List<IBrowserFile>();
@@ -46,25 +38,6 @@
 
 
             // The file is now saved to the server in the "wwwroot/uploads" folder.
-        }
-    }
-    private IBrowserFile selectedFile;
-
-    private async Task HandleSelectedFile(InputFileChangeEventArgs e)
-    {
-        selectedFile = e.File;
-
-        if (selectedFile != null)
-        {
-            // Read the image as a stream
-            var buffer = new byte[selectedFile.Size];
-            using (var stream = selectedFile.OpenReadStream())
-            {
-                await stream.ReadAsync(buffer);
-            }
-
-            // Convert to base64
-            uploadedImageData = $"data:{selectedFile.ContentType};base64,{Convert.ToBase64String(buffer)}";
         }
     }
 

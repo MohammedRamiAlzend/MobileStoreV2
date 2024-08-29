@@ -6,6 +6,7 @@
 @inject ISnackbar Snackbar
 
 
+
 <style>
 
     .continer {
@@ -30,113 +31,123 @@
     .buttonCssClass {
         transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
     }
+
 </style>
 
-<EditForm Model="@createProduct" OnValidSubmit="OnValidSubmit">
-
-    <DataAnnotationsValidator />
-    <MudGrid>
-        <MudItem xs="12" sm="12">
-            <MudCard>
-                <MudCardContent>
-                    <MudTextField T="string" Label="Name" @bind-Value="createProduct.Name" For="@( () => createProduct.Name )" Required="true" RequiredError=" Name is required!" />
-                    <MudTextField Label="BarCode" Class="mt-3" @bind-Value="createProduct.BarCode" For="@(() => createProduct.BarCode)" Required="true" RequiredError=" Barcode is required!" InputType="InputType.Number" />
-                    <MudSelect T="string" Label="Brand" @bind-Value="BrandValue" Required="true" RequiredError=" Brand is required!" AnchorOrigin="Origin.BottomCenter">
-                        @foreach (var filter in brands)
-                        {
-                            <MudSelectItem Value="filter.Name" />
-                        }
-                    </MudSelect>
-
-                    <MudSelect T="string" Label="category" @bind-Value="CategoryValue" AnchorOrigin="Origin.BottomCenter">
-                        @foreach (var filter in category)
-                        {
-                            <MudSelectItem Value="filter.Name" />
-                        }
-                    </MudSelect>
-                    <MudTextField T="string" Label="Description" @bind-Value="createProduct.Description" For="@( () => createProduct.Description )" />
-
-                    <MudTextField Label="Discount" HelperText="Repeat the Brand" Class="mt-3" @bind-Value="createProduct.Discount" For="@(() => createProduct.Discount)" InputType="InputType.Number" />
-                    <MudTextField T="double" Label="Price" @bind-Value="createProduct.Price" For="@( () => createProduct.Price )" Required="true" RequiredError=" Price is required!" InputType="InputType.Number" />
-
-                    <MudTextField T="int" Label="Quantity" @bind-Value="createProduct.Quantity" InputType="InputType.Number" />
-                    <MudForm>
-
-                        <MudRadioGroup @bind-Value="SelectedOption">
-                            <MudRadio Value="@("Radio 1")" Color="Color.Primary" Dense="true">Chouse from Exsit Images</MudRadio>
-                            <MudRadio Value="@("Radio 2")" Color="Color.Dark">upload image</MudRadio>
-                        </MudRadioGroup>
-                    </MudForm>
-                    @if (SelectedOption == "Radio 1")
-                    {
-                        <MudSelect T="string" Label="images" @bind-Value="ImageValue" AnchorOrigin="Origin.BottomCenter">
-                            @foreach (var filter in images)
-                            {
-                                <MudSelectItem T="string" Value="filter.ImageName">
-                                    <MudImage Src="@filter.ImagePath" Width="32" />
-                                    @filter.ImageName
-                                </MudSelectItem>
-                            }
-                        </MudSelect>
-                    }
-                    @if (SelectedOption == "Radio 2")
-                    {
-                        <InputFile OnChange="HandleFileSelected" accept="image/jpeg,image/png" />
-                        @if (uploadedImageData != null)
-                        {
-                            <div class="continer">
-                                <img src="@uploadedImageData" alt="Uploaded Image" class="ImageSize  @buttonCssClass" onclick="@ToggleButtonStyle" />
-                            </div>
-                        }
-                    }
-                    @if (ImageValue != null && SelectedOption == "Radio 1")
-                    {
-                        GetImageFunc();
-                        @if (!ImageLoad)
-                        {
-
-                            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="200px" />
+<MudDialog>
+    <TitleContent> Add Product</TitleContent>
+    <DialogContent>
+        <div class="d-flex flex-column py-1">
+            <EditForm Model="@createProduct" OnValidSubmit="OnValidSubmit">
+                <DataAnnotationsValidator />
+                <MudGrid>
+                    <MudItem xs="12" sm="12">
+                        <MudCard>
                             <MudCardContent>
-                                <MudSkeleton Width="30%" Height="42px;" />
-                                <MudSkeleton Width="80%" />
-                                <MudSkeleton Width="100%" />
+                                <MudTextField T="string" Label="Name" @bind-Value="createProduct.Name" For="@( () => createProduct.Name )" Required="true" RequiredError=" Name is required!" />
+
+                                <MudTd DataLabel="BarCode"><MudNumericField Label="Enter BarCode" @bind-Value="createProduct.BarCode" /></MudTd>
+
+                                <MudTd DataLabel="Discount"><MudNumericField Label="Enter Discount" @bind-Value="createProduct.Discount" /></MudTd>
+                                <br />
+
+                                <MudTd DataLabel="Price"><MudNumericField Label="Enter Price" @bind-Value="createProduct.Price" /></MudTd>
+
+                                <MudTd DataLabel="Quantity"><MudNumericField Label="Enter Quantity" @bind-Value="createProduct.Quantity" /></MudTd>
+                                <MudTextField T="string" Label="Description" @bind-Value="createProduct.Description" For="@( () => createProduct.Description )" />
+                                <MudSelect T="string" Label="category"  @onclick="OnInitializedAsync"  @bind-Value="CategoryValue" AnchorOrigin="Origin.BottomCenter">
+                                    @foreach (var filter in category)
+                                    {
+                                        <MudSelectItem Value="filter.Name" />
+                                    }
+                                </MudSelect>
+                                <MudSelect T="string" Label="Brand" @onclick="OnInitializedAsync" @bind-Value="BrandValue" Required="true" RequiredError=" Brand is required!" AnchorOrigin="Origin.BottomCenter">
+                                    @foreach (var filter in brands)
+                                    {
+                                        <MudSelectItem Value="filter.Name" />
+                                    }
+                                </MudSelect>
+                                <MudForm>
+
+                                    <MudRadioGroup @bind-Value="SelectedOption">
+                                        <MudRadio Value="@("Radio 1")" Color="Color.Primary" Dense="true">Chouse from Exsit Images</MudRadio>
+                                        <MudRadio Value="@("Radio 2")" Color="Color.Dark">upload image</MudRadio>
+                                    </MudRadioGroup>
+                                </MudForm>
+                                @if (SelectedOption == "Radio 1")
+                                {
+                                    <MudSelect T="string" Label="images" @bind-Value="ImageValue" AnchorOrigin="Origin.BottomCenter">
+                                        @foreach (var filter in images)
+                                        {
+                                            <MudSelectItem T="string" Value="filter.ImageName">
+                                                <MudImage Src="@filter.ImagePath" Width="32" />
+                                                @filter.ImageName
+                                            </MudSelectItem>
+                                        }
+                                    </MudSelect>
+                                }
+                                @if (SelectedOption == "Radio 2")
+                                {
+                                    <InputFile OnChange="HandleFileSelected" accept="image/jpeg,image/png" />
+                                    @if (uploadedImageData != null)
+                                    {
+                                        <div class="continer">
+                                            <img src="@uploadedImageData" alt="Uploaded Image" class="ImageSize  @buttonCssClass" onclick="@ToggleButtonStyle" />
+                                        </div>
+                                    }
+                                }
+                                @if (ImageValue != null && SelectedOption == "Radio 1")
+                                {
+                                    GetImageFunc();
+                                    @if (!ImageLoad)
+                                    {
+
+                                        <MudSkeleton SkeletonType="SkeletonType.Rectangle" Height="200px" />
+                                        <MudCardContent>
+                                            <MudSkeleton Width="30%" Height="42px;" />
+                                            <MudSkeleton Width="80%" />
+                                            <MudSkeleton Width="100%" />
+                                        </MudCardContent>
+                                        <MudCardActions>
+                                            <MudSkeleton Width="64px" Height="40px" Class="ml-2" />
+                                            <MudSkeleton Width="105px" Height="40px" Class="ml-3" />
+                                        </MudCardActions>
+
+                                    }
+                                    else
+                                    {
+                                        <div class="continer">
+                                            <img src="@GetImage.ImagePath" class="ImageSize @buttonCssClass" alt="@GetImage.ImagePath" onclick="@ToggleButtonStyle" />
+                                        </div>
+                                    }
+                                }
+
                             </MudCardContent>
-                            <MudCardActions>
-                                <MudSkeleton Width="64px" Height="40px" Class="ml-2" />
-                                <MudSkeleton Width="105px" Height="40px" Class="ml-3" />
+                            <MudCardActions Class="d-xl-inline-flex" Style="display:flex;justify-content:end">
+                                <MudButton OnClick="Cancel" Variant="Variant.Filled" Style="margin-right:15px">Cancel</MudButton>
+                                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
+                                    Add
+                                    @if (_Loadding)
+                                    {
+                                        <MudProgressCircular Color="Color.Secondary" Indeterminate="true" Size="Size.Small" />
+                                    }
+                                </MudButton>
+                                <MudButton OnClick="OpenDialogCategory" Variant="Variant.Outlined"Class=" mx-4">Add category</MudButton>
+                                <MudButton OnClick="OpenDialogBrand" Variant="Variant.Outlined">Add Brand</MudButton>
                             </MudCardActions>
 
-                        }
-                        else
-                        {
-                            <div class="continer">
-                                <img src="@GetImage.ImagePath" class="ImageSize @buttonCssClass" alt="@GetImage.ImagePath" onclick="@ToggleButtonStyle" />
-                            </div>
-                        }
-                    }
-
-                </MudCardContent>
-                <MudCardActions Class="d-xl-inline-flex" Style="display:flex;justify-content:end">
-                    <MudButton OnClick="Cancel" Variant="Variant.Filled" Style="margin-right:15px">Cancel</MudButton>
-                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
-                        Add
-                        @if (_Loadding)
-                        {
-                            <MudProgressCircular Color="Color.Secondary" Indeterminate="true" Size="Size.Small" />
-                        }
-                    </MudButton>
-                </MudCardActions>
-
-            </MudCard>
-        </MudItem>
-        <MudItem xs="12">
-            <MudText Typo="Typo.body2" Align="Align.Center">
-                add product for your collcation
-            </MudText>
-        </MudItem>
-    </MudGrid>
-</EditForm>
-
+                        </MudCard>
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudText Typo="Typo.body2" Align="Align.Center">
+                            add product for your collcation
+                        </MudText>
+                    </MudItem>
+                </MudGrid>
+            </EditForm>
+        </div>
+    </DialogContent>
+</MudDialog>
 
 @code {
     bool success;
@@ -152,6 +163,18 @@
     [Parameter] public EventCallback<bool> refreshProduct { get; set; }
     private bool showInnerComponent = false;
 
+    // private Task OpenDialogBrand()
+     private  Task OpenDialogBrand()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+         return DialogService.ShowAsync<Createbrand>("Add Brand", options);
+    }  
+    private Task OpenDialogCategory()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        return DialogService.ShowAsync<Cateorey>("Add Cateorey", options);
+    }
+
     // private void Cancel() => showInnerComponent = false;
     private string BrandValue { get; set; }
     private string CategoryValue { get; set; }
@@ -161,8 +184,12 @@
     public string SelectedOption { get; set; } = "Radio 1";
     private bool ImageLoad = false;
     [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
-    private async Task Cancel() => await OnButtonClick.InvokeAsync();
+    private void Cancel() => MudDialog.Cancel();
+    
+
+    
     private void ToggleButtonStyle() => isClicked = !isClicked;
+    private List<ImageSource> imageSources;
 
     protected override async Task OnInitializedAsync()
     {
@@ -177,6 +204,9 @@
 
         var requestImage = await imageserivce.GetAllAsync();
         if (requestImage.Success) images = requestImage.Data!;
+
+
+
     }
 
     private async Task GetImageFunc()
@@ -204,39 +234,22 @@
                 if (ImageValue != null && SelectedOption == "Radio 2" || uploadedImageData != null) await SaveImage();
                 success = true;
                 _Loadding = true;
-                var GetCategory = await categoryService.GetAllAsync();
-                var GetBrand = await brandservice.GetAllAsync();
-                var GetImage = await imageserivce.GetAllAsync();
-                if (GetCategory.Success)
+                try
                 {
-                    var resultCategory = GetCategory.Data!.Where(x => x.Name == CategoryValue).FirstOrDefault();
-                    createProduct.CategoryId = resultCategory.Id;
-
-                    var resultBrand = GetBrand.Data!.Where(x => x.Name == BrandValue).FirstOrDefault();
-                    createProduct.BrandId = resultBrand.Id;
-                    var resultImage = GetImage.Data!.Where(x => x.ImageName == ImageValue).FirstOrDefault();
-                    createProduct.ImageId = resultImage.Id;
-
+                    var GetCategory = await categoryService.FindSingleEntityByConditionAsync(x => x.Name == CategoryValue);
+                    var GetBrand = await brandservice.FindSingleEntityByConditionAsync(x => x.Name == BrandValue);
+                    var GetImage = await imageserivce.FindSingleEntityByConditionAsync(x => x.ImageName == ImageValue);
+                    if (GetCategory.Success) createProduct.CategoryId = GetCategory.Data!.Id;
+                    else Snackbar.Add(GetCategory.Message, Severity.Error);
+                    if (GetBrand.Success) createProduct.BrandId = GetBrand.Data!.Id;
+                    else Snackbar.Add(GetBrand.Message, Severity.Error);
+                    if (GetImage.Success) createProduct.ImageId = GetImage.Data!.Id;
+                    else Snackbar.Add(GetBrand.Message, Severity.Error);
                 }
-                else
+                catch
                 {
-                    Snackbar.Add("change Not done", Severity.Error);
-                    _Loadding = false;
+                    Snackbar.Add("problem with getting date", Severity.Error);
                 }
-
-                // var GetCategory = await categoryService.FindSingleEntityByConditionAsync(x => x.Name == CategoryValue);
-                // if (GetCategory.Success) createProduct.CategoryId = GetCategory.Data!.Id;
-                // else Snackbar.Add(GetCategory.Message, Severity.Error);
-
-                // var GetBrand = await brandservice.FindSingleEntityByConditionAsync(x => x.Name == BrandValue);
-                // if (GetBrand.Success) createProduct.BrandId = GetBrand.Data!.Id;
-                // else Snackbar.Add(GetBrand.Message, Severity.Error);
-
-
-                // var GetImage = await imageserivce.FindSingleEntityByConditionAsync(x => x.ImageName == ImageValue);
-                // if (GetImage.Success) createProduct.ImageId = GetImage.Data!.Id;
-                // else Snackbar.Add(GetBrand.Message, Severity.Error);
-
                 createProduct.InsertDate = DateTime.Now;
                 var product = createProduct;
                 var request = await ProductService.CreateAsync(product);
@@ -282,7 +295,6 @@
 
     private async Task HandleFileSelected(InputFileChangeEventArgs e)
     {
-
         selectedFile = e.File;
         var GetiamgeName = images.Where(x => x.ImageName == selectedFile.Name).FirstOrDefault();
         if (GetiamgeName != null)
@@ -313,6 +325,7 @@
         }
     }
 
+
     private List<IBrowserFile> uploadedFiles = new List<IBrowserFile>();
     private string uploadedImageData;
 
@@ -321,10 +334,12 @@
         if (selectedFile != null)
         {
             uploadedImageName = DateTime.Now.Microsecond.ToString() + "_" + selectedFile.Name;
+            // var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+            // var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\Resources\\Images\\", "uploads", uploadedImageName);
+            var filePath = Path.Combine($"C:\\Users\\Dell\\Desktop\\MobileStoreV2\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+            //  var filePath = Path.Combine("C:\\Users\\Rami\\source\\repos\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
 
-            //  var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
-            var filePath = Path.Combine($"C:\\Users\\Dell\\Desktop\\MobileStore\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
-            // var filePath = Path.Combine($"C:\\Users\\Rami\\source\\repos\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+
 
             var fileBytes = new byte[selectedFile.Size];
 
@@ -346,13 +361,17 @@
             {
                 images.Append(image);
                 images = requestRefresh.Data!;
-                // Snackbar.Add(request.Message, Severity.Success);
                 CreateImage = new ImageModel();
                 ImageValue = uploadedImageName;
                 StateHasChanged();
             }
             else Snackbar.Add(request.Message, Severity.Error);
+
         }
+
     }
+
+
+
 
 }

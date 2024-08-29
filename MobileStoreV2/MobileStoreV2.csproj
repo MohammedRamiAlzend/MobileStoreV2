@@ -61,8 +61,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Content Remove="Components\Pages\AllDashboard\Card1.razor" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.303.18" />
 		<PackageReference Include="Bogus" Version="35.6.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
+		<PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
 		<PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.2.7" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.7" />
@@ -84,6 +90,14 @@
 	  <Folder Include="Resources\Images\uploads\" />
 	  <Folder Include="wwwroot\upload-multi\" />
 	  <Folder Include="wwwroot\uploads\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="Components\Pages\AllDashboard\Card1.razor" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <_ContentIncludedByDefault Remove="Components\Pages\AllDashboard\Card1.razor" />
 	</ItemGroup>
 
 </Project>

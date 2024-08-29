@@ -1,12 +1,8 @@
 ﻿@page "/Sellproduct"
 
-
-@inherits LayoutComponentBase
 @inject IGenericService<Product> ProductService
+@inject ISnackbar Snackbar
 @inject IDialogService DialogService
-
-
-
 
 <style>
     .continer {
@@ -18,198 +14,155 @@
     }
 </style>
 
-<MudContainer Class="my-4 continer">
-    <MudButton Variant="Variant.Filled" @onclick="OpenDialogAsync" Color="Color.Info" StartIcon="@Icons.Material.Filled.Add">إضافة منتج للبيع</MudButton>
-</MudContainer>
-
-<MudContainer>
-    <MudTable Items="products" Striped="true" Hover="true">
+<MudPaper Elevation="4" Class="pa-4">
+    <MudTable Items="billItems" Dense="true" Hover="true" Class="mt-4">
         <ToolBarContent>
-            <MudTextField T="string" Label="Search" @bind-Value="searchString" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            <MudTextField T="string" @ref="textField" HelperText="Name or Barcode" Label="Search" @bind-Value="filterName" TextChanged="OnFilterChanged" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
         </ToolBarContent>
+
         <HeaderContent>
             <MudTh>Product Name</MudTh>
             <MudTh>Price</MudTh>
-            <MudTh>Category</MudTh>
-            <MudTh>Actions</MudTh>
+            <MudTh>BarCode</MudTh>
+            <MudTh>Quantity Nummber</MudTh>
+            <MudTh>Quantity</MudTh>
+            <MudTh>Total</MudTh>
+            <MudTh>Remove</MudTh>
         </HeaderContent>
         <RowTemplate>
-            <MudTd DataLabel="Product Name">context.Name</MudTd>
-            <MudTd DataLabel="Price">context.Price</MudTd>
-            <MudTd DataLabel="Category">context.Category</MudTd>
-            <MudTd DataLabel="Actions">
-                @* <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => EditProduct(context.Id))">Edit</MudButton> *@
-                <MudButton Variant="Variant.Filled" Color="Color.Primary">Edit</MudButton>
-                <MudButton Variant="Variant.Outlined" OnClick="Delete" Color="Color.Error">Delete</MudButton>
+            <MudTd>@context.Product.Name</MudTd>
+            <MudTd>@context.Product.Price.ToString("C")</MudTd>
+            <MudTd>@context.Product.BarCode</MudTd>
+            <MudTd>@context.Product.Quantity</MudTd>
+            <MudTd>
+                <MudNumericField @bind-Value="context.Quantity" Min="1" />
+            </MudTd>
+            <MudTd>@((context.Product.Price * context.Quantity).ToString("C"))</MudTd>
+            <MudTd>
+                <MudButton Variant="Variant.Text" Color="Color.Error" OnClick="@(() => RemoveFromBill(context))">
+                    Remove
+                </MudButton>
             </MudTd>
         </RowTemplate>
     </MudTable>
     <MudContainer Class="my-4 continer">
-        <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Save" Color="Color.Primary" Size="Size.Small">حفظ الفاتورة</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save" OnClick="SaveBill" Class="mt-4">Save Bill</MudButton>
     </MudContainer>
-</MudContainer>
-
-@* start show dialog  *@
+</MudPaper>
 
 
-<MudDialog Class="p-5" @bind-IsVisible="showInnerComponent">
-    <TitleContent>
-        <h1>شراء منتج</h1>
-    </TitleContent>
+<MudDialog @bind-IsVisible="_visible" Class="card-show">
+    <TitleContent><h3>product list </h3></TitleContent>
     <DialogContent>
-        <MudStack Row>
-            <MudCard>
-                <MudCardContent>
-
-                    <MudForm>
-                        <MudGrid>
-                            <MudItem xs="12" sm="21" md="12">
-                                <MudAutocomplete T="string" Label="US States" @bind-Value="value1" SearchFunc="@Search1"
-                                                 ResetValueOnEmptyText="@resetValueOnEmptyText"
-                                                 CoerceText="@coerceText" CoerceValue="@coerceValue" />
-                            </MudItem>
-                            <MudItem xs="12" md="12">
-                                <MudText Class="mb-n3" Typo="Typo.body2">
-                                    <MudChip T="string">@(value1 ?? "Not selected")</MudChip>
-                                </MudText>
-                            </MudItem>
-                        </MudGrid>
-                        <MudTextField T="string" Label="نوع المنتج" />
-                        <MudNumericField T="int" Label="عدد المنتجات" />
-
-                        <MudNumericField T="int" Label="الباركود " />
-                        <MudDatePicker Label="Editable with Placeholder" Editable="true" @bind-Date="_date" Placeholder="Select Date" />
-                        <MudSwitch T="bool" Label="Switch" />
-                        <MudCheckBox T="bool" Label="CheckBox" UnCheckedColor="Color.Primary" />
-                        <MudRadioGroup T="string">
-                            <MudRadio Value="@("1")">مستعمل</MudRadio>
-                            <MudRadio Value="@("2")">جديد</MudRadio>
-                        </MudRadioGroup>
-                        <MudForm ReadOnly="NestedReadOnly">
-                            <MudText Align="Align.Center" Class="mb-n4 mt-2">Nested Form</MudText>
-                            <MudTextField T="string" Label="Nested Text" />
-                            <MudNumericField T="int" Label="Nested Number" />
-                        </MudForm>
-                    </MudForm>
-                </MudCardContent>
-
-            </MudCard>
-        </MudStack>
+        <MudTable Items="filteredProducts" Hover="true" Dense=true>
+            <ToolBarContent>
+                <MudTextField T="string" Label="Search" @bind-Value="searchString" TextChanged="FilterProducts" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh>Select</MudTh>
+                <MudTh>Product Name</MudTh>
+                <MudTh>Price</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd>
+                    <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => AddToBill(context))">
+                        Add
+                    </MudButton>
+                </MudTd>
+                <MudTd>@context.Name</MudTd>
+                <MudTd>@context.Price.ToString("C")</MudTd>
+            </RowTemplate>
+        </MudTable>
     </DialogContent>
-
-
-
     <DialogActions>
-        <MudButton OnClick="Cancel">إغلاق</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Submit" StartIcon="@Icons.Material.Filled.Add">إضافة</MudButton>
-
-
-
+        <MudTd><MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Close" OnClick="Close" Class="mt-4">Close</MudButton></MudTd>
     </DialogActions>
 </MudDialog>
-@* End show dialog  *@
 @code {
+    private string filterName;
+    private string searchString;
+    private List<BillItem> billItems = new List<BillItem>();
+    public IEnumerable<Product> products = new List<Product>();
+    public IEnumerable<Product> filteredProducts = new List<Product>();
 
-    //start product list
-    public IEnumerable<Product> ProductsList = new List<Product>();
-
-    //End product list
-    // private List  products;
-    private List<string> products;
-
-    protected override void OnInitialized() => products = new List<string> { };
-
-
-    private string searchString = "";
-
+    private MudTextField<string> textField;
+    public void Close() => _visible = false;
 
     protected override async Task OnInitializedAsync()
     {
+        // Initialize the products list. In a real application, this might be loaded from a database.
 
-    }
-    private void EditProduct(int id)
-    {
-        // Navigate to edit product page
-        // NavigationManager.NavigateTo($"/Component1/edit/{id}");
-    }
+        var request = await ProductService.GetAllAsync();
+        if (request.Success) products = request.Data!;
+        filteredProducts = products;
 
-    private async Task DeleteProduct(int id)
-    {
-        // var response = await Http.DeleteAsync($"api/Component1/{id}");
-        // if (response.IsSuccessStatusCode)
-        // {
-        //     products = await Http.GetFromJsonAsync<List<Product>>("api/Component1");
-        // }
-        // else
-        // {
-        //     // Handle error
-        // }
-    }
-
-
-    private bool showInnerComponent = false;
-
-    private void OpenDialogAsync() => showInnerComponent = true;
-    private void Cancel() => showInnerComponent = false;
-
-
-    //start Dialog Show
-    [CascadingParameter]
-    private MudDialogInstance MudDialog { get; set; }
-    private DateTime? _date = DateTime.Today;
-    private void Submit() => products.Add("product 1");
-    private void Delete() => products.Remove("product 1");
-    // private void Cancel() => MudDialog.Cancel();
-    //End Dialog Show
-
-    //Start Add Buy Form
-    bool ReadOnly = true;
-    bool NestedReadOnly;
-    bool Disabled = true;
-    bool NestedDisabled;
-
-    //End Add Buy Form
-    //start select list
-    private bool resetValueOnEmptyText;
-    private bool coerceText;
-    private bool coerceValue;
-    private string value1, value2;
-    public IEnumerable<Product> ProductsList2;
-
-    private string[] states =
-    {
-        "Alabama", "Alaska", "American Samoa", "Arizona",
-        "Arkansas", "California", "Colorado", "Connecticut",
-        "Delaware", "District of Columbia", "Federated States of Micronesia",
-        "Florida", "Georgia", "Guam", "Hawaii", "Idaho",
-        "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky",
-        "Louisiana", "Maine", "Marshall Islands", "Maryland",
-        "Massachusetts", "Michigan", "Minnesota", "Mississippi",
-        "Missouri", "Montana", "Nebraska", "Nevada",
-        "New Hampshire", "New Jersey", "New Mexico", "New York",
-        "North Carolina", "North Dakota", "Northern Mariana Islands", "Ohio",
-        "Oklahoma", "Oregon", "Palau", "Pennsylvania", "Puerto Rico",
-        "Rhode Island", "South Carolina", "South Dakota", "Tennessee",
-        "Texas", "Utah", "Vermont", "Virgin Island", "Virginia",
-        "Washington", "West Virginia", "Wisconsin", "Wyoming",
-    };
-
-
-
-    private async Task<IEnumerable<string>> Search1(string value)
-    {
-        // In real life use an asynchronous function for fetching data from an api.
-        await Task.Delay(5);
-
-        // if text is null or empty, show complete list
-        if (string.IsNullOrEmpty(value))
-            return states;
-        return states.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+        await textField.FocusAsync();
 
     }
 
+    private void AddToBill(Product product)
+    {
+        var existingItem = billItems.FirstOrDefault(item => item.Product.Name == product.Name);
+        if (existingItem != null) existingItem.Quantity++;
+        else billItems.Add(new BillItem { Product = product, Quantity = 1 });
 
-    //End select list
+    }
 
+    private void RemoveFromBill(BillItem item) => billItems.Remove(item);
+
+
+    private void SaveBill()
+    {
+        if (billItems.Count() != 0)
+            Snackbar.Add("save done", Severity.Success);
+        else
+            Snackbar.Add("add one product at lest", Severity.Warning);
+    }
+
+    private void OnFilterChanged(string value)
+    {
+        filterName = value;
+        var matchedProduct = products.Where(p => p.Name.Equals(filterName, StringComparison.OrdinalIgnoreCase) || p.BarCode.ToString().Equals(filterName, StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+        if (matchedProduct != null)
+        {
+            AddToBill(matchedProduct);
+            filterName = string.Empty; // Clear the filter input after adding the product to the bill
+        }
+        // else if (filterName != null && matchedProduct == null && filterName != "") SureDialog();
+        else if (!(string.IsNullOrEmpty(filterName)) && matchedProduct == null ) SureDialog();
+    }
+    private void FilterProducts()
+    {
+        if (string.IsNullOrWhiteSpace(searchString)) filteredProducts = products;
+        else
+            filteredProducts = products.Where(p => p.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase) || p.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+
+    }
+    string state = "Message box hasn't been opened yet";
+
+    private async void SureDialog()
+    {
+        bool? result = await DialogService.ShowMessageBox(
+            "info",
+            "product Name or Barcode not exist , display products ?",
+            yesText: "show", cancelText: "Cancel");
+
+        state = result == null ? "Canceled" : "Deleted!";
+        if (state == "Deleted!") OpenDialog();
+        StateHasChanged();
+    }
+    public class BillItem
+    {
+        public Product Product { get; set; }
+        public int Quantity { get; set; }
+    }
+
+    //dialog show
+    private bool _visible;
+    private readonly DialogOptions _dialogOptions = new() { FullWidth = true };
+
+    private void OpenDialog() => _visible = true;
+
+    private void Submit() => _visible = false;
 
 }
