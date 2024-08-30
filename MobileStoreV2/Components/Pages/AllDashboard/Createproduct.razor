@@ -71,6 +71,7 @@
                                     <MudRadioGroup @bind-Value="SelectedOption">
                                         <MudRadio Value="@("Radio 1")" Color="Color.Primary" Dense="true">Chouse from Exsit Images</MudRadio>
                                         <MudRadio Value="@("Radio 2")" Color="Color.Dark">upload image</MudRadio>
+                                        <MudRadio Value="@("Radio 3")" Color="Color.Dark">None image</MudRadio>
                                     </MudRadioGroup>
                                 </MudForm>
                                 @if (SelectedOption == "Radio 1")
@@ -88,8 +89,8 @@
                                             }
                                         }
                                     </MudSelect>
-                                }
-                                @if (SelectedOption == "Radio 2")
+                                }else
+                                if (SelectedOption == "Radio 2")
                                 {
                                     <InputFile OnChange="HandleFileSelected" accept="image/jpeg,image/png" />
                                     @if (uploadedImageData != null)
@@ -99,6 +100,7 @@
                                         </div>
                                     }
                                 }
+                             
                                 @if (ImageValue != null && SelectedOption == "Radio 1" && !string.IsNullOrEmpty(GetImage.ImagePath))
                                 {
 
@@ -125,7 +127,7 @@
                                             </div>
                                     }
                                 }
-
+                              
                             </MudCardContent>
                             <MudCardActions Class="d-xl-inline-flex" Style="display:flex;justify-content:end">
                                 <MudButton OnClick="Cancel" Variant="Variant.Filled" Style="margin-right:15px">Cancel</MudButton>
@@ -233,7 +235,8 @@
 
             if (context.Validate())
             {
-                if (string.IsNullOrEmpty(ImageValue))ImageValue = "0.jpg";
+ 
+                if (string.IsNullOrEmpty(ImageValue) || SelectedOption=="Radio 3")ImageValue = "0.jpg";
                 if (ImageValue != null && SelectedOption == "Radio 2" || uploadedImageData != null) await SaveImage();
                 success = true;
                 _Loadding = true;

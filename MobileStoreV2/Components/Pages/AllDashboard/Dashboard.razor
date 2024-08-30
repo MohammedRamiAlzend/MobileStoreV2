@@ -64,7 +64,6 @@ else
             <MudTh>Sell Price </MudTh>
             <MudTh>BarCode</MudTh>
             <MudTh>ImageName</MudTh>
-            <MudTh>InsertDate</MudTh>
             <MudTh>Edit</MudTh>
             <MudTh>Delete</MudTh>
         </HeaderContent>
@@ -83,7 +82,6 @@ else
                 <MudTd DataLabel="Sell Price">@context.SellPrice</MudTd>
                 <MudTd DataLabel="BarCode">@context.BarCode</MudTd>
                 <MudTd DataLabel="BarCode">@context.Image?.ImageName</MudTd>
-                <MudTd DataLabel="InsertDate">@context.InsertDate</MudTd>
                 <MudTd DataLabel="Edit"><MudIconButton Icon="@Icons.Material.Filled.Edit" Class="mx-2" OnClick="@(() => show(context.Id))" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" /></MudTd>
                 <MudTd DataLabel="Delete"><MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(() => SureDialog(context.Id))" Variant="Variant.Filled" Color="Color.Error" Size="Size.Medium" /></MudTd>
             }
@@ -108,7 +106,7 @@ else
                 </MudTd>
                 <MudTd><MudTextField T="string" Label="Name" @bind-Value="context.Name" Required="true" RequiredError="Name is required!" /></MudTd>
                 <MudTd><MudTextField T="double" Label="Discount" @bind-Value="context.Discount" Required="true" RequiredError="Discount is required!" /></MudTd>
-                <MudTd><MudTextField T="string" Label="Description" @bind-Value="context.Description" Required="true" RequiredError="Description is required!" /></MudTd>
+                <MudTd><MudTextField T="string" Label="Description" @bind-Value="context.Description" /></MudTd>
                 <MudTd><MudTextField T="int" Label="Quantity" @bind-Value="context.Quantity" Required="true" RequiredError="Quantity is required!" /></MudTd>
                 <MudTd><MudTextField T="double" Label="Buy Price" @bind-Value="context.BuyPrice" Required="true" RequiredError="Buy Price is required!" /></MudTd>
                 <MudTd><MudTextField T="double" Label="Sell Price" @bind-Value="context.SellPrice" Required="true" RequiredError="Sell Price is required!" /></MudTd>
@@ -117,11 +115,14 @@ else
                     <MudSelect T="string" Label="ImageValue" @bind-Value="@ImageValue" AnchorOrigin="Origin.BottomCenter">
                         @foreach (var filter in images)
                         {
-                            <MudSelectItem Value="filter.ImageName" />
+                            @if (filter.ImageName != "0.jpg")
+                            {
+                                <MudSelectItem Value="filter.ImageName" />
+                            }
                         }
+
                     </MudSelect>
                 </MudTd>
-                <MudTd DataLabel="Id">@context.InsertDate</MudTd>
                 <MudTd>
                     <MudIconButton Icon="@Icons.Material.Filled.Save" OnClick="@(() => EditProduct(context))" Class="mx-2" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" />
                     @if (_Loadding)
