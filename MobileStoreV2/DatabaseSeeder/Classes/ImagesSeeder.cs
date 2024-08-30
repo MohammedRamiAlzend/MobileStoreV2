@@ -11,7 +11,6 @@ public class ImagesSeeder : BaseSeeder<ImageModel>
         return new List<ImageModel>
         {
             new ImageModel { ImageName = "0.jpg" , ImagePath= "uploads/0.jpg" , UploadDate = DateTime.Now   },
-
         };
     }
     public override void Seed(ApplicationDbContext dbContext)
