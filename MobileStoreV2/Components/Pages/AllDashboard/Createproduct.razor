@@ -231,7 +231,6 @@
         try
         {
 
-
             if (context.Validate())
             {
                 if (string.IsNullOrEmpty(ImageValue))ImageValue = "0.jpg";
@@ -244,8 +243,8 @@
                     var GetBrand = await brandservice.FindSingleEntityByConditionAsync(x => x.Name == BrandValue);
                     var GetImage = await imageserivce.FindSingleEntityByConditionAsync(x => x.ImageName == ImageValue);
                     if (GetCategory.Success) createProduct.CategoryId = GetCategory.Data!.Id;
-                    // else Snackbar.Add(GetCategory.Message, Severity.Error);
-                    else createProduct.CategoryId = 0;
+                     else Snackbar.Add(GetCategory.Message, Severity.Error);
+
                     if (GetBrand.Success) createProduct.BrandId = GetBrand.Data!.Id;
                     else Snackbar.Add(GetBrand.Message, Severity.Error);
                     if (GetImage.Success) createProduct.ImageId = GetImage.Data!.Id;
