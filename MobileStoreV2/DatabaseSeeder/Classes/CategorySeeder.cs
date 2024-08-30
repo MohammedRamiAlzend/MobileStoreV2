@@ -8,8 +8,8 @@ public class CategorySeeder : BaseSeeder<Category>
     {
         return new List<Category>
         {
-            new Category { Name = "Category 1" },
-            new Category { Name = "Category 2" }
+            //new Category { Name = "Category 1" },
+            //new Category { Name = "Category 2" }
         };
     }
     public override void Seed(ApplicationDbContext dbContext)

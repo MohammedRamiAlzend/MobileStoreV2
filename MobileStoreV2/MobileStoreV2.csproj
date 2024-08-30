@@ -89,7 +89,6 @@
 	<ItemGroup>
 	  <Folder Include="Resources\Images\uploads\" />
 	  <Folder Include="wwwroot\upload-multi\" />
-	  <Folder Include="wwwroot\uploads\" />
 	</ItemGroup>
 
 	<ItemGroup>

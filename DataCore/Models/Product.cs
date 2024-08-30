@@ -10,18 +10,21 @@ namespace DataCore.Models
 
         // Name of the product
         [Required]
+        [StringLength(30, ErrorMessage = "Name Failed Is Required.", MinimumLength = 3)]
         public string? Name { get; set; }
 
         // Description of the product
+        
         public string? Description { get; set; }
 
         // Buy of the product
-
-
+        [Required]
+        [Range(1, 10000000000000000000,  ErrorMessage = "must be greater than 0.")]
         public double BuyPrice { get; set; }
 
         // Sell of the product
-
+        [Required]
+        [Range(1, 10000000000000000000, ErrorMessage = "must be greater than 0.")]
 
         public double SellPrice { get; set; }
 
@@ -39,12 +42,13 @@ namespace DataCore.Models
         public ImageModel? Image { get; set; }
         // Quantity of the product in stock
 
-
+        [Required]
+        [Range(1, 10000000000000000000, ErrorMessage = "must be greater than 0.")]
         public int Quantity { get; set; }
 
         // Bar code of the product
-
-
+        [Required]
+        [Range(1, 100000000000000, ErrorMessage = "must be greater than 0.")]
         public int BarCode { get; set; }
 
         // Date when the product was inserted

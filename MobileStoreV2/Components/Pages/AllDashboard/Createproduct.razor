@@ -5,10 +5,7 @@
 @inject IGenericService<ImageModel> imageserivce
 @inject ISnackbar Snackbar
 
-
-
 <style>
-
     .continer {
         position: relative;
         width: 100%;
@@ -45,17 +42,17 @@
                     <MudItem xs="12" sm="12">
                         <MudCard>
                             <MudCardContent>
-                                <MudTextField T="string" Label="Name" @bind-Value="createProduct.Name" For="@( () => createProduct.Name )" Required="true" RequiredError=" Name is required!" />
+                                <MudTextField T="string" Label="Name" @bind-Value="createProduct.Name" For="@( () => createProduct.Name )" />
 
-                                <MudTd DataLabel="BarCode"><MudNumericField Label="Enter BarCode" @bind-Value="createProduct.BarCode" /></MudTd>
+                                <MudTd DataLabel="BarCode"><MudNumericField Label="Enter BarCode" @bind-Value="createProduct.BarCode" For="@( () => createProduct.BarCode )" /></MudTd>
 
                                 <MudTd DataLabel="Discount"><MudNumericField Label="Enter Discount" @bind-Value="createProduct.Discount" /></MudTd>
-        
-                                <br />
-                                <MudTd DataLabel="Buy Price"><MudNumericField Label="Enter Buy Price" @bind-Value="createProduct.BuyPrice" /></MudTd>
-                                <MudTd DataLabel="Sell Price"><MudNumericField Label="Enter Sell Price" @bind-Value="createProduct.SellPrice" /></MudTd>
 
-                                <MudTd DataLabel="Quantity"><MudNumericField Label="Enter Quantity" @bind-Value="createProduct.Quantity" /></MudTd>
+                                <br />
+                                <MudTd DataLabel="Buy Price"><MudNumericField Label="Enter Buy Price" @bind-Value="createProduct.BuyPrice" For="@( () => createProduct.BuyPrice )" /></MudTd>
+                                <MudTd DataLabel="Sell Price"><MudNumericField Label="Enter Sell Price" @bind-Value="createProduct.SellPrice" For="@( () => createProduct.SellPrice )" /></MudTd>
+
+                                <MudTd DataLabel="Quantity"><MudNumericField Label="Enter Quantity" @bind-Value="createProduct.Quantity" For="@( () => createProduct.Quantity )" /></MudTd>
                                 <MudTextField T="string" Label="Description" @bind-Value="createProduct.Description" For="@( () => createProduct.Description )" />
                                 <MudSelect T="string" Label="category" @onclick="OnInitializedAsync" @bind-Value="CategoryValue" AnchorOrigin="Origin.BottomCenter">
                                     @foreach (var filter in category)
@@ -63,7 +60,7 @@
                                         <MudSelectItem Value="filter.Name" />
                                     }
                                 </MudSelect>
-                                <MudSelect T="string" Label="Brand" @onclick="OnInitializedAsync" @bind-Value="BrandValue" Required="true" RequiredError=" Brand is required!" AnchorOrigin="Origin.BottomCenter">
+                                <MudSelect T="string" Label="Brand" @onclick="OnInitializedAsync" @bind-Value="BrandValue" AnchorOrigin="Origin.BottomCenter">
                                     @foreach (var filter in brands)
                                     {
                                         <MudSelectItem Value="filter.Name" />
@@ -81,10 +78,14 @@
                                     <MudSelect T="string" Label="images" @bind-Value="ImageValue" AnchorOrigin="Origin.BottomCenter">
                                         @foreach (var filter in images)
                                         {
-                                            <MudSelectItem T="string" Value="filter.ImageName">
-                                                <MudImage Src="@filter.ImagePath" Width="32" />
-                                                @filter.ImageName
-                                            </MudSelectItem>
+
+                                            @if (filter.ImageName != "0.jpg")
+                                            {
+                                                <MudSelectItem T="string" Value="filter.ImageName">
+                                                    <MudImage Src="@filter.ImagePath" Width="32" />
+                                                    @filter.ImageName
+                                                </MudSelectItem>
+                                            }
                                         }
                                     </MudSelect>
                                 }
@@ -94,13 +95,13 @@
                                     @if (uploadedImageData != null)
                                     {
                                         <div class="continer">
-                                            @* <img src="@uploadedImageData" alt="Uploaded Image" class="ImageSize  @buttonCssClass" onclick="@ToggleButtonStyle" /> *@
                                             <img src="@uploadedImageData" alt="Uploaded Image" class="ImageSize  @buttonCssClass" />
                                         </div>
                                     }
                                 }
-                                @if (ImageValue != null && SelectedOption == "Radio 1")
+                                @if (ImageValue != null && SelectedOption == "Radio 1" && !string.IsNullOrEmpty(GetImage.ImagePath))
                                 {
+
                                     GetImageFunc();
                                     @if (!ImageLoad)
                                     {
@@ -119,9 +120,9 @@
                                     }
                                     else
                                     {
-                                        <div class="continer">
-                                            <img src="@GetImage.ImagePath" class="ImageSize @buttonCssClass" alt="@GetImage.ImagePath" onclick="@ToggleButtonStyle" />
-                                        </div>
+                                            <div class="continer">
+                                                <img src="@GetImage.ImagePath" class="ImageSize @buttonCssClass" alt="@GetImage.ImagePath" />
+                                            </div>
                                     }
                                 }
 
@@ -232,8 +233,11 @@
     {
         try
         {
+
+
             if (context.Validate())
             {
+                if (string.IsNullOrEmpty(ImageValue))ImageValue = "0.jpg";
                 if (ImageValue != null && SelectedOption == "Radio 2" || uploadedImageData != null) await SaveImage();
                 success = true;
                 _Loadding = true;
@@ -243,7 +247,8 @@
                     var GetBrand = await brandservice.FindSingleEntityByConditionAsync(x => x.Name == BrandValue);
                     var GetImage = await imageserivce.FindSingleEntityByConditionAsync(x => x.ImageName == ImageValue);
                     if (GetCategory.Success) createProduct.CategoryId = GetCategory.Data!.Id;
-                    else Snackbar.Add(GetCategory.Message, Severity.Error);
+                    // else Snackbar.Add(GetCategory.Message, Severity.Error);
+                    else createProduct.CategoryId = 0;
                     if (GetBrand.Success) createProduct.BrandId = GetBrand.Data!.Id;
                     else Snackbar.Add(GetBrand.Message, Severity.Error);
                     if (GetImage.Success) createProduct.ImageId = GetImage.Data!.Id;
@@ -270,6 +275,7 @@
                     Snackbar.Add("Add Product Done successfully", Severity.Success);
                     await refreshProduct.InvokeAsync(); //refresh Dashboard table
                     createProduct = new Product();
+                    ImageValue = "";
                     _Loadding = false;
 
                     StateHasChanged();

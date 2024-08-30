@@ -8,7 +8,7 @@ public class BillSeeder : BaseSeeder<Bill>
     {
         return new List<Bill>
             {
-                new Bill { Discount = 5, Total = 30.00, FinalTotal = 28.50, Date = DateTime.Now }
+                //new Bill { Discount = 5, Total = 30.00, FinalTotal = 28.50, Date = DateTime.Now }
             };
     }
     public override void Seed(ApplicationDbContext dbContext)

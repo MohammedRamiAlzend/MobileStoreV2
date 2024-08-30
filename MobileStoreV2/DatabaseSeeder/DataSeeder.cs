@@ -8,7 +8,8 @@ public static class DataSeeder
             new CategorySeeder(),
             new ProductSeeder(),
             new BillSeeder(),
-            new SellSeeder()
+            new SellSeeder(),
+            new ImagesSeeder(),
         };
 
     public static void EnsurePopulated(MauiApp app)
@@ -20,10 +21,10 @@ public static class DataSeeder
         {
             dbContext.Database.Migrate();
         }
-        //foreach (var seeder in _seeders)
-        //{
-        //    seeder.Seed(dbContext);
-        //}
+        foreach (var seeder in _seeders)
+        {
+            seeder.Seed(dbContext);
+        }
     }
 
 }

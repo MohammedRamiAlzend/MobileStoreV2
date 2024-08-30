@@ -6,8 +6,8 @@ public class BrandSeeder : BaseSeeder<Brand>
     {
         return new List<Brand>
         {
-                new Brand { Name = "Brand 1" },
-                new Brand { Name = "Brand 2" }
+                //new Brand { Name = "Brand 1" },
+                //new Brand { Name = "Brand 2" }
         };
     }
     public override void Seed(ApplicationDbContext dbContext)
