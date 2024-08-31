@@ -86,6 +86,8 @@ namespace DataCore.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BuyPrice = table.Column<double>(type: "float", nullable: false),
                     SellPrice = table.Column<double>(type: "float", nullable: false),
+                    NetProfit = table.Column<double>(type: "float", nullable: false),
+                    ConsumptionPrice = table.Column<double>(type: "float", nullable: false),
                     ImageId = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     BarCode = table.Column<int>(type: "int", nullable: false),

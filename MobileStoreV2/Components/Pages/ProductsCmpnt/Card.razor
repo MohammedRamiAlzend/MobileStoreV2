@@ -114,9 +114,6 @@
     }
 
 
-
-
-
     /* show onclick end */
 </style>
 @*   <div class="card">
@@ -130,14 +127,16 @@
 
  *@
 <MudItem>
-    <MudPaper Height="350px" Width="250px" Class="card">
+    <MudPaper Height="100%" Width="250px" Class="card">
         <div class="card-details">
             <MudGrid>
                 <MudItem xs="12">
-                    <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">@ProductName</MudPaper>
+                    <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">
+                        <img src="@ImagePath" alt="Uploaded Image" width="150" height="150" />
+                    </MudPaper>
                 </MudItem>
                 <MudItem xs="6">
-                    <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">@Category</MudPaper>
+                    <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">@ProductName</MudPaper>
                 </MudItem>
                 <MudItem xs="6">
 

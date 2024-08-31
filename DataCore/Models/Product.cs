@@ -10,7 +10,7 @@ namespace DataCore.Models
 
         // Name of the product
         [Required]
-        [StringLength(30, ErrorMessage = "Name Failed Is Required.", MinimumLength = 3)]
+        [StringLength(30, ErrorMessage = "Name Failed Is Required.")]
         public string? Name { get; set; }
 
         // Description of the product
@@ -27,7 +27,17 @@ namespace DataCore.Models
         [Range(1, 10000000000000000000, ErrorMessage = "must be greater than 0.")]
 
         public double SellPrice { get; set; }
+        // NetProfit of the product
+        [Required]
+        [Range(0, 10000000000000000000, ErrorMessage = "must be greater than 0.")]
 
+        public double NetProfit { get; set; }
+
+        // ConsumptionPrice of the product
+        //[Required]
+        //[Range(1, 10000000000000000000, ErrorMessage = "must be greater than 0.")]
+
+        public double ConsumptionPrice { get; set; }
 
         // Path to the product image
         //public string? ImagePath { get; set; }
@@ -38,6 +48,8 @@ namespace DataCore.Models
 
         // Navigation property to the Image entity
         public ImageModel? Image { get; set; }
+
+
         // Quantity of the product in stock
 
         [Required]
@@ -69,5 +81,6 @@ namespace DataCore.Models
         public DateTime? DeletedAt { get; set; } = null;
 
     }
+
 
 }

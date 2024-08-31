@@ -18,8 +18,8 @@ else
         <MudGrid Spacing="@Spacing">
             @foreach (var filter in products)
             {
-                @*<Card ProductName="@filter.Name" Description="@filter.Description" Quanatity="@filter.Quantity" Brand="@filter.Brand?.Name" Category="@filter.Category?.Name" /> *@
-                <Card1 />
+                <Card ProductName="@filter.Name" ImagePath="@filter.Image?.ImagePath" Description="@filter.Description" Quanatity="@filter.Quantity" Brand="@filter.Brand?.Name" Category="@filter.Category?.Name" />
+                @* <Card1 /> *@
             }
         </MudGrid>
     </MudPaper>
