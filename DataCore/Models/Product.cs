@@ -28,8 +28,6 @@ namespace DataCore.Models
 
         public double SellPrice { get; set; }
 
-        // Discount on the product
-        public double Discount { get; set; }
 
         // Path to the product image
         //public string? ImagePath { get; set; }

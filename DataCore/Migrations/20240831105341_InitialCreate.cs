@@ -82,11 +82,10 @@ namespace DataCore.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BuyPrice = table.Column<double>(type: "float", nullable: false),
                     SellPrice = table.Column<double>(type: "float", nullable: false),
-                    Discount = table.Column<double>(type: "float", nullable: true),
                     ImageId = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     BarCode = table.Column<int>(type: "int", nullable: false),

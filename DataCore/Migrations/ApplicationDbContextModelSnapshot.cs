@@ -153,9 +153,6 @@ namespace DataCore.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Discount")
-                        .HasColumnType("float");
-
                     b.Property<int>("ImageId")
                         .HasColumnType("int");
 
@@ -167,7 +164,8 @@ namespace DataCore.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");

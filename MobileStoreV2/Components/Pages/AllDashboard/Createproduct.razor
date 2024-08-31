@@ -45,13 +45,9 @@
                                 <MudTextField T="string" Label="Name" @bind-Value="createProduct.Name" For="@( () => createProduct.Name )" />
 
                                 <MudTd DataLabel="BarCode"><MudNumericField Label="Enter BarCode" @bind-Value="createProduct.BarCode" For="@( () => createProduct.BarCode )" /></MudTd>
-
-                                <MudTd DataLabel="Discount"><MudNumericField Label="Enter Discount" @bind-Value="createProduct.Discount" /></MudTd>
-
-                                <br />
                                 <MudTd DataLabel="Buy Price"><MudNumericField Label="Enter Buy Price" @bind-Value="createProduct.BuyPrice" For="@( () => createProduct.BuyPrice )" /></MudTd>
+                                <MudSpacer/>
                                 <MudTd DataLabel="Sell Price"><MudNumericField Label="Enter Sell Price" @bind-Value="createProduct.SellPrice" For="@( () => createProduct.SellPrice )" /></MudTd>
-
                                 <MudTd DataLabel="Quantity"><MudNumericField Label="Enter Quantity" @bind-Value="createProduct.Quantity" For="@( () => createProduct.Quantity )" /></MudTd>
                                 <MudTextField T="string" Label="Description" @bind-Value="createProduct.Description" For="@( () => createProduct.Description )" />
                                 <MudSelect T="string" Label="category" @onclick="OnInitializedAsync" @bind-Value="CategoryValue" AnchorOrigin="Origin.BottomCenter">

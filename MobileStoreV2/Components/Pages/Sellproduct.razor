@@ -23,7 +23,7 @@
         <HeaderContent>
             <MudTh>Product Name</MudTh>
             <MudTh>Sell Price</MudTh>
-            <MudTh>Discount</MudTh>
+            @* <MudTh>Discount</MudTh> *@
             <MudTh>BarCode</MudTh>
             <MudTh>Quantity Nummber</MudTh>
             <MudTh>Quantity</MudTh>
@@ -33,7 +33,7 @@
         <RowTemplate>
             <MudTd>@context.Product.Name</MudTd>
             <MudTd>@context.Product.SellPrice.ToString("C")</MudTd>
-            <MudTd>@context.Product.Discount.ToString("C")</MudTd>
+            @* <MudTd>@context.Product.Discount.ToString("C")</MudTd> *@
             <MudTd>@context.Product.BarCode</MudTd>
             <MudTd>@context.Product.Quantity</MudTd>
             <MudTd>

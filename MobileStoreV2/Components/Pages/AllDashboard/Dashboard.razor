@@ -57,7 +57,6 @@ else
             <MudTh>Brand</MudTh>
             <MudTh>Category</MudTh>
             <MudTh>Name</MudTh>
-            <MudTh>Discount</MudTh>
             <MudTh>Description</MudTh>
             <MudTh>Quantity</MudTh>
             <MudTh>Buy Price </MudTh>
@@ -75,7 +74,6 @@ else
                 <MudTd DataLabel="Brand">@context.Brand?.Name</MudTd>
                 <MudTd DataLabel="Categor">@context.Category?.Name</MudTd>
                 <MudTd DataLabel="Name">@context.Name</MudTd>
-                <MudTd DataLabel="Discount">@context.Discount</MudTd>
                 <MudTd DataLabel="Description">@context.Description</MudTd>
                 <MudTd DataLabel="Quantity" HideSmall="_hidePosition">@context.Quantity</MudTd>
                 <MudTd DataLabel="Buy Price">@context.BuyPrice</MudTd>
@@ -105,7 +103,6 @@ else
                     </MudSelect>
                 </MudTd>
                 <MudTd><MudTextField T="string" Label="Name" @bind-Value="context.Name" Required="true" RequiredError="Name is required!" /></MudTd>
-                <MudTd><MudTextField T="double" Label="Discount" @bind-Value="context.Discount" Required="true" RequiredError="Discount is required!" /></MudTd>
                 <MudTd><MudTextField T="string" Label="Description" @bind-Value="context.Description" /></MudTd>
                 <MudTd><MudTextField T="int" Label="Quantity" @bind-Value="context.Quantity" Required="true" RequiredError="Quantity is required!" /></MudTd>
                 <MudTd><MudTextField T="double" Label="Buy Price" @bind-Value="context.BuyPrice" Required="true" RequiredError="Buy Price is required!" /></MudTd>
