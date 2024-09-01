@@ -10,7 +10,7 @@ namespace DataCore.Models
 
         // Name of the product
         [Required]
-        [StringLength(30, ErrorMessage = "Name Failed Is Required.")]
+        [StringLength(30, ErrorMessage = "اسم المنتج مطلوب")]
         public string? Name { get; set; }
 
         // Description of the product
@@ -19,23 +19,22 @@ namespace DataCore.Models
 
         // Buy of the product
         [Required]
-        [Range(1, 10000000000000000000,  ErrorMessage = "must be greater than 0.")]
+        [Range(1, double.MaxValue,  ErrorMessage = "يجب أن يكون أكبر من 0")]
         public double BuyPrice { get; set; }
 
         // Sell of the product
         [Required]
-        [Range(1, 10000000000000000000, ErrorMessage = "must be greater than 0.")]
+        [Range(1, double.MaxValue, ErrorMessage = "يجب أن يكون أكبر من 0")]
 
         public double SellPrice { get; set; }
         // NetProfit of the product
         [Required]
-        [Range(0, 10000000000000000000, ErrorMessage = "must be greater than 0.")]
+        [Range(0, double.MaxValue, ErrorMessage = "يجب أن يكون أكبر من 0")]
 
         public double NetProfit { get; set; }
 
         // ConsumptionPrice of the product
         //[Required]
-        //[Range(1, 10000000000000000000, ErrorMessage = "must be greater than 0.")]
 
         public double ConsumptionPrice { get; set; }
 
@@ -53,12 +52,12 @@ namespace DataCore.Models
         // Quantity of the product in stock
 
         [Required]
-        [Range(1, 10000000000000000000, ErrorMessage = "must be greater than 0.")]
+        [Range(1, int.MaxValue, ErrorMessage = "يجب أن يكون أكبر من 0")]
         public int Quantity { get; set; }
 
         // Bar code of the product
         [Required]
-        [Range(1, 100000000000000, ErrorMessage = "must be greater than 0.")]
+        [Range(1, int.MaxValue, ErrorMessage = "يجب أن يكون أكبر من 0")]
         public int BarCode { get; set; }
 
         // Date when the product was inserted

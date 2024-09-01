@@ -32,51 +32,55 @@
 </style>
 
 <MudDialog>
-    <TitleContent> Add Product</TitleContent>
+    <TitleContent>إضافة منتج</TitleContent>
     <DialogContent>
         <div class="d-flex flex-column py-1">
             <EditForm Model="@createProduct" OnValidSubmit="OnValidSubmit">
-            
+
 
                 <DataAnnotationsValidator />
                 <MudGrid>
                     <MudItem xs="12" sm="12">
                         <MudCard>
                             <MudCardContent>
-                                <MudTextField T="string" Label="Name" @bind-Value="createProduct.Name" For="@( () => createProduct.Name )" />
+                                <MudTextField T="string" Label="أسم المنتج" @bind-Value="createProduct.Name" For="@( () => createProduct.Name )" />
+                                <MudItem xs="12">
+                                    <MudTd DataLabel="باركود"><MudNumericField Label="ادخل الباركود" @bind-Value="createProduct.BarCode" For="@( () => createProduct.BarCode )" /></MudTd>
+                                    <MudTd DataLabel="سعر الشراء"><MudNumericField Label="أدخل سعر الشراء" @bind-Value="createProduct.BuyPrice" For="@( () => createProduct.BuyPrice )" /></MudTd>
+                                </MudItem>
+                                <MudItem xs="12">
+                                    <MudTd DataLabel="سعر المبيع"><MudNumericField Label="أدخل سعر المبيع" @bind-Value="createProduct.SellPrice" For="@( () => createProduct.SellPrice )" /></MudTd>
+                                    <MudTd DataLabel="العدد"><MudNumericField Label="أدخل العدد" @bind-Value="createProduct.Quantity" For="@( () => createProduct.Quantity )" /></MudTd>
+                                </MudItem>
+                                <MudTextField T="string" Label="الوصف" @bind-Value="createProduct.Description" For="@( () => createProduct.Description )" />
 
-                                <MudTd DataLabel="BarCode"><MudNumericField Label="Enter BarCode" @bind-Value="createProduct.BarCode" For="@( () => createProduct.BarCode )" /></MudTd>
-                                <MudTd DataLabel="Buy Price"><MudNumericField Label="Enter Buy Price" @bind-Value="createProduct.BuyPrice" For="@( () => createProduct.BuyPrice )" /></MudTd>
-                                <MudSpacer />
-                                <MudTd DataLabel="Sell Price"><MudNumericField Label="Enter Sell Price" @bind-Value="createProduct.SellPrice" For="@( () => createProduct.SellPrice )" /></MudTd>
-                                <MudTd DataLabel="Quantity"><MudNumericField Label="Enter Quantity" @bind-Value="createProduct.Quantity" For="@( () => createProduct.Quantity )" /></MudTd>
-                                <MudTextField T="string" Label="Description" @bind-Value="createProduct.Description" For="@( () => createProduct.Description )" />
-  
-                                    <MudSelect T="string" Label="category" @onclick="OnInitializedAsync" For="@( () => GetInfoCB.CategoryValue)" @bind-Value="GetInfoCB.CategoryValue" AnchorOrigin="Origin.BottomCenter">
-                                        @foreach (var filter in category)
-                                        {
-                                            <MudSelectItem Value="filter.Name" />
-                                        }
-                                    </MudSelect>
-                                    <MudSelect T="string" Label="Brand" @onclick="OnInitializedAsync" For="@( () =>GetInfoCB.BrandValue )" @bind-Value="GetInfoCB.BrandValue" AnchorOrigin="Origin.BottomCenter">
-                                        @foreach (var filter in brands)
-                                        {
-                                            <MudSelectItem Value="filter.Name" />
-                                        }
-                                    </MudSelect>
-                            
+                                <MudSelect T="string" Label="فئة" @onclick="OnInitializedAsync" For="@( () => GetInfoCB.CategoryValue)" @bind-Value="GetInfoCB.CategoryValue" AnchorOrigin="Origin.BottomCenter">
+                                    @foreach (var filter in category)
+                                    {
+                                        <MudSelectItem Value="filter.Name" />
+                                    }
+                                </MudSelect>
+                                <MudSelect T="string" Label="الماركة" @onclick="OnInitializedAsync" For="@( () =>GetInfoCB.BrandValue )" @bind-Value="GetInfoCB.BrandValue" AnchorOrigin="Origin.BottomCenter">
+                                    @foreach (var filter in brands)
+                                    {
+                                        <MudSelectItem Value="filter.Name" />
+                                    }
+                                </MudSelect>
 
-                                <MudForm>
+                        
 
-                                    <MudRadioGroup @bind-Value="SelectedOption">
-                                        <MudRadio Value="@("Radio 1")" Color="Color.Primary" Dense="true">Chouse from Exsit Images</MudRadio>
-                                        <MudRadio Value="@("Radio 2")" Color="Color.Dark">upload image</MudRadio>
-                                        <MudRadio Value="@("Radio 3")" Color="Color.Dark">None image</MudRadio>
-                                    </MudRadioGroup>
-                                </MudForm>
+                                    <MudForm>
+
+                                        <MudRadioGroup @bind-Value="SelectedOption">
+                                            <MudRadio Value="@("Radio 1")" Color="Color.Primary" Dense="true">من صور موجودة</MudRadio>
+                                            <MudRadio Value="@("Radio 2")" Color="Color.Dark">تحميل صورة</MudRadio>
+                                            <MudRadio Value="@("Radio 3")" Color="Color.Dark">بلا صورة</MudRadio>
+                                        </MudRadioGroup>
+                                    </MudForm>
+                        
                                 @if (SelectedOption == "Radio 1")
                                 {
-                                    <MudSelect T="string" Label="images" @bind-Value="ImageValue" AnchorOrigin="Origin.BottomCenter">
+                                    <MudSelect T="string" Label="الصورة" @bind-Value="ImageValue" AnchorOrigin="Origin.BottomCenter">
                                         @foreach (var filter in images)
                                         {
 
@@ -131,9 +135,9 @@
 
                             </MudCardContent>
                             <MudCardActions Class="d-xl-inline-flex" Style="display:flex;justify-content:end">
-                                <MudButton OnClick="Cancel" Variant="Variant.Filled" Style="margin-right:15px">Cancel</MudButton>
+                                <MudButton OnClick="Cancel" Variant="Variant.Filled" Style="margin-right:15px">إغلاق</MudButton>
                                 <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
-                                    Add
+                                    إضافة
                                     @if (_Loadding)
                                     {
                                         <MudProgressCircular Color="Color.Secondary" Indeterminate="true" Size="Size.Small" />
@@ -147,14 +151,14 @@
                     </MudItem>
                     <MudItem xs="12">
                         <MudText Typo="Typo.body2" Align="Align.Center">
-                            add product for your collcation
+                            <h4>إضافة منتج للجموعة</h4>
                         </MudText>
                     </MudItem>
                 </MudGrid>
             </EditForm>
 
 
-       
+
 
 
         </div>
@@ -178,15 +182,15 @@
     [Parameter] public EventCallback<bool> OnButtonClick { get; set; }
     [Parameter] public EventCallback<bool> refreshProduct { get; set; }
     private bool showInnerComponent = false;
-
+  
     public class GetInfo
     {
 
         [Required]
-        [StringLength(30, ErrorMessage = "Brand Failed Is Required.")]
+        [StringLength(30, ErrorMessage = "العلامة التجارية مطلوبة")]
         public string? BrandValue { get; set; }
         [Required]
-        [StringLength(30, ErrorMessage = "Category Failed Is Required.")]
+        [StringLength(30, ErrorMessage = "الفئة الفاشلة مطلوبة.")]
         public string? CategoryValue { get; set; }
 
     }
@@ -258,7 +262,10 @@
 
             if (context.Validate())
             {
-
+                if (string.IsNullOrEmpty(GetInfoCB.BrandValue) || string.IsNullOrEmpty(GetInfoCB.CategoryValue)){
+                    Snackbar.Add("Brand and Category is Required" , Severity.Error);
+                    return;
+                }
                 if (string.IsNullOrEmpty(ImageValue) || SelectedOption == "Radio 3") ImageValue = "0.jpg";
                 if (ImageValue != null && SelectedOption == "Radio 2" || uploadedImageData != null) await SaveImage();
                 success = true;
