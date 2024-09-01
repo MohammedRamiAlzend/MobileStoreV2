@@ -2,19 +2,21 @@
 @if (_rightToLeft == false)
 {
     <MudNavMenu>
-        <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Store" Href=""> Products</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home" Href=""> Home</MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Store" Href="ProductsList">Porducts</MudNavLink>
         <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.LibraryBooks" Href="Dashboard"> Dashboard</MudNavLink>
         <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.AddCircle" Href="Buyproduct">Buyproduct</MudNavLink>
         <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Sell" Href="Sellproduct">Sellproduct</MudNavLink>
         <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.AccountBox" Href="Accounting">Accounting</MudNavLink>
         <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.KeyboardOptionKey" Href="Options">Options</MudNavLink>
-        <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.KeyboardOptionKey" Href="validate">validate</MudNavLink>
+
     </MudNavMenu>
 }
 else
 {
     <MudNavMenu>
-        <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Store" Href="ProductsList"> <h5>عرض منتجات</h5></MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home" Href=""> <h5>الصفحة الرئيسية </h5></MudNavLink>
+        <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Store" Href="ProductsList"> <h5>المنتجات  </h5></MudNavLink>
         <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.LibraryBooks" Href="Dashboard"> <h5>إدارة البيانات</h5></MudNavLink>
         <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.AddCircle" Href="Buyproduct"><h5>شرء منتج</h5></MudNavLink>
         <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Sell" Href="Sellproduct"><h5>مبيع منتج</h5></MudNavLink>

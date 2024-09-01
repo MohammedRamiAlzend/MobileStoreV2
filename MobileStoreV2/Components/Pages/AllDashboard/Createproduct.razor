@@ -66,9 +66,6 @@
                                         <MudSelectItem Value="filter.Name" />
                                     }
                                 </MudSelect>
-
-                        
-
                                     <MudForm>
 
                                         <MudRadioGroup @bind-Value="SelectedOption">
@@ -83,7 +80,6 @@
                                     <MudSelect T="string" Label="الصورة" @bind-Value="ImageValue" AnchorOrigin="Origin.BottomCenter">
                                         @foreach (var filter in images)
                                         {
-
                                             @if (filter.ImageName != "0.jpg")
                                             {
                                                 <MudSelectItem T="string" Value="filter.ImageName">

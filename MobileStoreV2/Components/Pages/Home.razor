@@ -8,73 +8,79 @@
 <MudPaper Height="100%" Width="100%">
     <MudContainer Fixed="true">
         <MudPaper Height="100%" Width="100%" Square="true">
-            <MudField Variant="Variant.Filled">التاريخ اليوم : <MudIcon Icon="@Icons.Material.Filled.DateRange" Color="@Color.Warning" /> @datenow</MudField>
+            <MudField Variant="Variant.Filled"> التاريخ اليوم : @datenow <MudIcon Icon="@Icons.Material.Filled.DateRange" Color="@Color.Info" /></MudField>
         </MudPaper>
     </MudContainer>
 </MudPaper>
-    <MudSpacer />
-    <br />
-    <br />
+<MudSpacer />
+<br />
+<br />
 
-<MudPaper Height="100%" Width="50%">
-    <MudContainer Fixed="true">
-        <MudPaper Height="100%" Width="100%" Square="true">
-            <EditForm Model="unitslist" OnValidSubmit="OnValidSubmit">
-                <DataAnnotationsValidator />
-                <MudGrid>
-                    <MudItem xs="12" sm="7">
-                        <MudCard>
-                            <MudCardContent>
-                                <MudForm>
-                                    <MudRadioGroup @bind-Value="unitslist.Company">
-                                        <MudRadio Value="@("MTN")" Color="Color.Primary" >MTN</MudRadio>
-                                        <MudRadio Value="@("Syriatel")" Color="Color.Info">Syriatel</MudRadio>
-                                    </MudRadioGroup>
-                                </MudForm>
-                                <MudTextField Label="الرقم" HelperText="اعلى عدد ارقام 10" Mask="@(new PatternMask("000 000 0000"))"
-                                              @bind-Value="unitslist.Nummber" For="@(() => unitslist.Nummber)" />
-                                <MudForm>
-                                    <MudRadioGroup @bind-Value="unitslist.PayType">
-                                        <MudRadio Value="true" Color="Color.Primary" Dense="true">مسبق الدفع</MudRadio>
-                                        <MudRadio Value="false" Color="Color.Info" Dense="false">لاحق الدفع</MudRadio>
-                                    </MudRadioGroup>
-                                </MudForm>
+    <MudPaper Height="100%" Width="50%">
+        <MudContainer Fixed="true">
+            <MudPaper Height="100%" Width="100%" Square="true">
+                <EditForm Model="unitslist" OnValidSubmit="OnValidSubmit">
+                    <DataAnnotationsValidator />
+                    <MudGrid>
+                        <MudItem xs="12" sm="7">
+                            <MudCard>
+                                <MudCardContent>
+                                    <MudForm>
+                                        <MudRadioGroup @bind-Value="unitslist.Company">
+                                            <MudRadio Value="@("MTN")" Color="Color.Primary">MTN</MudRadio>
+                                            <MudRadio Value="@("Syriatel")" Color="Color.Info">Syriatel</MudRadio>
+                                        </MudRadioGroup>
+                                    </MudForm>
+                                    <MudTextField Label="الرقم" HelperText="اعلى عدد ارقام 10" Mask="@(new PatternMask("000 000 0000"))"
+                                                  @bind-Value="unitslist.Nummber" For="@(() => unitslist.Nummber)" />
+                                    <MudForm>
+                                        <MudRadioGroup @bind-Value="unitslist.PayType">
+                                            <MudRadio Value="true" Color="Color.Primary" Dense="true">مسبق الدفع</MudRadio>
+                                            <MudRadio Value="false" Color="Color.Info" Dense="false">لاحق الدفع</MudRadio>
+                                        </MudRadioGroup>
+                                    </MudForm>
 
-                                <MudTextField Label="السعر"
-                                              @bind-Value="unitslist.price" For="@(() => unitslist.price)" />
-                            </MudCardContent>
+                                    <MudTextField Label="السعر"
+                                                  @bind-Value="unitslist.price" For="@(() => unitslist.price)" />
 
-                            <MudCardActions>
-                                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled"  Color="Color.Primary" Class="ml-auto">save</MudButton>
-                            </MudCardActions>
-                        </MudCard>
-                    </MudItem>
-                </MudGrid>
-            </EditForm>
-        </MudPaper>
-        <MudPaper Height="100%" Width="100%" Square="true">
-            <MudTable Items="filteredProducts" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info">
-                <HeaderContent>
-                    <MudTh>Nr</MudTh>
-                    <MudTh>Sign</MudTh>
-                    <MudTh>Name</MudTh>
-                    <MudTh>Position</MudTh>
-                    <MudTh>Molar mass</MudTh>
-                </HeaderContent>
-                <RowTemplate>
-                    <MudTd DataLabel="Nr">context.Number</MudTd>
-                    <MudTd DataLabel="Sign">context.Sign</MudTd>
-                    <MudTd DataLabel="Name">context.Name</MudTd>
-                    <MudTd DataLabel="Position" >context.Position</MudTd>
-                    <MudTd DataLabel="Molar mass">context.Molar</MudTd>
-                </RowTemplate>
-            </MudTable>
-        </MudPaper>
-    </MudContainer>
-</MudPaper>
+                                    <MudField Variant="Variant.Filled">  رصيد الصندوق:  500000 ل.س</MudField>
+
+                                </MudCardContent>
+
+                                <MudCardActions>
+                                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">حفظ</MudButton>
+                                </MudCardActions>
+                            </MudCard>
+                        </MudItem>
+                    </MudGrid>
+                </EditForm>
+            </MudPaper>
+            <MudPaper Height="100%" Width="100%" Square="true">
+                <MudTable Items="filteredProducts" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info">
+                    <HeaderContent>
+                        <MudTh>Nr</MudTh>
+                        <MudTh>Sign</MudTh>
+                        <MudTh>Name</MudTh>
+                        <MudTh>Position</MudTh>
+                        <MudTh>Molar mass</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Nr">context.Number</MudTd>
+                        <MudTd DataLabel="Sign">context.Sign</MudTd>
+                        <MudTd DataLabel="Name">context.Name</MudTd>
+                        <MudTd DataLabel="Position">context.Position</MudTd>
+                        <MudTd DataLabel="Molar mass">context.Molar</MudTd>
+                    </RowTemplate>
+                </MudTable>
+            </MudPaper>
+        </MudContainer>
+    </MudPaper>
+
+
 
 @code {
-   public DateTime datenow { get; set; } = DateTime.Now;
+    public DateTime datenow { get; set; } = DateTime.Now;
+    public int ballance { get; set; }
     public IEnumerable<Units> filteredProducts = new List<Units>();
 
     Units unitslist = new Units();
@@ -99,7 +105,7 @@
     }
     private async void OnValidSubmit()
     {
-        
+
     }
     public class Units
     {
@@ -108,7 +114,7 @@
 
         // nummber of user
         [Required]
-        [StringLength(12, ErrorMessage = "يجب ان يكون 10 ارقام." , MinimumLength =12)]
+        [StringLength(12, ErrorMessage = "يجب ان يكون 10 ارقام.", MinimumLength = 12)]
         public string? Nummber { get; set; }
 
         // Syriatel and MTN
