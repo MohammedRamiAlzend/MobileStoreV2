@@ -1,0 +1,372 @@
+﻿@page "/intro"
+@using MudBlazor
+
+<MudGrid>
+    <!-- صندوق -->
+    <MudItem xs="12" md="6">
+        <MudPaper Class="p-4 shadow-md" Elevation="4">
+            <MudText Typo="Typo.h5" Class="text-center font-bold">رصيد الصندوق</MudText>
+            <MudGrid>
+                <MudItem xs="12" Class="mt-4">
+                    <MudText Typo="Typo.body2" Style="margin:24px;">القيمة الحالية للصندوق: @balanceFund</MudText>
+                    <MudTextField @bind-Value="addValue" Label="أدخل قيمة جديدة" Variant="Variant.Outlined" />
+                    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="AddToFund" Class="mt-3" FullWidth>إضافة</MudButton>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+    </MudItem>
+
+    <!-- الأرصدة و الفواتير -->
+    <MudItem xs="12" md="6">
+        <MudPaper Class="p-4 shadow-md" Elevation="4">
+            <MudText Typo="Typo.h6" Class="font-bold">الأرصدة والفواتير</MudText>
+            <MudGrid>
+                <MudItem xs="6">
+                    <MudText Typo="Typo.h6" Class="mb-2">رصيد سيرياتيل</MudText>
+                    <MudTextField Value="@balanceSyriatel" Disabled="true" Label="القيمة الحالية" Variant="Variant.Outlined" />
+
+                    <MudText Typo="Typo.h6" Class="mt-4 mb-2">فواتير سيرياتيل</MudText>
+                    <MudTextField Value="@billsSyriatel" Disabled="true" Label="القيمة الحالية" Variant="Variant.Outlined" />
+                </MudItem>
+                <MudItem xs="6">
+                    <MudText Typo="Typo.h6" Class="mb-2">رصيد MTN</MudText>
+                    <MudTextField Value="@balanceMTN" Disabled="true" Label="القيمة الحالية" Variant="Variant.Outlined" />
+
+                    <MudText Typo="Typo.h6" Class="mt-4 mb-2">فواتير MTN</MudText>
+                    <MudTextField Value="@billsMTN" Disabled="true" Label="القيمة الحالية" Variant="Variant.Outlined" />
+                </MudItem>
+                <MudItem xs="12" Class="mt-4">
+                    <MudText Typo="Typo.h6" Class="mb-2">رصيد الصندوق</MudText>
+                    <MudTextField Value="@balanceFund" Disabled="true" Label="القيمة الحالية" Variant="Variant.Outlined" />
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+    </MudItem>
+
+    <!-- المبيعات -->
+    <MudItem xs="12" md="6">
+        <MudPaper Class="p-4 shadow-md" Elevation="4">
+            <MudText Typo="Typo.h6" Class="font-bold">المبيعات</MudText>
+            <MudItem xs="12" Class="d-flex justify-end">
+                <MudButton Color="Color.Primary" Variant="Variant.Filled" StartIcon="Icons.Material.Filled.Add" OnClick="ShowAddSaleInput" FullWidth>إضافة مبيع</MudButton>
+            </MudItem>
+            @if (isAddingSale)
+            {
+                <MudItem xs="12" Class="mt-2">
+                    <MudTextField Label="أدخل المبيع" Variant="Variant.Outlined" @bind-Value="newSale" Immediate="true" FullWidth />
+                    <MudButton Color="Color.Success" Variant="Variant.Filled" OnClick="AddSale" Class="mt-2" FullWidth>إضافة</MudButton>
+                </MudItem>
+            }
+            <MudTable Items="sales" Striped="true" Class="mt-4">
+                <HeaderContent>
+                    <MudTh>الترتيب</MudTh>
+                    <MudTh>المبيع</MudTh>
+                    <MudTh>التاريخ</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="الترتيب">@((sales.IndexOf(context) + 1))</MudTd>
+                    <MudTd DataLabel="المبيع">@context.SaleName</MudTd>
+                    <MudTd DataLabel="التاريخ">@context.DateAdded.ToString("dd/MM/yyyy HH:mm")</MudTd>
+                </RowTemplate>
+            </MudTable>
+        </MudPaper>
+    </MudItem>
+
+    <!-- المدفوعات والمقبوضات -->
+    <MudItem xs="12" md="6">
+        <MudPaper Class="p-4 shadow-md" Elevation="4">
+            <MudText Typo="Typo.h6" Class="font-bold">المدفوعات</MudText>
+            <MudTable Items="payments" Striped="true" Class="mt-4">
+                <HeaderContent>
+                    <MudTh>الترتيب</MudTh>
+                    <MudTh>المدفوع</MudTh>
+                    <MudTh>التاريخ</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="الترتيب">@((payments.IndexOf(context) + 1))</MudTd>
+                    <MudTd DataLabel="المدفوع">@context.PaymentName</MudTd>
+                    <MudTd DataLabel="التاريخ">@context.DateAdded.ToString("dd/MM/yyyy HH:mm")</MudTd>
+                </RowTemplate>
+            </MudTable>
+
+            <MudTextField @bind-Value="newPayment" Label="أدخل مدفوع جديد" Variant="Variant.Outlined" FullWidth="true" Class="mt-2" />
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="AddPayment" Class="mt-2" FullWidth>إضافة مدفوع</MudButton>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12" md="6">
+        <MudPaper Class="p-4 shadow-md" Elevation="4">
+            <MudText Typo="Typo.h6" Class="font-bold">المقبوضات</MudText>
+            <MudTable Items="receipts" Striped="true" Class="mt-4">
+                <HeaderContent>
+                    <MudTh>الترتيب</MudTh>
+                    <MudTh>المقبوض</MudTh>
+                    <MudTh>التاريخ</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="الترتيب">@((receipts.IndexOf(context) + 1))</MudTd>
+                    <MudTd DataLabel="المقبوض">@context.ReceiptName</MudTd>
+                    <MudTd DataLabel="التاريخ">@context.DateAdded.ToString("dd/MM/yyyy HH:mm")</MudTd>
+                </RowTemplate>
+            </MudTable>
+
+            <MudTextField @bind-Value="newReceipt" Label="أدخل مقبوض جديد" Variant="Variant.Outlined" FullWidth="true" Class="mt-2" />
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="AddReceipt" Class="mt-2" FullWidth>إضافة مقبوض</MudButton>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+
+@code {
+    // رصيد الصندوق
+    private int balanceFund = 0; // الرصيد الحالي للصندوق
+    private int addValue = 0; // القيمة المدخلة لإضافتها للصندوق
+    private string newPayment;
+    private string newReceipt;
+
+    //  اضافة قيمة جديدة للصندوق
+    private void AddToFund()
+    {
+        if (addValue > 0)
+        {
+            balanceFund += addValue; // إضافة القيمة الجديدة إلى الرصيد الحالي
+            addValue = 0; 
+        }
+    }
+    // القيم الخاصة بسيرياتيل و MTN
+    private int balanceSyriatel = 500; // رصيد سيرياتيل
+    private int billsSyriatel = 200; // فواتير سيرياتيل
+    private int balanceMTN = 700; // رصيد MTN
+    private int billsMTN = 300; // فواتير MTN
+
+
+    // الأرصدة
+    private int balanceMain = 0;
+    private int balanceMTW = 0;
+    private int surplusMTW = 0;
+    private int remainingBalance = 0;
+
+    // نموذج يمثل بيانات المبيعات
+    public class Sale
+    {
+        public int Index { get; set; } // خاصية الترتيب
+        public string SaleName { get; set; } // خاصية المبيع
+        public DateTime DateAdded { get; set; } // خاصية التاريخ
+    }
+
+    // قائمة المبيعات الأولية
+    List<Sale> sales = new List<Sale>
+    {
+        new Sale { SaleName = "مبيع 1", DateAdded = DateTime.Now.AddDays(-1) },
+        new Sale { SaleName = "مبيع 2", DateAdded = DateTime.Now.AddDays(-2) },
+        new Sale { SaleName = "مبيع 3", DateAdded = DateTime.Now.AddDays(-3) }
+    };
+
+    // حالة للتحكم في عرض حقل الإدخال
+    private bool isAddingSale = false;
+
+    // قيمة المبيع الجديد
+    private string newSale = string.Empty;
+
+    // دالة لإظهار حقل إدخال مبيع جديد
+    private void ShowAddSaleInput()
+    {
+        isAddingSale = true;
+    }
+
+    // دالة لإضافة مبيع جديد
+    private void AddSale()
+    {
+        if (!string.IsNullOrWhiteSpace(newSale))
+        {
+            sales.Add(new Sale { SaleName = newSale, DateAdded = DateTime.Now });
+            sales = sales.OrderBy(s => s.DateAdded).ToList(); // ترتيب المبيعات حسب الأقدمية
+            newSale = string.Empty;
+            isAddingSale = false;
+        }
+    }
+    // بيانات المدفوعات
+    private List<Payment> payments = new List<Payment>
+    {
+        new Payment { PaymentName = "مدفوع 1", DateAdded = DateTime.Now.AddDays(-1) },
+        new Payment { PaymentName = "مدفوع 2", DateAdded = DateTime.Now.AddDays(-2) }
+    };
+
+    // بيانات المقبوضات
+    private List<Receipt> receipts = new List<Receipt>
+    {
+        new Receipt { ReceiptName = "مقبوض 1", DateAdded = DateTime.Now.AddDays(-1) },
+        new Receipt { ReceiptName = "مقبوض 2", DateAdded = DateTime.Now.AddDays(-2) }
+    };
+
+    private void AddPayment()
+    {
+        if (!string.IsNullOrWhiteSpace(newPayment))
+        {
+            payments.Add(new Payment { PaymentName = newPayment, DateAdded = DateTime.Now });
+            newPayment = string.Empty;
+        }
+    }
+
+    private void AddReceipt()
+    {
+        if (!string.IsNullOrWhiteSpace(newReceipt))
+        {
+            receipts.Add(new Receipt { ReceiptName = newReceipt, DateAdded = DateTime.Now });
+            newReceipt = string.Empty;
+        }
+    }
+
+    public class Payment
+    {
+        public string PaymentName { get; set; }
+        public DateTime DateAdded { get; set; }
+    }
+
+    public class Receipt
+    {
+        public string ReceiptName { get; set; }
+        public DateTime DateAdded { get; set; }
+    }
+}
+
+
+
+
+
+
+@* @page "/intro"
+
+@using MudBlazor
+
+<MudGrid>
+    <MudItem xs="6">
+        <MudPaper Class="p-3">
+            <MudText Typo="Typo.h6" Class="mb-2">الرصيد اليوم</MudText>
+            <MudGrid>
+                <MudItem xs="12" sm="6">
+                    <MudText Typo="Typo.body1">الرصيد: @balance1</MudText>
+                    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="()=> IncrementBalance(ref balance1)">+</MudButton>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudText Typo="Typo.body1">الرصيد MTW: @balance2</MudText>
+                    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="()=> IncrementBalance(ref balance2)">+</MudButton>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudText Typo="Typo.body1">فوائض MTW: @balance3</MudText>
+                    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="()=> IncrementBalance(ref balance3)">+</MudButton>
+                </MudItem>
+                <MudItem xs="12" sm="6">
+                    <MudText Typo="Typo.body1">الرصيد المتبقي: @balance4</MudText>
+                    <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="()=> IncrementBalance(ref balance4)">+</MudButton>
+                </MudItem>
+            </MudGrid>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudPaper Class="p-3">
+            <MudText Typo="Typo.h6" Class="mb-2">المجموعات</MudText>
+            <!-- تحديد النوع هنا كمجموعة Group -->
+            <MudTable Items="@Groups">
+                <HeaderContent>
+                    <MudTh>#</MudTh>
+                    <MudTh>الاسم</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="#">@context.Index</MudTd>
+                    <MudTd DataLabel="الاسم">@context.Name</MudTd>
+                </RowTemplate>
+            </MudTable>
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" Class="mt-3">+ إضافة مجموعة</MudButton>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12">
+        <MudPaper Class="p-3">
+            <MudText Typo="Typo.h6" Class="mb-2">المهمات</MudText>
+            <!-- تحديد النوع هنا كـ TaskItem -->
+            <MudTable Items="@Tasks">
+                <HeaderContent>
+                    <MudTh>#</MudTh>
+                    <MudTh>المهمة</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="#">@context.Index</MudTd>
+                    <MudTd DataLabel="المهمة">@context.Task</MudTd>
+                </RowTemplate>
+            </MudTable>
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" Class="mt-3">+ إضافة مهمة</MudButton>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    // استبدال الخصائص بمتغيرات عادية
+    private int balance1 = 0;
+    private int balance2 = 0;
+    private int balance3 = 0;
+    private int balance4 = 0;
+
+    // قائمة المجموعات
+    private List<Group> Groups = new List<Group>
+    {
+        new Group { Index = 1, Name = "مجموعة 1" },
+        new Group { Index = 2, Name = "مجموعة 2" }
+    };
+
+    // قائمة المهمات
+    private List<TaskItem> Tasks = new List<TaskItem>
+    {
+        new TaskItem { Index = 1, Task = "مهمة 1" },
+        new TaskItem { Index = 2, Task = "مهمة 2" }
+    };
+
+    // دالة زيادة الرصيد
+    private void IncrementBalance(ref int balance)
+    {
+        balance++;
+    }
+
+    // النموذج الخاص بالمجموعات
+    public class Group
+    {
+        public int Index { get; set; }
+        public string Name { get; set; }
+    }
+
+    // النموذج الخاص بالمهمات
+    public class TaskItem
+    {
+        public int Index { get; set; }
+        public string Task { get; set; }
+    }
+}
+
+
+ *@
+@* <MudPaper Height="100vh" Width="100vw" Style="display:flex; justify-content:center; align-items:center ">
+	<MudStack Row="true" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center">
+		<MudStack Row="false" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center">
+			<MudPaper Outlined="true"  Elevation="3" >
+			<MudStack Row="true" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center"   >
+				
+				<MudIcon Icon="@Icons.Material.Filled.AddCircle" Title="Add" Style="cursor:pointer;" />
+				<MudText> رصيد الصندوق</MudText>
+				
+			</MudStack>
+			<MudNumericField @bind-Value="DecimalValue" Variant="Variant.Outlined" Step=".2M" />
+			</MudPaper>
+		</MudStack>
+		
+		<MudStack Row="false" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.Center">
+			<MudText>MTN رصيد</MudText>
+			<MudChip T="string" Color="Color.Dark" Size="Size.Large" Style="border-radius:6px; width:10rem; height:2rem;">Value</MudChip>
+		</MudStack>
+	</MudStack>
+</MudPaper>
+
+
+@code {
+	public decimal DecimalValue { get; set; }
+} *@

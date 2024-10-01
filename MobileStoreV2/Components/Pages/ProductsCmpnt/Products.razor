@@ -1,4 +1,47 @@
 ﻿@page "/ProductsList"
+@using MobileStoreV2.Components.Pages.AllDashboard
+@using MobileStoreV2.Components.Pages.ProductsCmpnt
+
+
+<MudGrid Justify="Justify.Center" Style="margin-top: 10px;">
+    @for (int i = 1; i <= 12; i++)
+    {
+        <MudItem>
+            <Card />
+        </MudItem>
+    }
+</MudGrid>
+
+@code {
+    public int Spacing { get; set; } = 2;
+}
+
+@* @page "/ProductsList"
+@using MobileStoreV2.Components.Pages.AllDashboard
+@using MobileStoreV2.Components.Pages.ProductsCmpnt
+
+
+
+@* start card continer  *@
+@* <MudGrid Spacing="@Spacing" Justify="Justify.Center" >
+    @for (int i = 1;i <= 12;i++)
+    {
+      <Card/>
+    }
+
+ </mudgrid> *@
+@* end card continer *@
+@* @code {
+    public int Spacing { get; set; } = 6;
+}
+ *@
+
+
+
+
+
+
+@* @page "/ProductsList"
 
 @inject IDialogService DialogService
 @inject IGenericService<Product> ProductService
@@ -56,4 +99,67 @@ else
 
     }
 }
-  
+   *@
+
+
+
+
+@* @page "/ProductsList"
+
+@inject IDialogService DialogService
+@inject IGenericService<Product> ProductService
+@inject IGenericService<Brand> brandservice
+@inject IGenericService<Category> categoryService
+@inject IGenericService<ImageModel> imageserivce
+@inject ISnackbar Snackbar
+
+
+
+@if (_loading == null)
+{
+    <h5>_Loadding...</h5>
+}
+else
+{
+
+    <MudPaper Height="90%" Width="100%" Square="true">
+        <MudGrid Spacing="@Spacing">
+            @foreach (var filter in products)
+            {
+                <Card ProductName="@filter.Name" Description="@filter.Description" Quanatity="@filter.Quantity" Brand="@filter.Brand?.Name" Category="@filter.Category?.Name" />
+            }
+        </MudGrid>
+    </MudPaper>
+
+}
+
+@code {
+    public int Spacing { get; set; } = 8;
+
+    private bool _loading;
+
+
+    public IEnumerable<Product> products = new List<Product>();
+    public IEnumerable<Product> filteredProducts = new List<Product>();
+    public IEnumerable<Brand> brands = new List<Brand>();
+    public IEnumerable<Category> category = new List<Category>();
+    public IEnumerable<ImageModel> images = new List<ImageModel>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var request = await ProductService.GetAllAsync();
+        if (request.Success) products = request.Data!;
+        filteredProducts = products;
+
+        var requestbrand = await brandservice.GetAllAsync();
+        if (requestbrand.Success) brands = requestbrand.Data!;
+
+        var requestGategory = await categoryService.GetAllAsync();
+        if (requestGategory.Success) category = requestGategory.Data!;
+
+        var requestImage = await imageserivce.GetAllAsync();
+        if (requestImage.Success) images = requestImage.Data!;
+
+    }
+}
+   *@

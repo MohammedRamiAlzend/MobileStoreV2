@@ -1,0 +1,27 @@
+﻿<MudElement>
+    @currentTime
+</MudElement>
+
+@code {
+    private string currentTime;
+    private Timer timer;
+
+    protected override void OnInitialized()
+    {
+        timer = new Timer(UpdateTime, null, 0, 1000);
+    }
+
+    private void UpdateTime(object state)
+    {
+        InvokeAsync(() =>
+        {
+            currentTime = DateTime.Now.ToString("ddd dd MMM HH:mm");
+            StateHasChanged();
+        });
+    }
+
+    public void Dispose()
+    {
+        timer?.Dispose();
+    }
+}

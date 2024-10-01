@@ -15,14 +15,11 @@
             <MudSpacer />
             <MudToggleIconButton @bind-Toggled="darkMode" Icon="@Icons.Material.Filled.LightMode" Color="Color.Inherit" ToggledIcon="@Icons.Material.Filled.DarkMode" ToggledColor="@Color.Inherit" />
             <MudSwitch @bind-Value="_rightToLeft" Label="@Localizer("Ar")" Color="Color.Warning" />
-
+          <Watch/>
         </MudAppBar>
         <MudDrawer @bind-Open="@_open" ClipMode="_clipMode" Breakpoint="@_breakpoint" Elevation="1" Variant="@DrawerVariant.Mini">
-
             <NavMenu _rightToLeft ="@_rightToLeft"/>
-
         </MudDrawer>
-
         <MudMainContent>
    @*          <MudPaper Height="100%" Width="100%" Style="margin-bottom:30px;">
                 <Casual />
@@ -34,6 +31,7 @@
 
 
 @code {
+   
     bool _drawerOpen = true;
     bool darkMode = false;
     private bool _rightToLeft = false;
