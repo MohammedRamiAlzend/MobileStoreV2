@@ -8,6 +8,9 @@
 @inject IGenericService<Category> categoryService
 @inject IGenericService<ImageModel> imageserivce
 @inject ISnackbar Snackbar
+
+
+
 @using Microsoft.EntityFrameworkCore;
 <style>
     .continer {
@@ -18,7 +21,10 @@
         justify-content: end;
         align-items: center;
     }
+
 </style>
+
+
 
 <MudPaper Width="250px" Class="py-3" Elevation="0">
     <MudNavMenu>
@@ -29,19 +35,19 @@
         <MudNavLink @onclick="OpenDialogCategory" Icon="@Icons.Material.Filled.Category" IconColor="Color.Info"><h4>إضافة صنف</h4></MudNavLink>
     </MudNavMenu>
 </MudPaper>
-@* start add product form *@
 
 
-
-
-
-@* End add product form *@
 @if (filteredProducts == null)
 {
     <p><em>Loading...</em></p>
 }
 else
 {
+    <div class="m-4">
+
+    <MudIconButton Icon="@Icons.Material.Filled.Refresh"  OnClick="OnInitializedAsync" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Large" />
+    </div>
+
     <MudTable Items="@filteredProducts"
               Hover="true"
               Editable="true"
@@ -88,7 +94,7 @@ else
             {
                 @* <MudTd DataLabel="Id">@context.Id</MudTd> *@
                 <MudTd>
-                    <MudSelect T="string" Label="brands" @onclick="OnInitializedAsync" @bind-Value="BrandValue" AnchorOrigin="Origin.BottomCenter">
+                    <MudSelect T="string" Label="brands" @onclick="OnDialogClose" @bind-Value="BrandValue" AnchorOrigin="Origin.BottomCenter">
                         @foreach (var filter in brands)
                         {
                             <MudSelectItem Value="filter.Name" />
@@ -96,7 +102,7 @@ else
                     </MudSelect>
                 </MudTd>
                 <MudTd>
-                    <MudSelect T="string" Label="category" @onclick="OnInitializedAsync" @bind-Value="CategoryValue" AnchorOrigin="Origin.BottomCenter">
+                    <MudSelect T="string" Label="category" @onclick="OnDialogClose" @bind-Value="CategoryValue" AnchorOrigin="Origin.BottomCenter">
                         @foreach (var filter in category)
                         {
                             <MudSelectItem Value="filter.Name" />
@@ -132,6 +138,11 @@ else
             }
         </RowTemplate>
     </MudTable>
+
+   
+        
+ 
+
 }
 @code {
     private bool _hidePosition;
@@ -142,11 +153,19 @@ else
     private string BrandValue { get; set; }
     private string CategoryValue { get; set; }
     private string ImageValue { get; set; }
+
+    [Parameter] public bool shownow { get; set; }
+    // [Parameter] public EventCallback<bool> shownow { get; set; }
+
+
+    private readonly DialogOptions _dialogOptions = new() { FullWidth = true };
+
     public IEnumerable<Product> products = new List<Product>();
     public IEnumerable<Product> filteredProducts = new List<Product>();
     public IEnumerable<Brand> brands = new List<Brand>();
     public IEnumerable<Category> category = new List<Category>();
     public IEnumerable<ImageModel> images = new List<ImageModel>();
+
     public async Task show(int id)
     {
         await OnInitializedAsync();
@@ -163,11 +182,13 @@ else
     private MudDialogInstance MudDialog { get; set; }
     //start modal
     private bool showInnerComponentDone = false;
-    private readonly DialogOptions _dialogOptions = new() { FullWidth = true };
     //end modal
+
 
     private Task OpenDialogBrand()
     {
+
+
         var options = new DialogOptions { CloseOnEscapeKey = true };
         return DialogService.ShowAsync<Createbrand>("add brand ", options);
     }
@@ -176,10 +197,17 @@ else
         var options = new DialogOptions { CloseOnEscapeKey = true };
         return DialogService.ShowAsync<Cateorey>("add Cateorey ", options);
     }
+
     private Task OpenDialog()
     {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
+        var options = new DialogOptions { CloseOnEscapeKey = true  };
         return DialogService.ShowAsync<Createproduct>("add product", options);
+    }
+    private async Task OnDialogClose()
+    {
+
+        // Refresh the product list after dialog closes
+        await OnInitializedAsync();
     }
     protected override async Task OnInitializedAsync()
     {

@@ -1,9 +1,11 @@
-﻿@inject IDialogService DialogService
+﻿@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@inject IDialogService DialogService
 @inject IGenericService<Product> ProductService
 @inject IGenericService<Brand> brandservice
 @inject IGenericService<Category> categoryService
 @inject IGenericService<ImageModel> imageserivce
 @inject ISnackbar Snackbar
+@inject NavigationManager Navigation
 
 <style>
     .continer {
@@ -66,15 +68,15 @@
                                         <MudSelectItem Value="filter.Name" />
                                     }
                                 </MudSelect>
-                                    <MudForm>
+                                <MudForm>
 
-                                        <MudRadioGroup @bind-Value="SelectedOption">
-                                            <MudRadio Value="@("Radio 1")" Color="Color.Primary" Dense="true">من صور موجودة</MudRadio>
-                                            <MudRadio Value="@("Radio 2")" Color="Color.Dark">تحميل صورة</MudRadio>
-                                            <MudRadio Value="@("Radio 3")" Color="Color.Dark">بلا صورة</MudRadio>
-                                        </MudRadioGroup>
-                                    </MudForm>
-                        
+                                    <MudRadioGroup @bind-Value="SelectedOption">
+                                        <MudRadio Value="@("Radio 1")" Color="Color.Primary" Dense="true">من صور موجودة</MudRadio>
+                                        <MudRadio Value="@("Radio 2")" Color="Color.Dark">تحميل صورة</MudRadio>
+                                        <MudRadio Value="@("Radio 3")" Color="Color.Dark">بلا صورة</MudRadio>
+                                    </MudRadioGroup>
+                                </MudForm>
+
                                 @if (SelectedOption == "Radio 1")
                                 {
                                     <MudSelect T="string" Label="الصورة" @bind-Value="ImageValue" AnchorOrigin="Origin.BottomCenter">
@@ -152,14 +154,10 @@
                     </MudItem>
                 </MudGrid>
             </EditForm>
-
-
-
-
-
         </div>
     </DialogContent>
 </MudDialog>
+
 
 @code {
     bool success;
@@ -177,8 +175,10 @@
     public IEnumerable<ImageModel> images = new List<ImageModel>();
     [Parameter] public EventCallback<bool> OnButtonClick { get; set; }
     [Parameter] public EventCallback<bool> refreshProduct { get; set; }
-    private bool showInnerComponent = false;
-  
+    
+    
+
+    
     public class GetInfo
     {
 
@@ -200,6 +200,7 @@
     private Task OpenDialogCategory()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
+
         return DialogService.ShowAsync<Cateorey>("Add Cateorey", options);
     }
 
@@ -213,7 +214,8 @@
     private bool ImageLoad = false;
     [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
     private void Cancel() => MudDialog.Cancel();
-
+    [Parameter]
+    public bool ButtonText { get; set; }
 
 
     private void ToggleButtonStyle() => isClicked = !isClicked;
@@ -224,6 +226,7 @@
         var request = await ProductService.GetAllAsync();
         if (request.Success) products = request.Data!;
         filteredProducts = products;
+
         var requestbrand = await brandservice.GetAllAsync();
         if (requestbrand.Success) brands = requestbrand.Data!;
 
@@ -258,8 +261,9 @@
 
             if (context.Validate())
             {
-                if (string.IsNullOrEmpty(GetInfoCB.BrandValue) || string.IsNullOrEmpty(GetInfoCB.CategoryValue)){
-                    Snackbar.Add("Brand and Category is Required" , Severity.Error);
+                if (string.IsNullOrEmpty(GetInfoCB.BrandValue) || string.IsNullOrEmpty(GetInfoCB.CategoryValue))
+                {
+                    Snackbar.Add("Brand and Category is Required", Severity.Error);
                     return;
                 }
                 if (string.IsNullOrEmpty(ImageValue) || SelectedOption == "Radio 3") ImageValue = "0.jpg";
@@ -299,16 +303,25 @@
 
                     Snackbar.Add("Add Product Done successfully", Severity.Success);
                     await refreshProduct.InvokeAsync(); //refresh Dashboard table
+
+                    await OnInitializedAsync();
+
+                    // var parameters = new DialogParameters<Dashboard>
+                    // {
+                    //     { x=>x.shownow , true }
+                    // };
+
+                    // await DialogService.ShowAsync<Dashboard>("Add product", parameters);
+      
                     createProduct = new Product();
                     ImageValue = "";
                     _Loadding = false;
 
                     StateHasChanged();
+
                 }
-                else
-                {
-                    Snackbar.Add(request.Message, Severity.Error);
-                }
+                else Snackbar.Add(request.Message, Severity.Error);
+            
                 _Loadding = false;
 
             }
@@ -371,7 +384,7 @@
             uploadedImageName = DateTime.Now.Microsecond.ToString() + "_" + selectedFile.Name;
             // var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
             // var filePath = Path.Combine("D:\\prjct\\gitm\\MobileStoreV2\\MobileStoreV2\\Resources\\Images\\", "uploads", uploadedImageName);
-            var filePath = Path.Combine($"C:\\Users\\Dell\\Desktop\\MobileStoreV2\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
+            var filePath = Path.Combine($"C:\\Users\\AMRO\\Desktop\\MobileStore\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
             //  var filePath = Path.Combine("C:\\Users\\Rami\\source\\repos\\MobileStoreV2\\MobileStoreV2\\wwwroot\\", "uploads", uploadedImageName);
 
 

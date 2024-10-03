@@ -62,7 +62,7 @@
     [CascadingParameter] private MudDialogInstance MudDialog { get; set; }
 
     private void Cancel() { MudDialog.Cancel();
-  
+            
     }
 
     Brand CreateBrand = new Brand();
@@ -94,6 +94,7 @@
 
             brands.Append(brand);
             brands = requestRefresh.Data!;
+            
             Snackbar.Add("Add Brand Done Successfully", Severity.Success);
             await refreshProduct.InvokeAsync(); //refresh Dashboard table
             CreateBrand = new Brand();
