@@ -17,7 +17,7 @@
             <MudSwitch @bind-Value="_rightToLeft" Label="@Localizer("Ar")" Color="Color.Warning" />
 
         </MudAppBar>
-        <MudDrawer @bind-Open="@_open" ClipMode="_clipMode" Breakpoint="@_breakpoint" Elevation="1" Variant="@DrawerVariant.Mini" Style="background-color:#6C6CD9 ; color:white">
+        <MudDrawer @bind-Open="@_open" ClipMode="_clipMode" Breakpoint="@_breakpoint" Elevation="1" Variant="@DrawerVariant.Mini" >
 
             <NavMenu _rightToLeft ="@_rightToLeft" />
 
