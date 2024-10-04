@@ -23,6 +23,17 @@
         
         
     }
+    .unit-card-left{
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        width: 100%
+    }
+    @@media only screen and (max-width: 768px) {
+    .unit-card-left{
+        flex-direction:column;
+    }
+
 </style>
 
 <MudPaper Height="100%" Width="100%">
@@ -118,14 +129,14 @@
 @*     </div>
 </div> *@
 
-<div style="display:flex;align-items:center;justify-content:space-evenly;width:100%">
+<div  class="unit-card-left">
     <div >
             <MudItem>
             <MudPaper Height="425px" Width="550px" Class="card-left">
                     
                         <MudGrid>
                             <div class="continer-card" style="display:flex">
-                                <EditForm Model="unitslist" OnValidSubmit="OnValidSubmit"  style=";width:500px;position:absolute">
+                                <EditForm Model="unitslist" OnValidSubmit="OnValidSubmit"  style="width:500px;position:absolute">
                                     <DataAnnotationsValidator />
                      
                                                 <MudCardContent >
