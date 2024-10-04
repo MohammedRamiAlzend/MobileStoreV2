@@ -1,0 +1,148 @@
+﻿<style>
+    /* From Uiverse.io by alexruix */
+    .card {
+        border-radius: 20px;
+        background: #f5f5f5;
+        position: relative;
+        padding: 1.8rem;
+        border: 2px solid #c3c6ce;
+        transition: 0.5s ease-out;
+        overflow: visible;
+        position: relative;
+    }
+
+    .card-details {
+        color: black;
+        height: 100%;
+        gap: .5em;
+        display: grid;
+        place-content: center;
+    }
+
+
+
+    .text-body {
+        color: rgb(134, 134, 134);
+    }
+
+    /*Text*/
+    /*     .text-title {
+                                font-size: 1.5em;
+                                font-weight: bold;
+                            }
+                         */
+    /*Hover*/
+    .card:hover {
+        border-color: #008bf8;
+        box-shadow: 0 4px 18px 0 rgba(0, 0, 0, 0.25);
+    }
+
+
+
+
+    /* show onclick start */
+    /* From Uiverse.io by eslam-hany */
+    .card-show {
+        position: relative;
+        width: 220px;
+        height: 320px;
+        background: #cad7ff;
+        display: flex;
+        /*         align-items: center;
+                                justify-content: center;
+                                font-size: 25px;
+                                font-weight: bold; */
+        border-radius: 15px;
+        cursor: pointer;
+    }
+
+        .card-show::before,
+        .card-show::after {
+            position: absolute;
+            content: "";
+            width: 20%;
+            height: 20%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 25px;
+            font-weight: bold;
+            background-color: #9bade6;
+            transition: all 0.5s;
+        }
+
+        .card-show::before {
+            top: 0;
+            right: 0;
+            border-radius: 0 15px 0 100%;
+        }
+
+        .card-show::after {
+            bottom: 0;
+            left: 0;
+            border-radius: 0 100% 0 15px;
+        }
+
+        .card-show:hover::before,
+        .card-show:hover:after {
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
+            transition: all 0.5s;
+        }
+
+    .card-hover:hover:after {
+        content: "";
+    }
+
+    .continer-card-right {
+        width: 266px;
+        height: 126px;
+        display: flex;
+        position: relative;
+        flex-direction:column;
+
+        
+    }
+
+
+    /* show onclick end */
+</style>
+
+
+<MudItem>
+    <MudPaper Height="400px" Width="550px" Class="card">
+        <div class="card-details">
+            <MudGrid>
+                <div class="continer-card-right" >
+             @*        <div style="display:flex;justify-content:space-evenly">
+                        <div>
+                            <h4> 250.000 </h4>
+                        </div>
+                        <div>
+          
+                            <h5> :الرصيد السابق</h5>
+                        </div>
+                        
+                    </div>
+              *@
+                    @* <MudTd DataLabel="باركود"><MudNumericField Label="ادخل رصيد اليوم" @bind-Value="createProduct.BarCode" For="@( () => createProduct.BarCode )" /></MudTd> *@
+                    <div >
+                        <MudTd DataLabel="باركود"><MudNumericField Label="ادخل رصيد اليوم"  For="@( () => BarCode )" /></MudTd>
+                    </div>
+                    <div style="display:flex;justify-content:end"> 
+
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary">حفظ</MudButton>
+                    </div>
+
+                </div>
+
+            </MudGrid>
+        </div>
+    </MudPaper>
+
+</MudItem>
+@code {
+    public int BarCode { get; set; }
+
+}

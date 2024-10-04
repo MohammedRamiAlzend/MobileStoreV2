@@ -4,7 +4,25 @@
 @using MobileStoreV2.Components.Pages.AllDashboard
 
 
-
+<style>
+    .card-left{
+        border-radius: 20px;
+        background: #f5f5f5;
+        position: relative;
+        padding: 1.8rem;
+        border: 2px solid #c3c6ce;
+        transition: 0.5s ease-out;
+        overflow: visible;
+        position: relative;
+    }
+    .continer-card{
+  
+        display: flex;
+        position: relative;
+        
+        
+    }
+</style>
 
 <MudPaper Height="100%" Width="100%">
 
@@ -17,79 +35,137 @@
 <br />
 <br />
 
-<MudPaper Height="90%" Width="100%" Square="true" >
-    <MudGrid Spacing="3" >
+<MudPaper Height="90%" Width="100%" Square="true">
+    <MudGrid Spacing="3">
         <div style="width:100%;display:flex;justify-content:space-evenly;align-items:center">
-        @for (int i = 0; i <= 2; i++)
-        {
-            <CardInfo />
-        }
+            @for (int i = 0; i <= 2; i++)
+            {
+                <CardInfo />
+            }
         </div>
     </MudGrid>
 </MudPaper>
 <MudSpacer />
 <br />
 <br />
-<MudPaper Height="100%" Width="50%">
-    <MudContainer Fixed="true">
-        <MudPaper Height="100%" Width="100%" Square="true">
-            <EditForm Model="unitslist" OnValidSubmit="OnValidSubmit">
-                <DataAnnotationsValidator />
-                <MudGrid>
-                    <MudItem xs="12" sm="7">
-                        <MudCard>
-                            <MudCardContent>
-                                <MudForm>
-                                    <MudRadioGroup @bind-Value="unitslist.Company">
-                                        <MudRadio Value="@("MTN")" Color="Color.Primary">MTN</MudRadio>
-                                        <MudRadio Value="@("Syriatel")" Color="Color.Info">Syriatel</MudRadio>
-                                    </MudRadioGroup>
-                                </MudForm>
-                                <MudTextField Label="الرقم" HelperText="اعلى عدد ارقام 10" Mask="@(new PatternMask("000 000 0000"))"
-                                              @bind-Value="unitslist.Nummber" For="@(() => unitslist.Nummber)" />
-                                <MudForm>
-                                    <MudRadioGroup @bind-Value="unitslist.PayType">
-                                        <MudRadio Value="true" Color="Color.Primary" Dense="true">مسبق الدفع</MudRadio>
-                                        <MudRadio Value="false" Color="Color.Info" Dense="false">لاحق الدفع</MudRadio>
-                                    </MudRadioGroup>
-                                </MudForm>
+@* <div style="display:flex;align-items:center;justify-content:space-around">
+    <div> *@
+    @*     <MudPaper Height="100%" Width="50%">
+            <MudContainer Fixed="true">
+                <MudPaper Height="100%" Width="100%" Square="true">
+                    <EditForm Model="unitslist" OnValidSubmit="OnValidSubmit">
+                        <DataAnnotationsValidator />
+                        <MudGrid>
+                            <MudItem xs="12" sm="7">
+                                <MudCard>
+                                    <MudCardContent>
+                                        <MudForm>
+                                            <MudRadioGroup @bind-Value="unitslist.Company">
+                                                <MudRadio Value="@("MTN")" Color="Color.Primary">MTN</MudRadio>
+                                                <MudRadio Value="@("Syriatel")" Color="Color.Info">Syriatel</MudRadio>
+                                            </MudRadioGroup>
+                                        </MudForm>
+                                        <MudTextField Label="الرقم" HelperText="اعلى عدد ارقام 10" Mask="@(new PatternMask("000 000 0000"))"
+                                                      @bind-Value="unitslist.Nummber" For="@(() => unitslist.Nummber)" />
+                                        <MudForm>
+                                            <MudRadioGroup @bind-Value="unitslist.PayType">
+                                                <MudRadio Value="true" Color="Color.Primary" Dense="true">مسبق الدفع</MudRadio>
+                                                <MudRadio Value="false" Color="Color.Info" Dense="false">لاحق الدفع</MudRadio>
+                                            </MudRadioGroup>
+                                        </MudForm>
 
-                                <MudTextField Label="السعر"
-                                              @bind-Value="unitslist.price" For="@(() => unitslist.price)" />
+                                        <MudTextField Label="السعر"
+                                                      @bind-Value="unitslist.price" For="@(() => unitslist.price)" />
 
-                                <MudField Variant="Variant.Filled">  رصيد الصندوق:  500000 ل.س</MudField>
+                                        <MudField Variant="Variant.Filled">  رصيد الصندوق:  500000 ل.س</MudField>
 
-                            </MudCardContent>
+                                    </MudCardContent>
 
-                            <MudCardActions>
-                                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">حفظ</MudButton>
-                            </MudCardActions>
-                        </MudCard>
-                    </MudItem>
-                </MudGrid>
-            </EditForm>
-        </MudPaper>
-        <MudPaper Height="100%" Width="100%" Square="true">
-            <MudTable Items="filteredProducts" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info">
-                <HeaderContent>
-                    <MudTh>Nr</MudTh>
-                    <MudTh>Sign</MudTh>
-                    <MudTh>Name</MudTh>
-                    <MudTh>Position</MudTh>
-                    <MudTh>Molar mass</MudTh>
-                </HeaderContent>
-                <RowTemplate>
-                    <MudTd DataLabel="Nr">context.Number</MudTd>
-                    <MudTd DataLabel="Sign">context.Sign</MudTd>
-                    <MudTd DataLabel="Name">context.Name</MudTd>
-                    <MudTd DataLabel="Position">context.Position</MudTd>
-                    <MudTd DataLabel="Molar mass">context.Molar</MudTd>
-                </RowTemplate>
-            </MudTable>
-        </MudPaper>
-    </MudContainer>
-</MudPaper>
+                                    <MudCardActions>
+                                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">حفظ</MudButton>
+                                    </MudCardActions>
+                                </MudCard>
+                            </MudItem>
+                        </MudGrid>
+                    </EditForm>
+                </MudPaper>
+                <MudPaper Height="100%" Width="100%" Square="true">
+                    <MudTable Items="filteredProducts" Hover="true" Breakpoint="Breakpoint.Sm" LoadingProgressColor="Color.Info">
+                        <HeaderContent>
+                            <MudTh>Nr</MudTh>
+                            <MudTh>Sign</MudTh>
+                            <MudTh>Name</MudTh>
+                            <MudTh>Position</MudTh>
+                            <MudTh>Molar mass</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="Nr">context.Number</MudTd>
+                            <MudTd DataLabel="Sign">context.Sign</MudTd>
+                            <MudTd DataLabel="Name">context.Name</MudTd>
+                            <MudTd DataLabel="Position">context.Position</MudTd>
+                            <MudTd DataLabel="Molar mass">context.Molar</MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                </MudPaper>
+            </MudContainer>
+        </MudPaper> *@
 
+   @*  </div>
+    <div> *@
+
+        
+@*     </div>
+</div> *@
+
+<div style="display:flex;align-items:center;justify-content:space-evenly;width:100%">
+    <div >
+            <MudItem>
+            <MudPaper Height="400px" Width="550px" Class="card-left">
+                    
+                        <MudGrid>
+                            <div class="continer-card" style="display:flex">
+                                <EditForm Model="unitslist" OnValidSubmit="OnValidSubmit"  style=";width:500px;position:absolute">
+                                    <DataAnnotationsValidator />
+                     
+                                                <MudCardContent >
+                                             
+                                                    <MudForm>
+                                                        <MudRadioGroup @bind-Value="unitslist.Company">
+                                                            <MudRadio Value="@("MTN")" Color="Color.Primary">MTN</MudRadio>
+                                                            <MudRadio Value="@("Syriatel")" Color="Color.Info">Syriatel</MudRadio>
+                                                        </MudRadioGroup>
+                                                    </MudForm>
+                                                    <MudTextField Label="الرقم" HelperText="اعلى عدد ارقام 10" Mask="@(new PatternMask("000 000 0000"))"
+                                                                  @bind-Value="unitslist.Nummber" For="@(() => unitslist.Nummber)" />
+                                                    <MudForm>
+                                                        <MudRadioGroup @bind-Value="unitslist.PayType">
+                                                            <MudRadio Value="true" Color="Color.Primary" Dense="true">مسبق الدفع</MudRadio>
+                                                            <MudRadio Value="false" Color="Color.Info" Dense="false">لاحق الدفع</MudRadio>
+                                                        </MudRadioGroup>
+                                                    </MudForm>
+
+                                                    <MudTextField Label="السعر"
+                                                                  @bind-Value="unitslist.price" For="@(() => unitslist.price)" />
+
+                                                    <MudField Variant="Variant.Filled">  رصيد الصندوق:  500000 ل.س</MudField>
+
+                                                </MudCardContent>
+
+                                                <MudCardActions>
+                                                    <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">حفظ</MudButton>
+                                                </MudCardActions>
+                                 
+                                </EditForm>
+                            </div>
+                        </MudGrid>
+                </MudPaper>
+
+            </MudItem>
+  
+    </div>
+        
+    <div><BoxCard/></div>
+</div>
 
 
 
