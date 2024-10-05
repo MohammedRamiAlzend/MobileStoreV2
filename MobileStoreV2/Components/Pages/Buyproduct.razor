@@ -37,42 +37,51 @@
             <MudTd><MudNumericField @bind-Value="context.Quantity" Min="1" /></MudTd>
             <MudTd>@((context.Product.BuyPrice * context.Quantity).ToString("C"))</MudTd>
             <MudTd>
-                <MudButton Variant="Variant.Text" Color="Color.Error" OnClick="@(() => RemoveFromBill(context))">
+                @* <MudButton Variant="Variant.Text" Color="Color.Error" OnClick="@(() => RemoveFromBill(context))">
                     Remove
-                </MudButton>
+                </MudButton> *@
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@(() => RemoveFromBill(context))" Variant="Variant.Outlined" Color="Color.Error" Size="Size.Medium" />
+
             </MudTd>
         </RowTemplate>
     </MudTable>
     <MudContainer Class="my-4 continer">
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save" OnClick="SaveBill" Class="mt-4">Save Bill</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Save" OnClick="SaveBill" Class="mt-4"> حفظ الفاتورة</MudButton>
     </MudContainer>
 </MudPaper>
 
 
-<MudDialog @bind-IsVisible="_visible" Class="card-show">
+<MudDialog @bind-IsVisible="_visible" Options="@_maxWidth">
     <TitleContent><h3>product list </h3></TitleContent>
-    <DialogContent>
-        <MudTable Items="filteredProducts" Hover="true" Dense=true>
-            <ToolBarContent>
-                <MudTextField T="string" Label="Search" @bind-Value="searchString" TextChanged="FilterProducts" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-            </ToolBarContent>
-            <HeaderContent>
-                <MudTh>Select</MudTh>
-                <MudTh>Product Name</MudTh>
-                <MudTh>Buy Price</MudTh>
-                <MudTh>Sell Price</MudTh>
-            </HeaderContent>
-            <RowTemplate>
-                <MudTd>
-                    <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => AddToBill(context))">
-                        Add
-                    </MudButton>
-                </MudTd>
-                <MudTd>@context.Name</MudTd>
-                <MudTd>@context.BuyPrice.ToString("C")</MudTd>
-                <MudTd>@context.SellPrice.ToString("C")</MudTd>
-            </RowTemplate>
-        </MudTable>
+    <DialogContent >
+     
+            <MudTable Items="filteredProducts" Hover="true" Dense=true>
+                <ToolBarContent>
+                    <MudTextField T="string" Label="Search" @bind-Value="searchString" TextChanged="FilterProducts" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh>Select</MudTh>
+                    <MudTh>Product Name</MudTh>
+                    <MudTh>Buy Price</MudTh>
+                    <MudTh>Sell Price</MudTh>
+                    <MudTh>barcode</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd>
+                        <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => AddToBill(context))">
+                            Add
+                        </MudButton>
+                    </MudTd>
+                    <MudTd>@context.Name</MudTd>
+                    <MudTd>@context.BuyPrice.ToString("C")</MudTd>
+                    <MudTd>@context.SellPrice.ToString("C")</MudTd>
+                    <MudTd>@context.BarCode</MudTd>
+                </RowTemplate>
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+            </MudTable>
+   
     </DialogContent>
     <DialogActions>
         <MudTd><MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Close" OnClick="Close" Class="mt-4">Close</MudButton></MudTd>
@@ -84,6 +93,8 @@
     private List<BillItem> billItems = new List<BillItem>();
     public IEnumerable<Product> products = new List<Product>();
     public IEnumerable<Product> filteredProducts = new List<Product>();
+    private readonly DialogOptions _maxWidth = new() { MaxWidth = MaxWidth.Medium, FullWidth = true };
+    private readonly DialogOptions _topCenter = new() { Position = DialogPosition.TopCenter };
 
     private MudTextField<string> textField;
     public void Close() => _visible = false;
@@ -113,8 +124,8 @@
  
     private void SaveBill()
     {
-        if(billItems.Count() !=  0)Snackbar.Add("save done", Severity.Success);
-        else Snackbar.Add("add one product at lest", Severity.Warning);
+        if(billItems.Count() !=  0)Snackbar.Add(" تم حفظ الفاتورة بنجاح", Severity.Success);
+        else Snackbar.Add("يجب إضافة منتج واحد على الأقل ", Severity.Warning);
     }
 
     private void OnFilterChanged(string value)
@@ -136,7 +147,7 @@
 
     }
     string state = "Message box hasn't been opened yet";
-
+     
     private async void SureDialog()
     {
         bool? result = await DialogService.ShowMessageBox(

@@ -48,7 +48,7 @@
 <br />
 <br />
 
-<MudPaper Height="90%" Width="100%" Square="true">
+<MudPaper Height="90%" Width="100%" Square="true" Style="box-shadow:none">
     <MudGrid Spacing="3">
         <div style="width:100%;display:flex;justify-content:space-evenly;align-items:center">
             @for (int i = 0; i <= 2; i++)
@@ -138,7 +138,7 @@
                         <MudMenu Icon="@Icons.Material.Filled.MoreVert"AriaLabel="Open user menu" >
                         <MudMenuItem OnClick="@(() => OnMenuItemSelected("Syriatel"))">syriatel إدخال رصيد</MudMenuItem>
                         <MudMenuItem OnClick="@(() => OnMenuItemSelected("MTN"))">MTN إدخال رصيد</MudMenuItem>
-                        <MudMenuItem OnClick="@(() => OnMenuItemSelected("Waffa"))">WaffaTelecome إدخال رصيد</MudMenuItem>
+                        <MudMenuItem OnClick="@(() => OnMenuItemSelected("Waffa"))">Waffa إدخال رصيد</MudMenuItem>
                         </MudMenu>
                     </div>
                         <MudGrid>
@@ -208,6 +208,7 @@
     {
         aTimer = new Timer(Tick, null, 0, 1000);
     }
+
     private Task OnMenuItemSelected(string selectedItem)
     {
      

@@ -26,7 +26,7 @@
         <MudButton Variant="Variant.Filled" Class="d-flex align-center justify-center mud-width-full py-8 px-10"><h4>الأصناف</h4></MudButton>
     </MudItem>
      <MudItem xs="4">
-        <MudButton Variant="Variant.Filled" Class="d-flex align-center justify-center mud-width-full py-8 px-10"><h4>تسجيل حسابات </h4></MudButton>
+        <MudButton Variant="Variant.Filled" OnClick="CapitalDialog" Class="d-flex align-center justify-center mud-width-full py-8 px-10"><h4>تخزين قيمة رأس المال  </h4></MudButton>
     </MudItem>
      <MudItem xs="4">
         <MudButton Variant="Variant.Filled" Class="d-flex align-center justify-center mud-width-full py-8 px-10"><h4>المخزن</h4></MudButton>
@@ -61,5 +61,10 @@
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
         return DialogService.ShowAsync<FilterDateDialog>("Simple Dialog", options);
+    }
+    private Task CapitalDialog()
+    {
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        return DialogService.ShowAsync<CapitalDialog>("Simple Dialog", options);
     }
 }

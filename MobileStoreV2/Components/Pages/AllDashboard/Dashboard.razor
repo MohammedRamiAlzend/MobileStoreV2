@@ -137,12 +137,10 @@ else
                 <MudTd><MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="@(() => Close())" Variant="Variant.Filled" Color="Color.Error" Size="Size.Medium" />    </MudTd>
             }
         </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
     </MudTable>
-
-   
-        
- 
-
 }
 @code {
     private bool _hidePosition;
@@ -187,8 +185,6 @@ else
 
     private Task OpenDialogBrand()
     {
-
-
         var options = new DialogOptions { CloseOnEscapeKey = true };
         return DialogService.ShowAsync<Createbrand>("add brand ", options);
     }
@@ -201,8 +197,10 @@ else
     private Task OpenDialog()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true  };
-        return DialogService.ShowAsync<Createproduct>("add product", options);
+         OnInitializedAsync();
+        return DialogService.ShowAsync<Createproduct>("add product", options);  
     }
+
     private async Task OnDialogClose()
     {
 
@@ -308,8 +306,8 @@ else
     private async void SureDialog(int id)
     {
         bool? result = await DialogService.ShowMessageBox(
-            "Warning",
-            "Are You Sure You Want To Delete This Prodcut !",
+            "تنبيه",
+            "هل أنت متأكد من حذف المنتج",
             yesText: "Delete!", cancelText: "Cancel");
 
         state = result == null ? "Canceled" : "Deleted!";
