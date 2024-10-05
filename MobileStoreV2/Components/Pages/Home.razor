@@ -2,7 +2,7 @@
 @using Microsoft.EntityFrameworkCore.Metadata.Internal
 @inject NavigationManager Navigation
 @using MobileStoreV2.Components.Pages.AllDashboard
-
+@inject IDialogService DialogService
 
 <style>
     .card-left{
@@ -11,7 +11,7 @@
        border: 2px solid #c3c6ce; */
         
         position: relative;
-        padding: 1.8rem;
+        /* padding: 1.8rem; */
         transition: 0.5s ease-out;
         overflow: visible;
         position: relative;
@@ -20,7 +20,8 @@
   
         display: flex;
         position: relative;
-        
+        padding: 1.8rem;
+        padding-top:0;
         
     }
     .unit-card-left{
@@ -29,10 +30,10 @@
         justify-content: space-evenly;
         width: 100%
     }
-    @@media only screen and (max-width: 768px) {
+  /*   @@media only screen and (max-width: 768px) {
     .unit-card-left{
         flex-direction:column;
-    }
+    } */
 
 </style>
 
@@ -132,10 +133,16 @@
 <div  class="unit-card-left">
     <div >
             <MudItem>
-            <MudPaper Height="425px" Width="550px" Class="card-left">
-                    
+                 <MudPaper Height="425px" Width="550px" Class="card-left" >
+                    <div style="width:100%;display:flex;justify-content:end;align-items:end;position:relative; ">
+                        <MudMenu Icon="@Icons.Material.Filled.MoreVert"AriaLabel="Open user menu" >
+                        <MudMenuItem OnClick="@(() => OnMenuItemSelected("Syriatel"))">syriatel إدخال رصيد</MudMenuItem>
+                        <MudMenuItem OnClick="@(() => OnMenuItemSelected("MTN"))">MTN إدخال رصيد</MudMenuItem>
+                        <MudMenuItem OnClick="@(() => OnMenuItemSelected("Waffa"))">WaffaTelecome إدخال رصيد</MudMenuItem>
+                        </MudMenu>
+                    </div>
                         <MudGrid>
-                            <div class="continer-card" style="display:flex">
+                            <div class="continer-card" >
                                 <EditForm Model="unitslist" OnValidSubmit="OnValidSubmit"  style="width:500px;position:absolute">
                                     <DataAnnotationsValidator />
                      
@@ -185,9 +192,14 @@
 @code {
     public DateTime datenow { get; set; } = DateTime.Now;
     public int ballance { get; set; }
-    public IEnumerable<Units> filteredProducts = new List<Units>();
+    public bool _Visable { get; set; }
 
+    private readonly DialogOptions _dialogOptions = new() { FullWidth = true };
+
+    public IEnumerable<Units> filteredProducts = new List<Units>();
     Units unitslist = new Units();
+
+
 
     // string datenow;
     Timer aTimer;
@@ -196,6 +208,16 @@
     {
         aTimer = new Timer(Tick, null, 0, 1000);
     }
+    private Task OnMenuItemSelected(string selectedItem)
+    {
+     
+        var parameters = new DialogParameters<CompanyUnit>
+        {
+            { x=>x.CompanyName , selectedItem}
+        };
+        return DialogService.ShowAsync<CompanyUnit>("Options Dialog", parameters);
+    }
+
 
     private void Tick(object _)
     {

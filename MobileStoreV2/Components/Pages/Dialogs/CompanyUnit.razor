@@ -1,0 +1,25 @@
+﻿<MudDialog>
+    <TitleContent>
+        <h4> @CompanyName أدخل الرصيد اليومي</h4>
+    </TitleContent>
+    <DialogContent>
+        <MudTd DataLabel="الرصيد الأن"><MudNumericField Label="ادخل رصيد اليوم" For="@( () => ammount )" /></MudTd>
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private MudDialogInstance MudDialog { get; set; }
+    [Parameter] public string CompanyName { get; set; }
+
+    public int ammount { get; set; }
+
+    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
+
+    private void Cancel() => MudDialog.Cancel();
+}
