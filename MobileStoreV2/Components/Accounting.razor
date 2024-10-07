@@ -6,7 +6,7 @@
 
 
 @* Start squr componet  *@
-<MudGrid >
+<MudGrid Style="padding:1.8rem" >
     <MudItem xs="4">
         <MudButton Variant="Variant.Filled" Class="d-flex align-center justify-center mud-width-full py-8 px-10"><h4>بيع منتج</h4></MudButton>
     </MudItem>
@@ -26,7 +26,7 @@
         <MudButton Variant="Variant.Filled" Class="d-flex align-center justify-center mud-width-full py-8 px-10"><h4>الأصناف</h4></MudButton>
     </MudItem>
      <MudItem xs="4">
-        <MudButton Variant="Variant.Filled" OnClick="CapitalDialog" Class="d-flex align-center justify-center mud-width-full py-8 px-10"><h4>تخزين قيمة رأس المال  </h4></MudButton>
+        <MudButton Variant="Variant.Filled" OnClick="CapitalDialog" Class="d-flex align-center justify-center mud-width-full py-8 px-10"><h4>تخزين قيمة رأس المال السنوي</h4></MudButton>
     </MudItem>
      <MudItem xs="4">
         <MudButton Variant="Variant.Filled" Class="d-flex align-center justify-center mud-width-full py-8 px-10"><h4>المخزن</h4></MudButton>
@@ -36,6 +36,8 @@
     </MudItem>
 </MudGrid>
 @* End squr componet  *@
+
+
 
 @code {
     [CascadingParameter] private MudDialogInstance MudDialog { get; set; }

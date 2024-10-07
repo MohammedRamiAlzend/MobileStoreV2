@@ -31,11 +31,11 @@
         </HeaderContent>
         <RowTemplate>
             <MudTd>@context.Product.Name</MudTd>
-            <MudTd>@context.Product.BuyPrice.ToString("C")</MudTd>
-            <MudTd>@context.Product.SellPrice.ToString("C")</MudTd>
+            <MudTd>@context.Product.BuyPrice.ToString("C", new System.Globalization.CultureInfo(Currency))</MudTd>
+            <MudTd>@context.Product.SellPrice.ToString("C", new System.Globalization.CultureInfo(Currency))</MudTd>
             <MudTd>@context.Product.BarCode</MudTd>
             <MudTd><MudNumericField @bind-Value="context.Quantity" Min="1" /></MudTd>
-            <MudTd>@((context.Product.BuyPrice * context.Quantity).ToString("C"))</MudTd>
+            <MudTd>@((context.Product.BuyPrice * context.Quantity).ToString("C", new System.Globalization.CultureInfo(Currency)))</MudTd>
             <MudTd>
                 @* <MudButton Variant="Variant.Text" Color="Color.Error" OnClick="@(() => RemoveFromBill(context))">
                     Remove
@@ -51,8 +51,11 @@
 </MudPaper>
 
 
-<MudDialog @bind-IsVisible="_visible" Options="@_maxWidth">
-    <TitleContent><h3>product list </h3></TitleContent>
+<MudDialog @bind-IsVisible="_visible" Options="@_maxWidth" >
+
+
+    <TitleContent ><h3>عرض المنتجات </h3></TitleContent>
+
     <DialogContent >
      
             <MudTable Items="filteredProducts" Hover="true" Dense=true>
@@ -69,7 +72,7 @@
                 <RowTemplate>
                     <MudTd>
                         <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => AddToBill(context))">
-                            Add
+                        <h4>إضافة</h4>
                         </MudButton>
                     </MudTd>
                     <MudTd>@context.Name</MudTd>
@@ -95,7 +98,7 @@
     public IEnumerable<Product> filteredProducts = new List<Product>();
     private readonly DialogOptions _maxWidth = new() { MaxWidth = MaxWidth.Medium, FullWidth = true };
     private readonly DialogOptions _topCenter = new() { Position = DialogPosition.TopCenter };
-
+    public string Currency { get; set; } = "ar-SY";
     private MudTextField<string> textField;
     public void Close() => _visible = false;
 
@@ -150,10 +153,12 @@
      
     private async void SureDialog()
     {
-        bool? result = await DialogService.ShowMessageBox(
-            "info",
-            "product Name or Barcode not exist , display products ?",
-            yesText: "show", cancelText: "Cancel");
+          bool? result = await DialogService.ShowMessageBox(
+        title: "تنبيه",
+        message: "اسم المنتج أو الباركود غير موجود , هل تريد عرض المنتجات",
+        yesText: "عرض", 
+        cancelText: "إغلاق"
+    );
 
         state = result == null ? "Canceled" : "Deleted!";
         if (state == "Deleted!")  OpenDialog();

@@ -95,7 +95,6 @@
     .card-hover:hover:after {
         content: "";
     }
-
     .continer-card-right {
         width: 266px;
         height: 126px;
@@ -112,34 +111,14 @@
 
 
 <MudItem>
-    <MudPaper Height="400px" Width="550px" Class="card-right">
-        <div class="card-details">
-            <MudGrid>
-                <div class="continer-card-right" >
-             @*        <div style="display:flex;justify-content:space-evenly">
-                        <div>
-                            <h4> 250.000 </h4>
-                        </div>
-                        <div>
-          
-                            <h5> :الرصيد السابق</h5>
-                        </div>
-                        
-                    </div>
-              *@
-                    @* <MudTd DataLabel="باركود"><MudNumericField Label="ادخل رصيد اليوم" @bind-Value="createProduct.BarCode" For="@( () => createProduct.BarCode )" /></MudTd> *@
-                    <div >
-                        <MudTd DataLabel="باركود"><MudNumericField Label="ادخل رصيد اليوم"  For="@( () => BarCode )" /></MudTd>
-                    </div>
-                    <div style="display:flex;justify-content:end"> 
+    <MudPaper>
+        <MudGrid Class="d-flex flex-column ">
+            <MudTd DataLabel="باركود" Class="d-flex align-items-end  flex-column ">
+                <MudNumericField Label="ادخل رصيد اليوم" For="@( () => BarCode )" />
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Style="margin-top:10px" >حفظ</MudButton>
+            </MudTd>
 
-                        <MudButton Variant="Variant.Filled" Color="Color.Primary">حفظ</MudButton>
-                    </div>
-
-                </div>
-
-            </MudGrid>
-        </div>
+        </MudGrid>
     </MudPaper>
 
 </MudItem>

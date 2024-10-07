@@ -2,8 +2,12 @@
     <TitleContent>
         <h4> أدخل رأس المال</h4>
     </TitleContent>
-    <DialogContent>
-        <MudTd DataLabel="الرصيد الأن"><MudNumericField Label="ادخل قيمة رأس المال " For="@( () => ammount )" /></MudTd>
+    <DialogContent >
+        <div class="text-center">
+            <MudTd DataLabel="الرصيد الأن"><MudNumericField Label=" ادخل قيمة رأس المال السنوي " For="@( () => ammount )" /></MudTd>
+              <br />
+            <div style="font-size:20px">@DateNow :تاريخ اليوم</div>
+        </div>
 
     </DialogContent>
     <DialogActions>
@@ -16,6 +20,7 @@
     [CascadingParameter]
     private MudDialogInstance MudDialog { get; set; }
     [Parameter] public string CompanyName { get; set; }
+    public String DateNow { get; set; } = DateTime.Now.ToString("yyyy-MM-dd");
 
     public int ammount { get; set; }
 

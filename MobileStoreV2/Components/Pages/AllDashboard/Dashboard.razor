@@ -83,8 +83,8 @@ else
                 <MudTd DataLabel="Name">@context.Name</MudTd>
                 <MudTd DataLabel="Description">@context.Description</MudTd>
                 <MudTd DataLabel="Quantity" HideSmall="_hidePosition">@context.Quantity</MudTd>
-                <MudTd DataLabel="Buy Price">@context.BuyPrice</MudTd>
-                <MudTd DataLabel="Sell Price">@context.SellPrice</MudTd>
+                <MudTd DataLabel="Buy Price">@context.BuyPrice.ToString("C", new System.Globalization.CultureInfo(Currency))</MudTd>
+                <MudTd DataLabel="Sell Price">@context.SellPrice.ToString("C", new System.Globalization.CultureInfo(Currency))</MudTd>
                 <MudTd DataLabel="BarCode">@context.BarCode</MudTd>
                 <MudTd DataLabel="BarCode">@context.Image?.ImageName</MudTd>
                 <MudTd DataLabel="Edit"><MudIconButton Icon="@Icons.Material.Filled.Edit" Class="mx-2" OnClick="@(() => show(context.Id))" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Medium" /></MudTd>
@@ -151,6 +151,7 @@ else
     private string BrandValue { get; set; }
     private string CategoryValue { get; set; }
     private string ImageValue { get; set; }
+    public string Currency { get; set; } = "ar-SY";
 
     [Parameter] public bool shownow { get; set; }
     // [Parameter] public EventCallback<bool> shownow { get; set; }
@@ -305,14 +306,17 @@ else
 
     private async void SureDialog(int id)
     {
-        bool? result = await DialogService.ShowMessageBox(
-            "تنبيه",
-            "هل أنت متأكد من حذف المنتج",
-            yesText: "Delete!", cancelText: "Cancel");
 
-        state = result == null ? "Canceled" : "Deleted!";
-        if (state == "Deleted!") await deleteData(id);
-        StateHasChanged();
+            bool? result = await DialogService.ShowMessageBox(
+                "تنبيه",
+                "هل أنت متأكد من حذف المنتج",
+                yesText: "Delete!", 
+                cancelText: "Cancel");
+
+            state = result == null ? "Canceled" : "Deleted!";
+            if (state == "Deleted!") await deleteData(id);
+            StateHasChanged();
+  
     }
     //End Delete Dialog
 }

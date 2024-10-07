@@ -8,7 +8,14 @@
         <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.AddCircle" Href="Buyproduct">Buyproduct</MudNavLink>
         <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Sell" Href="Sellproduct">Sellproduct</MudNavLink>
         <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.AccountBox" Href="Accounting">Accounting</MudNavLink>
-        <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.KeyboardOptionKey" Href="Options">Options</MudNavLink>
+        @* <MudNavLink Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.KeyboardOptionKey" Href="Options">Settings</MudNavLink> *@
+        <MudNavGroup Title="Settings" Icon="@Icons.Material.Filled.Settings" Expanded="_open">
+            <MudNavGroup Title="Currency" Icon="@Icons.Material.Filled.CurrencyExchange" Expanded="_open">
+                <MudNavLink Match="NavLinkMatch.All"  Href="">Syrian Pound</MudNavLink>
+                <MudNavLink Match="NavLinkMatch.All" Href="">Euro</MudNavLink>
+                <MudNavLink Match="NavLinkMatch.All" Href="">Dollars</MudNavLink>
+            </MudNavGroup>
+        </MudNavGroup>
 
     </MudNavMenu>
 }
@@ -26,5 +33,6 @@ else
 }
 @code {
     [Parameter]public bool _rightToLeft { get; set; }
+    [Parameter] public bool _open { get; set; }
 
 }

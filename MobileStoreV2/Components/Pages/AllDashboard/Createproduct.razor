@@ -31,15 +31,19 @@
         transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
     }
 
+    .button-continer {
+        width: 30%;
+        display: flex;
+        justify-content: space-around
+    }
+  
 </style>
 
-<MudDialog>
-    <TitleContent>إضافة منتج</TitleContent>
+<MudDialog class="text-center">
+    <TitleContent ><h3>إضافة منتج</h3></TitleContent>
     <DialogContent>
         <div class="d-flex flex-column py-1">
             <EditForm Model="@createProduct" OnValidSubmit="OnValidSubmit">
-
-
                 <DataAnnotationsValidator />
                 <MudGrid>
                     <MudItem xs="12" sm="12">
@@ -132,26 +136,22 @@
                                 }
 
                             </MudCardContent>
-                            <MudCardActions Class="d-xl-inline-flex" Style="display:flex;justify-content:end">
-                                <MudButton OnClick="Cancel" Variant="Variant.Filled" Style="margin-right:15px">إغلاق</MudButton>
-                                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
-                                    إضافة
-                                    @if (_Loadding)
-                                    {
-                                        <MudProgressCircular Color="Color.Secondary" Indeterminate="true" Size="Size.Small" />
-                                    }
-                                </MudButton>
-                                @*            <MudButton OnClick="OpenDialogCategory" Variant="Variant.Outlined" Class=" mx-4">Add category</MudButton>
-                                <MudButton OnClick="OpenDialogBrand" Variant="Variant.Outlined">Add Brand</MudButton> *@
+                            <MudCardActions Class="d-flex align-items-end  justify-content-end">
+                                    <div class="button-continer">
+                                        <MudButton OnClick="Cancel" Variant="Variant.Filled" >إغلاق</MudButton>
+                                        <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
+                                            إضافة
+                                            @if (_Loadding)
+                                            {
+                                                <MudProgressCircular Color="Color.Secondary" Indeterminate="true" Size="Size.Small" />
+                                            }
+                                        </MudButton>
+                                    </div>
                             </MudCardActions>
 
                         </MudCard>
                     </MudItem>
-                    <MudItem xs="12">
-                        <MudText Typo="Typo.body2" Align="Align.Center">
-                            <h4>إضافة منتج للجموعة</h4>
-                        </MudText>
-                    </MudItem>
+              
                 </MudGrid>
             </EditForm>
         </div>

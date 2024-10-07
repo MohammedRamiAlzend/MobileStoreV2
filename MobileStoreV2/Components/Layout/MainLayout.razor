@@ -25,7 +25,14 @@
         </MudAppBar>
         <MudDrawer @bind-Open="@_open" ClipMode="_clipMode" Breakpoint="@_breakpoint" Elevation="1" Variant="@DrawerVariant.Mini" >
 
-            <NavMenu _rightToLeft ="@_rightToLeft" />
+            @if (_open == false)
+            {
+                <NavMenu _rightToLeft="@_rightToLeft" _open="_open" />
+            }
+            else
+            {
+                <NavMenu _rightToLeft="@_rightToLeft" />
+            }
 
         </MudDrawer>
 

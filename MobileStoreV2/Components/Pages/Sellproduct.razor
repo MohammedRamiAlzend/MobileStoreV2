@@ -145,10 +145,11 @@
     private async void SureDialog()
     {
         bool? result = await DialogService.ShowMessageBox(
-            "info",
-            "product Name or Barcode not exist , display products ?",
-            yesText: "show", cancelText: "Cancel");
+                 "تنبيه",
+            "اسم المنتج أو الباركود غير موجود , هل تريد عرض المنتجات",
+            yesText: "عرض", cancelText: "إغلاق");
 
+            
         state = result == null ? "Canceled" : "Deleted!";
         if (state == "Deleted!") OpenDialog();
         StateHasChanged();
